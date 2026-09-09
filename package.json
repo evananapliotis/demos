@@ -12,8 +12,7 @@
     "deploy": "node scripts/deploy.mjs",
     "check": "astro check",
     "verify": "node scripts/verify.mjs",
-    "lighthouse": "node scripts/lighthouse.mjs",
-    "placeholders": "node scripts/placeholders.mjs"
+    "lighthouse": "node scripts/lighthouse.mjs"
   },
   "dependencies": {
     "@fontsource-variable/fraunces": "^5.3.0",

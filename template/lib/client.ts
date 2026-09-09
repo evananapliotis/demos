@@ -47,9 +47,8 @@ export interface Site {
   /** Words for the scrolling brass strip under the hero. */
   marquee?: string[];
   gallery: Photo[];
-  /** Full-bleed statement band shown in place of the gallery until photos exist. */
-  statement?: { line: string; accent: string; sub?: string };
-  hero: Photo;
+  /** Optional. Without it the hero is typographic (no image). */
+  hero?: Photo;
   reviews: Review[];
   about: string[]; // paragraphs
   established?: string;

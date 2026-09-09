@@ -1,11 +1,13 @@
 ---
+interface Props { number: string }
+const { number } = Astro.props;
 import { site, hoursRows, fmt, fullAddress } from '@/lib/client';
 import Section from './Section.astro';
 import Icons from './Icons.astro';
 const rows = hoursRows();
 const mapSrc = `https://www.google.com/maps?q=${encodeURIComponent(site.google.mapQuery)}&z=16&output=embed`;
 ---
-<Section id="hours" number="05" eyebrow="Hours & where" title="Find <em class='italic text-brass font-normal'>us.</em>">
+<Section id="hours" number={number} eyebrow="Hours & where" title="Find <em class='italic text-brass font-normal'>us.</em>">
   <div class="grid gap-10 md:grid-cols-2 md:gap-16">
     <div>
       <h3 class="eyebrow mb-4">Opening hours</h3>
@@ -14,9 +16,7 @@ const mapSrc = `https://www.google.com/maps?q=${encodeURIComponent(site.google.m
         <tbody>
           {rows.map((r) => (
             <tr class="border-t border-line last:border-b data-[today]:text-brass" data-day={r.day}>
-              <th scope="row" class="py-3 pr-4 text-left font-medium">
-                {r.day}<span class="hidden data-[today]:inline eyebrow ml-3 align-middle" data-today-label>Today</span>
-              </th>
+              <th scope="row" class="py-3 pr-4 text-left font-medium">{r.day}</th>
               <td class={`py-3 text-right tabular-nums ${r.closed ? 'text-bone-2' : 'text-bone'}`}>
                 {r.closed ? 'Closed' : `${fmt(r.open!)} – ${fmt(r.close!)}`}
               </td>
@@ -58,9 +58,13 @@ const mapSrc = `https://www.google.com/maps?q=${encodeURIComponent(site.google.m
 
 <script>
   const name = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][new Date().getDay()];
-  const row = document.querySelector<HTMLElement>(`tr[data-day="${name}"]`);
-  if (row) {
+  const row = document.querySelector<HTMLTableRowElement>(`tr[data-day="${name}"]`);
+  const th = row?.querySelector('th');
+  if (row && th) {
     row.dataset.today = '';
-    row.querySelector<HTMLElement>('[data-today-label]')?.classList.remove('hidden');
+    const tag = document.createElement('span');
+    tag.className = 'eyebrow ml-3 align-middle';
+    tag.textContent = 'Today';
+    th.appendChild(tag);
   }
 </script>

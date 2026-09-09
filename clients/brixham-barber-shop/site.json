@@ -80,11 +80,7 @@
       "note": "Patient hands and a quick chair. First cuts welcome."
     }
   ],
-  "servicesNote": "Prices in shop. Cash and card. Walk in, or call ahead to hold a chair.",
-  "hero": {
-    "file": "hero.jpg",
-    "alt": "Brixham Barber Shop, Coventry"
-  },
+  "servicesNote": "Prices agreed in the chair. Cash and card. Walk in, or call ahead to hold a chair.",
   "gallery": [],
   "reviews": [],
   "about": [
@@ -92,11 +88,6 @@
     "You'll get the same barber, the same standard and the same straight talk every time. No upsell, no rush, no fuss. That's why the neighbourhood keeps coming back, and why fifty-odd people have left us five stars on Google."
   ],
   "socials": [],
-  "statement": {
-    "line": "Walk in.",
-    "accent": "Walk out sharp.",
-    "sub": "Same barber, same standard, every time."
-  },
   "marquee": [
     "Skin fades",
     "Scissor cuts",

@@ -19,7 +19,7 @@ const { hero } = Astro.props;
         sizes="100vw"
         width={hero.attributes.width}
         height={hero.attributes.height}
-        alt={site.hero.alt}
+        alt={site.hero?.alt ?? ''}
         loading="eager"
         fetchpriority="high"
         decoding="async"
@@ -27,7 +27,13 @@ const { hero } = Astro.props;
       />
     )
   }
-  <div class="absolute inset-0 -z-10 bg-[linear-gradient(to_top,rgb(11_10_8)_0%,rgb(11_10_8/0.85)_28%,rgb(11_10_8/0.35)_60%,rgb(11_10_8/0.55)_100%)]"></div>
+  {
+    hero ? (
+      <div class="absolute inset-0 -z-10 bg-[linear-gradient(to_top,rgb(11_10_8)_0%,rgb(11_10_8/0.85)_28%,rgb(11_10_8/0.35)_60%,rgb(11_10_8/0.55)_100%)]" />
+    ) : (
+      <div class="grain absolute inset-0 -z-10 bg-[radial-gradient(120%_80%_at_85%_10%,rgb(211_169_76/0.22),transparent_55%),radial-gradient(80%_60%_at_10%_100%,rgb(0_0_0/0.6),transparent_60%)]" />
+    )
+  }
 
   <nav class="absolute inset-x-0 top-0 flex items-center justify-between px-5 py-5 sm:px-8" aria-label="Primary">
     <a href="#top" class="font-display text-lg font-semibold tracking-tight text-bone" aria-label={`${site.name} home`}>

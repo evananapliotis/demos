@@ -1,10 +1,12 @@
 ---
+interface Props { number: string }
+const { number } = Astro.props;
 import { site } from '@/lib/client';
 import Section from './Section.astro';
 import Icons from './Icons.astro';
 const anyPrice = site.services.some((s) => s.price);
 ---
-<Section id="services" number="01" eyebrow="Services" title="What we <em class='italic text-brass font-normal'>do.</em>">
+<Section id="services" number={number} eyebrow="Services" title="What we <em class='italic text-brass font-normal'>do.</em>">
   <ol class="border-t border-line" role="list">
     {
       site.services.map((s, i) => (

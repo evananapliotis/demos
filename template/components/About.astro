@@ -1,9 +1,11 @@
 ---
+interface Props { number: string }
+const { number } = Astro.props;
 import { site } from '@/lib/client';
 import Section from './Section.astro';
 import Icons from './Icons.astro';
 ---
-<Section id="about" number="04" eyebrow="About the shop" title="Cut properly, <em class='italic text-brass font-normal'>every</em> time." class="bg-ink-2 grain">
+<Section id="about" number={number} eyebrow="About the shop" title="Cut properly, <em class='italic text-brass font-normal'>every</em> time." class="bg-ink-2 grain">
   <div class="grid gap-8 md:grid-cols-2 md:gap-16" data-reveal>
     {site.about.map((p, i) => (
       <p class={`text-lg leading-relaxed text-bone/90 md:text-xl ${i === 0 ? 'first-letter:font-display first-letter:text-6xl first-letter:font-semibold first-letter:text-brass first-letter:float-left first-letter:mr-3 first-letter:leading-[0.8]' : ''}`}>{p}</p>

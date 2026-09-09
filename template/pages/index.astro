@@ -1,7 +1,7 @@
 ---
 import { getImage } from 'astro:assets';
 import Base from '@/layouts/Base.astro';
-import { site, heroImage } from '@/lib/client';
+import { site, heroImage, galleryImages } from '@/lib/client';
 import Hero from '@/components/Hero.astro';
 import Services from '@/components/Services.astro';
 import Gallery from '@/components/Gallery.astro';
@@ -24,16 +24,19 @@ const hero = heroImage
       quality: 72,
     })
   : null;
+// Section numbers skip the gallery when there are no photos.
+const hasGallery = galleryImages.length > 0;
+const n = ['01', hasGallery ? '02' : '', hasGallery ? '03' : '02', hasGallery ? '04' : '03', hasGallery ? '05' : '04'];
 ---
 <Base title={title} description={site.description} hero={hero}>
   <Hero hero={hero} />
   <Marquee />
   <main id="main">
-    <Services />
-    <Gallery />
-    <Reviews />
-    <About />
-    <Hours />
+    <Services number={n[0]} />
+    <Gallery number={n[1]} />
+    <Reviews number={n[2]} />
+    <About number={n[3]} />
+    <Hours number={n[4]} />
   </main>
   <Footer />
   <StickyBar />

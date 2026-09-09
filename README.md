@@ -24,7 +24,6 @@ reports/             lighthouse + screenshot output from the last run
 | `npm run preview` | Serves `dist/` (needs `CLIENT=<slug>` in the env) |
 | `npm run verify -- <url>` | 200 check, `tel:` link, every image loads, 390px screenshot → `reports/mobile-390.png` |
 | `npm run lighthouse -- <url>` | Mobile Lighthouse, fails if any category < 90, report → `reports/lighthouse-mobile.report.html` |
-| `npm run placeholders -- <slug>` | Generates a text-free atmospheric `hero.jpg` backdrop when the client hasn't sent photos yet |
 
 ## The 10-minute per-client checklist
 
@@ -37,8 +36,8 @@ reports/             lighthouse + screenshot output from the last run
    `null` = closed), `services` with prices, `hero.alt`, `gallery[]` with alt text.
 4. **Reviews** — paste real reviews from the Google listing into `reviews[]` (author, rating, text,
    date). Never invent one; leave the array empty and the section becomes a rating band with a link.
-   No photos yet? Leave `gallery` empty and set `statement` (line, accent, sub) to get a full-bleed
-   editorial band instead of a gallery; run `npm run placeholders -- <slug>` for a hero backdrop.
+   No photos yet? Omit `hero` and leave `gallery` empty: the hero becomes typographic and the gallery
+   section is skipped. Never use stock, generated or fetched images.
 5. **Copy** — `tagline` (one line), `description` (meta, ~150 chars), `about` (two short paragraphs
    in the owner's voice). Optional `hoursNote`, `servicesNote`, `socials`.
 6. **Geo** — set `geo.lat/lng` from the Google listing (right-click the pin → copy coordinates) and

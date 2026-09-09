@@ -22,7 +22,7 @@ const jsonLd = {
   url: Astro.site,
   telephone: site.phone.tel,
   description,
-  image: ogImage,
+  ...(ogImage ? { image: ogImage } : {}),
   priceRange: '££',
   address: {
     '@type': 'PostalAddress',
@@ -93,17 +93,17 @@ const jsonLd = {
     <meta property="og:url" content={canonical} />
     <meta property="og:locale" content="en_GB" />
     {ogImage && <meta property="og:image" content={ogImage} />}
-    {ogImage && <meta property="og:image:alt" content={site.hero.alt} />}
+    {ogImage && site.hero && <meta property="og:image:alt" content={site.hero.alt} />}
     <meta property="business:contact_data:street_address" content={site.address.street} />
     <meta property="business:contact_data:locality" content={site.address.locality} />
     <meta property="business:contact_data:postal_code" content={site.address.postcode} />
     <meta property="business:contact_data:country_name" content="United Kingdom" />
     <meta property="business:contact_data:phone_number" content={site.phone.tel} />
-    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:card" content={ogImage ? "summary_large_image" : "summary"} />
     <meta name="twitter:title" content={title} />
     <meta name="twitter:description" content={description} />
     {ogImage && <meta name="twitter:image" content={ogImage} />}
-    {ogImage && <meta name="twitter:image:alt" content={site.hero.alt} />}
+    {ogImage && site.hero && <meta name="twitter:image:alt" content={site.hero.alt} />}
     <meta name="geo.placename" content={fullAddress} />
     <meta name="geo.region" content="GB-COV" />
 

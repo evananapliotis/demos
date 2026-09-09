@@ -1,67 +1,28 @@
 ---
 import { Image } from 'astro:assets';
-import { site, galleryImages, heroImage } from '@/lib/client';
+import { galleryImages } from '@/lib/client';
 import Section from './Section.astro';
-import Icons from './Icons.astro';
+interface Props { number: string }
+const { number } = Astro.props;
 // Asymmetric editorial grid. Pattern repeats every 5 photos.
 const spans = [
-  'col-span-2 aspect-[4/3] md:col-span-4 md:row-span-2', // big
+  'col-span-2 aspect-[4/3] md:col-span-4 md:row-span-2',
   'aspect-[4/5] md:col-span-2 md:aspect-[4/3]',
   'aspect-[4/5] md:col-span-2 md:aspect-[4/3]',
   'aspect-[4/5] md:col-span-3 md:aspect-[3/2]',
   'aspect-[4/5] md:col-span-3 md:aspect-[3/2]',
 ];
-const statement = site.statement;
 ---
 {
-  galleryImages.length > 0 ? (
-    <Section id="gallery" number="02" eyebrow="The work" title="Fresh out of the <em class='italic text-brass font-normal'>chair.</em>" class="bg-ink-2 grain">
+  galleryImages.length > 0 && (
+    <Section id="gallery" number={number} eyebrow="The work" title="Fresh out of the <em class='italic text-brass font-normal'>chair.</em>" class="bg-ink-2 grain">
       <ul class="grid grid-cols-2 gap-3 md:grid-cols-6 md:gap-4" role="list">
         {galleryImages.map((g, i) => (
           <li class={`overflow-hidden rounded-sm bg-ink-3 ${spans[i % spans.length]}`}>
-            <Image
-              src={g.image}
-              alt={g.alt}
-              widths={[360, 640, 960, 1280]}
-              sizes="(min-width: 768px) 50vw, 100vw"
-              format="webp"
-              quality={74}
-              loading="lazy"
-              decoding="async"
-              class="h-full w-full object-cover transition-transform duration-500 hover:scale-[1.02]"
-            />
+            <Image src={g.image} alt={g.alt} widths={[360, 640, 960, 1280]} sizes="(min-width: 768px) 50vw, 100vw" format="webp" quality={74} loading="lazy" decoding="async" class="h-full w-full object-cover" />
           </li>
         ))}
       </ul>
     </Section>
-  ) : statement ? (
-    <section id="gallery" class="relative isolate scroll-mt-16 overflow-hidden border-y border-line" aria-label={`${statement.line} ${statement.accent}`}>
-      {heroImage && (
-        <Image
-          src={heroImage}
-          alt=""
-          widths={[768, 1440, 1920]}
-          sizes="100vw"
-          layout="full-width"
-          format="webp"
-          quality={60}
-          loading="lazy"
-          decoding="async"
-          class="absolute inset-0 -z-20 h-full w-full object-cover object-[70%_30%]"
-        />
-      )}
-      <div class="absolute inset-0 -z-10 bg-[linear-gradient(to_right,rgb(11_10_8/0.92),rgb(11_10_8/0.55))]" />
-      <div class="mx-auto max-w-6xl px-5 py-24 sm:px-8 md:py-36 lg:px-12">
-        <p class="font-display text-[clamp(3rem,11vw,7.5rem)] leading-[0.92] text-bone">
-          {statement.line}<br />
-          <em class="font-normal italic text-brass">{statement.accent}</em>
-        </p>
-        {statement.sub && <p class="mt-6 max-w-md text-lg text-bone/80 md:text-xl">{statement.sub}</p>}
-        <div class="mt-8 flex flex-col gap-3 sm:flex-row">
-          <a href={`tel:${site.phone.tel}`} class="btn btn-brass"><Icons name="phone" size={18} /> {site.phone.display}</a>
-          <a href="#hours" class="btn btn-ghost"><Icons name="pin" size={18} /> {site.address.street}, {site.address.postcode}</a>
-        </div>
-      </div>
-    </section>
-  ) : null
+  )
 }
