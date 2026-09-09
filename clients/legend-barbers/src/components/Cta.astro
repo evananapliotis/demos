@@ -1,0 +1,14 @@
+---
+import { client, telHref, waHref } from '../lib/client';
+import Icons from './Icons.astro';
+interface Props { kind: 'whatsapp' | 'call'; label?: string; variant?: 'accent' | 'ghost' | 'ink' | 'ghost-ink'; class?: string; iconOnly?: boolean; tabindex?: number }
+const { kind, label, variant = 'accent', class: cls = '', iconOnly = false, tabindex } = Astro.props;
+const href = kind === 'whatsapp' ? waHref : telHref;
+const text = label ?? (kind === 'whatsapp' ? 'WhatsApp the shop' : `Call ${client.phone.display}`);
+const external = kind === 'whatsapp' ? { target: '_blank', rel: 'noopener' } : {};
+---
+<a href={href} {...external} tabindex={tabindex} aria-label={iconOnly ? text : undefined}
+   class:list={['btn', variant === 'ghost' && 'btn-ghost', variant === 'ink' && 'btn-ink', variant === 'ghost-ink' && 'btn-ghost-ink', iconOnly && 'btn-icon', cls]}>
+  <Icons name={kind === 'whatsapp' ? 'whatsapp' : 'phone'} size={kind === 'whatsapp' ? 18 : 17} />
+  {!iconOnly && <span>{text}</span>}
+</a>

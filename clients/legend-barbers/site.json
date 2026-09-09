@@ -1,0 +1,171 @@
+{
+  "name": "Legend Barbers",
+  "owner": "Dyako",
+  "barber": "Azad",
+  "url": "https://legend-barbers.netlify.app",
+  "area": "Menston",
+  "region": "West Yorkshire",
+  "seo": {
+    "title": "Legend Barbers | Barbers in Menston",
+    "description": "Barbers on Main Street, Menston. Skin fades, scissor cuts, beard trims, kids' first cuts and the Turkish hot towel shave. Rated 5.0 from 60 Google reviews. Walk in, or call 07488 435193."
+  },
+  "phone": {
+    "display": "07488 435193",
+    "tel": "+447488435193",
+    "whatsapp": "447488435193",
+    "whatsappText": "Hi, I'd like to book a cut at Legend Barbers."
+  },
+  "address": {
+    "street": "29 Main Street",
+    "locality": "Menston",
+    "town": "Ilkley",
+    "postcode": "LS29 6NB",
+    "country": "GB"
+  },
+  "geo": {
+    "lat": 53.8905,
+    "lng": -1.7395
+  },
+  "rating": {
+    "value": 5,
+    "count": 60,
+    "url": "https://www.google.com/maps/search/?api=1&query=Legend+Barbers+29+Main+St+Menston+Ilkley+LS29+6NB"
+  },
+  "hours": [
+    { "days": "Mon–Sat", "open": "09:00", "close": "18:00" },
+    { "days": "Sun", "closed": true }
+  ],
+  "hoursNote": "No appointment needed. Walk in and take a seat.",
+  "hero": {
+    "src": "interior",
+    "alt": "Inside Legend Barbers in Menston: three walnut stations with backlit mirrors, black leather chairs and a gold Medusa emblem above each mirror",
+    "position": "47% 45%",
+    "label": "Barbers · Main Street, Menston",
+    "line": "Hair cut, Turkish hot towel shave and wax. Walk in off Main Street. No appointment needed.",
+    "cta": "Call the shop"
+  },
+  "services": {
+    "label": "Services",
+    "heading": "What we",
+    "accent": "do.",
+    "pricingLabel": "Prices agreed in the chair",
+    "pricingNote": "Your barber tells you the price before the clippers come out. Ring first if you'd rather know beforehand.",
+    "items": [
+      { "name": "Skin fade", "note": "Zero, double zero or a normal fade. Blended tight, lined up to finish." },
+      { "name": "Scissor cut", "note": "All scissors. Shaped to how you actually wear it, styled before you leave." },
+      { "name": "Beard trim", "note": "Shaped with the clippers, or lined with the razor and finished with a hot towel." },
+      { "name": "Kids' and first cuts", "note": "Under-12s. Patient with the nervous ones, gentle with the first-timers." },
+      { "name": "Turkish hot towel shave", "note": "Hot towels, the cutthroat razor and the flame if you want it. Details below." },
+      { "name": "Wax", "note": "Nose and ears. Quick and clean, done while you're in the chair." }
+    ]
+  },
+  "shave": {
+    "label": "Turkish hot towel shave",
+    "heading": "Hot towels.\nA cutthroat.\nThen the",
+    "accent": "flame.",
+    "paragraphs": [
+      "You choose how far it goes. A straight hot towel shave is as traditional as it gets. Add the razor line-up and the flame, and it's the full Turkish.",
+      "Nobody rushes it. Sit back, close your eyes, and let it happen."
+    ],
+    "quote": {
+      "text": "You can go as traditional as you want or go fully blown Turkish with the razor and flames.",
+      "author": "Justin Leeming"
+    },
+    "steps": [
+      { "title": "The towels", "body": "Steaming hot, laid over the face one after another until the skin softens and the beard lifts." },
+      { "title": "The razor", "body": "A fresh blade in the cutthroat. Slow strokes with the grain, then across it. Lines cut sharp." },
+      { "title": "The flame", "body": "A lit taper passed over the ears and cheeks. The fine hair goes in a second. Nothing else does." },
+      { "title": "The finish", "body": "A cold towel to close the skin, balm, a splash of cologne. Out the door looking like you meant it." }
+    ],
+    "cta": "Call to book a shave"
+  },
+  "families": {
+    "label": "First cuts",
+    "heading": "Little ones.\nFirst cuts.",
+    "accent": "No fuss.",
+    "paragraphs": [
+      "Eighteen months old, first time in the chair. Nursery rhymes on, a juice at the end, and a cut that looks smart in the photos. That's how it goes here.",
+      "Patient with the nervous ones. Quick with the wrigglers. Dads get done in the next chair while they wait."
+    ],
+    "quote": {
+      "text": "they were so good with him, playing nursery rhymes for him to help keep him calm and offered a juicy fruit drink for him too",
+      "author": "Richard J"
+    },
+    "photo": {
+      "src": "kids-chair",
+      "alt": "A young boy in the gold and black barber's chair at Legend Barbers, in a patterned cape, waiting for his cut with the shop's red logo reflected in the mirror",
+      "position": "38% 12%",
+      "caption": "The gold chair by the window"
+    }
+  },
+  "gallery": {
+    "label": "The work",
+    "heading": "Fresh out of",
+    "accent": "the chair.",
+    "photos": [
+      {
+        "src": "skin-fade",
+        "alt": "Back and side view of a high skin fade with a textured top, freshly cut at Legend Barbers, the red shop logo reflected in the window",
+        "position": "55% 50%",
+        "caption": "High skin fade, textured top"
+      },
+      {
+        "src": "shopfront",
+        "alt": "The Legend Barbers shopfront on Main Street, Menston: black sign, lit open sign and a gold barber's chair seen through the window",
+        "position": "50% 50%",
+        "aspect": "9/8",
+        "caption": "29 Main Street"
+      }
+    ]
+  },
+  "reviews": {
+    "label": "Reviews",
+    "heading": "A perfect\nscore.",
+    "accent": "Sixty times over.",
+    "intro": "Every one of the 60 reviews on Google gives Legend Barbers five stars.",
+    "linkText": "See all 60 on Google",
+    "items": [
+      {
+        "author": "Richard J",
+        "rating": 5,
+        "text": "I used this new barbers for the first time last Wednesday and my skin fade was top class. They also gave my son who is only 18 months his first ever cut and it looks great, really smart and they were so good with him, playing nursery rhymes for him to help keep him calm and offered a juicy fruit drink for him too. Highly recommend."
+      },
+      {
+        "author": "Justin Leeming",
+        "rating": 5,
+        "text": "I got my haircut on Saturday morning, grade 4 all over. But it wasn't just a grade 4, the level of detail and care Azad took really was first class. You can go as traditional as you want or go fully blown Turkish with the razor and flames. I chickened out but was very pleased with the end results!"
+      },
+      {
+        "author": "Mr PMU",
+        "rating": 5,
+        "text": "Excellent service, didn't have to wait long."
+      }
+    ]
+  },
+  "about": {
+    "label": "About",
+    "heading": "A village barbers on",
+    "accent": "Main Street.",
+    "photo": {
+      "src": "dyako",
+      "alt": "Dyako, owner of Legend Barbers, smiling outside the shop on Main Street, Menston, beneath the sign and the striped barber's pole",
+      "position": "50% 30%",
+      "caption": "Dyako, outside the shop"
+    },
+    "paragraphs": [
+      "Dyako runs Legend Barbers on Main Street, Menston. Three chairs in walnut and black, the gold chair by the window, and a price list on the wall. No appointment needed. Walk in and take a seat.",
+      "It's the barbers people in the village keep coming back to. Skin fades taken down properly, scissor cuts shaped to how you wear your hair, and the Turkish hot towel shave done the traditional way. Azad is on the chairs too, and the care is the same whoever cuts you."
+    ]
+  },
+  "find": {
+    "label": "Find us",
+    "heading": "Hours, and where",
+    "accent": "we are.",
+    "mapQuery": "Legend Barbers, 29 Main St, Menston, Ilkley LS29 6NB",
+    "directions": "Get directions"
+  },
+  "sticky": {
+    "line1": "Walk-ins welcome",
+    "line2": "Mon–Sat until 6pm"
+  }
+}

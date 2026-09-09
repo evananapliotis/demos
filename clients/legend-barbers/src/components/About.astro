@@ -1,0 +1,29 @@
+---
+import { Image } from 'astro:assets';
+import { client, photo } from '../lib/client';
+import SectionHead from './SectionHead.astro';
+const ab = client.about;
+const p = ab.photo;
+---
+<section id="about" class="section hairline" aria-labelledby="about-title">
+  <div class="gutter md:grid md:grid-cols-12 md:items-center md:gap-x-12">
+    <figure class="photo-hover -mx-6 md:col-span-5 md:mx-0" data-reveal>
+      <Image
+        src={photo(p.src)} alt={p.alt}
+        widths={[480, 800, 1200]} sizes="(min-width: 48rem) 40vw, 100vw"
+        format="webp" quality={76} loading="lazy" decoding="async"
+        class="photo aspect-[4/5] w-full object-cover md:aspect-[3/4]"
+        style={`object-position:${p.position ?? '50% 50%'}`}
+      />
+      {p.caption && <figcaption class="label mt-4 px-6 text-paper/60 md:px-0">{p.caption}</figcaption>}
+    </figure>
+    <div class="mt-16 md:col-span-6 md:col-start-7 md:mt-0">
+      <SectionHead id="about-title" label={ab.label} heading={ab.heading} accent={ab.accent} />
+      <div class="mt-10">
+        {ab.paragraphs.map((t, i) => (
+          <p class:list={['measure text-paper/80', i > 0 && 'mt-6']} data-reveal data-reveal-delay={String(i + 1)}>{t}</p>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>

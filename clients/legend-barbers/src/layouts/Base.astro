@@ -1,0 +1,145 @@
+---
+import '../styles/global.css';
+import { client, openingHoursSpec, waHref } from '../lib/client';
+
+interface Props {
+  hero: { src: string; srcSet: string; sizes: string };
+  ogImage: string;
+}
+const { hero, ogImage } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site).href.replace(/\/$/, '');
+const a = client.address;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'BarberShop',
+  '@id': `${canonical}/#business`,
+  name: client.name,
+  description: client.seo.description,
+  url: canonical,
+  image: ogImage,
+  telephone: client.phone.tel,
+  priceRange: '££',
+  currenciesAccepted: 'GBP',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: a.street,
+    addressLocality: a.locality,
+    addressRegion: client.region,
+    postalCode: a.postcode,
+    addressCountry: a.country,
+  },
+  geo: { '@type': 'GeoCoordinates', latitude: client.geo.lat, longitude: client.geo.lng },
+  hasMap: client.rating.url,
+  founder: { '@type': 'Person', name: client.owner },
+  employee: [
+    { '@type': 'Person', name: client.owner, jobTitle: 'Owner and barber' },
+    { '@type': 'Person', name: client.barber, jobTitle: 'Barber' },
+  ],
+  contactPoint: [
+    { '@type': 'ContactPoint', contactType: 'customer service', telephone: client.phone.tel, url: waHref, availableLanguage: 'en' },
+  ],
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    ratingValue: client.rating.value,
+    reviewCount: client.rating.count,
+    bestRating: 5,
+    worstRating: 1,
+  },
+  openingHoursSpecification: openingHoursSpec(),
+  makesOffer: client.services.items.map((s) => ({
+    '@type': 'Offer',
+    itemOffered: { '@type': 'Service', name: s.name, description: s.note, provider: { '@id': `${canonical}/#business` } },
+  })),
+  review: client.reviews.items.map((r) => ({
+    '@type': 'Review',
+    author: { '@type': 'Person', name: r.author },
+    reviewRating: { '@type': 'Rating', ratingValue: r.rating, bestRating: 5 },
+    reviewBody: r.text,
+  })),
+};
+---
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{client.seo.title}</title>
+    <meta name="description" content={client.seo.description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="theme-color" content="#0a0a0b" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="geo.region" content="GB-BRD" />
+    <meta name="geo.placename" content={`${a.locality}, ${a.town}`} />
+    <meta name="geo.position" content={`${client.geo.lat};${client.geo.lng}`} />
+
+    <meta property="og:type" content="business.business" />
+    <meta property="og:site_name" content={client.name} />
+    <meta property="og:title" content={client.seo.title} />
+    <meta property="og:description" content={client.seo.description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={client.hero.alt} />
+    <meta property="og:locale" content="en_GB" />
+    <meta property="business:contact_data:street_address" content={a.street} />
+    <meta property="business:contact_data:locality" content={a.locality} />
+    <meta property="business:contact_data:postal_code" content={a.postcode} />
+    <meta property="business:contact_data:country_name" content="United Kingdom" />
+    <meta property="business:contact_data:phone_number" content={client.phone.tel} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={client.seo.title} />
+    <meta name="twitter:description" content={client.seo.description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="twitter:image:alt" content={client.hero.alt} />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <link rel="preload" href="/fonts/archivo-wdth.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/instrument-serif-italic.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/inter-wght.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" as="image" href={hero.src} imagesrcset={hero.srcSet} imagesizes={hero.sizes} fetchpriority="high" />
+
+    <script is:inline>document.documentElement.classList.add('js');</script>
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </head>
+  <body class="bg-ink text-paper">
+    <slot />
+    <script>
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      // Ripple from the touch point on every button.
+      if (!reduce) {
+        document.addEventListener('pointerdown', (e) => {
+          const btn = (e.target as HTMLElement).closest<HTMLElement>('.btn');
+          if (!btn) return;
+          const r = btn.getBoundingClientRect();
+          const s = document.createElement('span');
+          s.className = 'ripple';
+          s.style.left = `${e.clientX - r.left}px`;
+          s.style.top = `${e.clientY - r.top}px`;
+          btn.appendChild(s);
+          s.addEventListener('animationend', () => s.remove(), { once: true });
+        }, { passive: true });
+      }
+      const items = document.querySelectorAll<HTMLElement>('[data-reveal]');
+      if (reduce || !('IntersectionObserver' in window)) {
+        items.forEach((el) => el.classList.add('is-in'));
+      } else {
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const e of entries) {
+              if (e.isIntersecting) {
+                (e.target as HTMLElement).classList.add('is-in');
+                io.unobserve(e.target);
+              }
+            }
+          },
+          { rootMargin: '0px 0px -10% 0px', threshold: 0.06 },
+        );
+        items.forEach((el) => io.observe(el));
+      }
+    </script>
+  </body>
+</html>

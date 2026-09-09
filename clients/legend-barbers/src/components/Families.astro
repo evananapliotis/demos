@@ -1,0 +1,38 @@
+---
+import { Image } from 'astro:assets';
+import { client, photo } from '../lib/client';
+import SectionHead from './SectionHead.astro';
+import Stars from './Stars.astro';
+const f = client.families;
+const p = f.photo;
+---
+<section id="families" class="section hairline" aria-labelledby="families-title">
+  <div class="gutter md:grid md:grid-cols-12 md:items-center md:gap-x-12">
+    <div class="md:col-span-6 md:pr-6">
+      <SectionHead id="families-title" label={f.label} heading={f.heading} accent={f.accent} />
+      <div class="mt-10">
+        {f.paragraphs.map((t, i) => (
+          <p class:list={['measure text-paper/80', i > 0 && 'mt-6']} data-reveal data-reveal-delay={String(i + 1)}>{t}</p>
+        ))}
+      </div>
+      <figure class="mt-12 border-l border-accent pl-5" data-reveal data-reveal-delay="3">
+        <Stars class="text-accent" size={11} />
+        <blockquote class="mt-3">
+          <p class="display-mid text-[1.5rem] leading-[1.15] text-paper md:text-[1.75rem]">“{f.quote.text}”</p>
+        </blockquote>
+        <figcaption class="mt-4 text-sm text-muted">{f.quote.author}, on Google</figcaption>
+      </figure>
+    </div>
+
+    <figure class="photo-hover -mx-6 mt-16 md:col-span-5 md:col-start-8 md:mx-0 md:mt-0" data-reveal data-reveal-delay="1">
+      <Image
+        src={photo(p.src)} alt={p.alt}
+        widths={[480, 800, 1200]} sizes="(min-width: 48rem) 40vw, 100vw"
+        format="webp" quality={76} loading="lazy" decoding="async"
+        class="photo aspect-[4/5] w-full object-cover md:aspect-[3/4]"
+        style={`object-position:${p.position ?? '50% 50%'}`}
+      />
+      {p.caption && <figcaption class="label mt-4 px-6 text-paper/60 md:px-0">{p.caption}</figcaption>}
+    </figure>
+  </div>
+</section>

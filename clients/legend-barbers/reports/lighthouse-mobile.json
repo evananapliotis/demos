@@ -1,0 +1,20 @@
+{
+  "date": "2026-09-09T16:39:58.641Z",
+  "lighthouse": "13.4.1",
+  "url": "http://127.0.0.1:4174/",
+  "formFactor": "mobile",
+  "note": "Run against a gzip-serving local preview of dist/ (the deploy host compresses too). Google Maps embed cannot load in the build sandbox.",
+  "scores": {
+    "performance": 97,
+    "accessibility": 100,
+    "best-practices": 100,
+    "seo": 100
+  },
+  "metrics": {
+    "fcpMs": 1049,
+    "lcpMs": 1883,
+    "tbtMs": 167,
+    "cls": 0.0009,
+    "speedIndexMs": 2080
+  }
+}

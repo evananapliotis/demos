@@ -1,0 +1,8 @@
+---
+import Icons from './Icons.astro';
+interface Props { rating?: number; size?: number; class?: string }
+const { rating = 5, size = 12, class: cls = '' } = Astro.props;
+---
+<span class:list={['inline-flex items-center gap-[3px]', cls]} role="img" aria-label={`${rating} out of 5 stars`}>
+  {Array.from({ length: rating }, () => <Icons name="star" size={size} />)}
+</span>

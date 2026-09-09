@@ -1,0 +1,10 @@
+---
+interface Props { label: string; heading: string; accent?: string; id: string; tone?: 'dark' | 'light'; class?: string; wide?: boolean }
+const { label, heading, accent, id, tone = 'dark', class: cls = '', wide = false } = Astro.props;
+---
+<header class={cls} data-reveal>
+  <p class:list={['label label-rule mb-6', tone === 'light' && 'text-muted-ink']}>{label}</p>
+  <h2 id={id} class:list={['display h2-size', wide ? 'max-w-[16ch]' : 'max-w-[11ch]', tone === 'light' ? 'text-ink' : 'text-paper']}>
+    {heading.split('\n').map((l, i) => (<>{i > 0 && <br />}{l}</>))}{accent && <>{' '}<span class="accent-word">{accent}</span></>}
+  </h2>
+</header>
