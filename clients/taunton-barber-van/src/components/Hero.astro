@@ -26,10 +26,11 @@ const nav = [
   />
   <div class="absolute inset-0 -z-10 bg-[linear-gradient(to_top,rgb(10_10_11/0.98)_0%,rgb(10_10_11/0.86)_28%,rgb(10_10_11/0.42)_55%,rgb(10_10_11/0.08)_80%,rgb(10_10_11/0)_100%)]" aria-hidden="true"></div>
   <div class="absolute inset-x-0 top-0 -z-10 h-40 bg-[linear-gradient(to_bottom,rgb(10_10_11/0.6),rgb(10_10_11/0))]" aria-hidden="true"></div>
+  <div class="absolute inset-x-0 bottom-0 -z-10 h-80 bg-[radial-gradient(90%_100%_at_0%_100%,rgb(200_161_101/0.16),transparent_70%)]" aria-hidden="true"></div>
 
   <div class="absolute inset-x-0 top-0 z-10">
     <nav class="gutter flex items-center justify-between py-6" aria-label="Site">
-      <a href="#top" class="display-mid text-[0.9375rem] uppercase tracking-[0.08em] text-paper" title="Back to top">{client.name}</a>
+      <a href="#top" class="display-mid text-[0.9375rem] uppercase tracking-[0.08em] text-paper transition-opacity hover:opacity-70" title="Back to top">{client.name}</a>
       <ul class="hidden items-center gap-8 md:flex" role="list">
         {nav.map(([href, text]) => <li><a href={href} class="link text-[0.9375rem] text-paper/80 hover:text-paper">{text}</a></li>)}
       </ul>
@@ -38,13 +39,13 @@ const nav = [
   </div>
 
   <div class="hero-in gutter relative w-full pb-12 pt-44 md:pb-20">
-    <p class="label label-rule mb-7 whitespace-nowrap text-paper/80">{h.label}</p>
+    <p class="label label-rule mb-7 whitespace-nowrap text-paper/85!">{h.label}</p>
     <h1 id="site-title" class="display h1-size text-paper">
       {first}<br />{middle}{middle && ' '}<span class="accent-word">{last}</span>
     </h1>
     <p class="mt-7 max-w-[24ch] text-[1.125rem] leading-[1.45] text-paper/88 md:mt-9 md:max-w-[30ch] md:text-[1.375rem]">{h.line}</p>
 
-    <a href={client.rating.url} rel="noopener" target="_blank" class="group mt-9 inline-flex items-center gap-4 self-start md:mt-11">
+    <a href={client.rating.url} rel="noopener" target="_blank" class="group lift mt-9 inline-flex items-center gap-4 self-start md:mt-11">
       <span class="display text-[3.25rem] leading-none text-brass md:text-[3.75rem]">{client.rating.value.toFixed(1)}</span>
       <span class="flex flex-col gap-1.5 border-l border-paper/25 pl-4">
         <Stars class="text-brass" size={12} />

@@ -45,6 +45,6 @@ SITE_URL=https://example.co.uk node clients/taunton-barber-van/build.mjs   # ove
 - Type: Archivo condensed 800 for headings, Instrument Serif italic for the accent word, Inter for body
   at 17px (18px from tablet up), 1.6 line-height.
 - Sections: hero · the van · how it works · families · services · the work · reviews · how to book · footer.
-  Sticky WhatsApp + call bar on mobile once the hero scrolls out.
+  Sticky WhatsApp + call bar on mobile once the hero scrolls out. Buttons are pills with a lit face, hover lift, press and touch ripple.
 - Motion: fade-and-rise on scroll only, 560ms, staggered 70ms; hero entrance; everything off under
   `prefers-reduced-motion`.

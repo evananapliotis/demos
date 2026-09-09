@@ -98,6 +98,20 @@ const jsonLd = {
     <slot />
     <script>
       const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      // Ripple from the touch point on every button.
+      if (!reduce) {
+        document.addEventListener('pointerdown', (e) => {
+          const btn = (e.target as HTMLElement).closest<HTMLElement>('.btn');
+          if (!btn) return;
+          const r = btn.getBoundingClientRect();
+          const s = document.createElement('span');
+          s.className = 'ripple';
+          s.style.left = `${e.clientX - r.left}px`;
+          s.style.top = `${e.clientY - r.top}px`;
+          btn.appendChild(s);
+          s.addEventListener('animationend', () => s.remove(), { once: true });
+        }, { passive: true });
+      }
       const items = document.querySelectorAll<HTMLElement>('[data-reveal]');
       if (reduce || !('IntersectionObserver' in window)) {
         items.forEach((el) => el.classList.add('is-in'));

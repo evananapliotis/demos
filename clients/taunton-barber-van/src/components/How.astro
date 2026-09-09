@@ -16,7 +16,7 @@ const h = client.how;
     </div>
     <ol class="mt-14 md:col-span-7 md:mt-0" role="list">
       {h.steps.map((s, i) => (
-        <li class="hairline-ink grid grid-cols-[3.5rem_1fr] items-start gap-x-4 py-9 first:border-t-0 first:pt-0 md:grid-cols-[5rem_1fr] md:py-11" data-reveal data-reveal-delay={String(i)}>
+        <li class="row hairline-ink grid grid-cols-[3.5rem_1fr] items-start gap-x-4 py-9 first:border-t-0 first:pt-0 md:grid-cols-[5rem_1fr] md:py-11" data-reveal data-reveal-delay={String(i)}>
           <span class="display-mid pt-1 text-[2rem] leading-none text-brass-deep md:text-[2.5rem]" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
           <div>
             <h3 class="display h3-size text-ink">{s.title}</h3>

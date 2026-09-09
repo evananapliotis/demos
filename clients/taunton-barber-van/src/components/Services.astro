@@ -16,8 +16,8 @@ const s = client.services;
     </div>
     <ol class="mt-14 md:col-span-7 md:mt-0" role="list">
       {s.items.map((it, i) => (
-        <li class="hairline flex items-baseline gap-x-5 py-7 first:border-t-0 first:pt-0 md:py-8" data-reveal data-reveal-delay={String(i % 3)}>
-          <span class="label w-8 shrink-0 text-brass/80" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+        <li class="row hairline flex items-baseline gap-x-5 py-7 first:border-t-0 first:pt-0 md:py-8" data-reveal data-reveal-delay={String(i % 3)}>
+          <span class="idx label w-8 shrink-0 text-brass/80" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
           <div>
             <h3 class="display h3-size text-paper">{it.name}</h3>
             {it.note && <p class="mt-2.5 max-w-[34ch] text-[0.9375rem] leading-relaxed text-muted">{it.note}</p>}

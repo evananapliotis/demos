@@ -1,5 +1,5 @@
 {
-  "date": "2026-09-09T15:36:43.381Z",
+  "date": "2026-09-09T15:44:21.459Z",
   "lighthouse": "13.4.1",
   "url": "http://localhost:4321/",
   "formFactor": "mobile",
@@ -10,10 +10,10 @@
     "seo": 100
   },
   "metrics": {
-    "fcpMs": 845,
-    "lcpMs": 2338,
-    "tbtMs": 0,
+    "fcpMs": 851,
+    "lcpMs": 2329,
+    "tbtMs": 4,
     "cls": 0,
-    "speedIndexMs": 845
+    "speedIndexMs": 884
   }
 }

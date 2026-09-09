@@ -7,7 +7,7 @@ const r = client.reviews;
   <div class="gutter md:grid md:grid-cols-12 md:gap-x-12">
     <header class="md:col-span-7" data-reveal>
       <p class="label label-rule mb-6 text-muted-ink">{r.label}</p>
-      <a href={client.rating.url} rel="noopener" target="_blank" class="flex w-fit items-end gap-5">
+      <a href={client.rating.url} rel="noopener" target="_blank" class="lift flex w-fit items-end gap-5">
         <span class="display text-[6.5rem] leading-[0.85] text-brass-deep md:text-[9rem]">{client.rating.value.toFixed(1)}</span>
         <span class="flex flex-col gap-2 pb-2">
           <Stars class="text-brass-deep" size={14} />
