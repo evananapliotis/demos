@@ -1,6 +1,6 @@
 import type { ImageMetadata } from 'astro';
 
-export interface Service { name: string; price: string; note?: string }
+export interface Service { name: string; /** Omit to show the service name only. */ price?: string; note?: string }
 export interface Barber { name: string; line: string }
 export interface Review { author: string; rating: number; text: string; badge?: string }
 export interface Hours { days: string; open?: string; close?: string; closed?: boolean }
@@ -23,6 +23,8 @@ export interface Client {
   palette?: Record<string, string>;
   /** Button style. 'premium' = pill radius, layered shadow, sheen sweep on the primary CTA. Default keeps the square buttons. */
   buttons?: 'default' | 'premium';
+  /** schema.org priceRange. Omit for the template default (££); null to leave it out of the JSON-LD. */
+  priceRange?: string | null;
   hero: Photo & { label: string; line: string; cta: string; /** Optional CSS font-size for the h1, e.g. a clamp(). */ titleSize?: string };
   services: { label: string; heading: string; items: Service[]; note?: string };
   team: { label: string; heading: string; members: Barber[] };

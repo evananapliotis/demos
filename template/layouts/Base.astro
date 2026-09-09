@@ -40,7 +40,7 @@ const jsonLd = {
   url: canonical,
   image: ogImage,
   telephone: client.phone.tel,
-  priceRange: '££',
+  ...(client.priceRange === null ? {} : { priceRange: client.priceRange ?? '££' }),
   address: {
     '@type': 'PostalAddress',
     streetAddress: a.street,

@@ -40,7 +40,6 @@
       "closed": true
     }
   ],
-  "hoursNote": "Walk in any time. Call or message ahead if you are cutting it fine before six.",
   "accent": "#e9ab2e",
   "palette": {
     "ink-2": "#0e0d0b",
@@ -60,52 +59,39 @@
     "cta": "Call"
   },
   "services": {
-    "label": "Services & prices",
-    "heading": "What we do, and what it costs.",
-    "note": "Walk-ins welcome. Card and cash. Closes at six.",
+    "label": "Services",
+    "heading": "What we do.",
+    "note": "Open Monday to Saturday. Closes at six.",
     "items": [
       {
-        "name": "Skin fade",
-        "price": "£20",
-        "note": "Down to the skin, blended clean, lined up to finish."
+        "name": "Skin fade"
       },
       {
-        "name": "Scissor cut",
-        "price": "£18",
-        "note": "All scissors. Shaped to how you actually wear it."
+        "name": "Scissor cut"
       },
       {
-        "name": "Beard trim",
-        "price": "£10",
-        "note": "Shaped, lined and edged, hot towel to finish."
+        "name": "Beard trim"
       },
       {
-        "name": "Kids' cut",
-        "price": "£14",
-        "note": "Under 12. Patient, quick, and they leave looking sharp."
+        "name": "Kids’ cut"
       },
       {
         "name": "Hot towel wet shave",
-        "price": "£18",
-        "note": "Cutthroat razor, hot towels, a close shave the old way."
+        "note": "Cutthroat razor, hot towel."
       },
       {
         "name": "Ear flame",
-        "price": "£6",
-        "note": "Fine ear hair singed off with a flame. Nobody else in town does it."
+        "note": "Nobody else in Ivybridge does it."
       },
       {
-        "name": "Ear & nose hair removal",
-        "price": "£5",
-        "note": "Waxed clean. Quick, and gone for weeks."
+        "name": "Ear & nose hair removal"
       }
     ]
   },
   "signature": {
     "label": "Signature · Only here",
     "heading": "Ear flame.",
-    "body": "A lit taper passed over the ear in a few quick sweeps. It takes the fine hair a razor cannot reach and leaves the edge cleaner than any trimmer. Ten seconds, a bit of theatre, and no other barber in Ivybridge offers it.",
-    "detail": "£6 · add it to any cut",
+    "body": "Fine ear hair singed away with a flame, the traditional way. No other barber in Ivybridge offers it. Ask for it with any cut.",
     "cta": "Ask for it"
   },
   "team": {
@@ -114,7 +100,7 @@
     "members": [
       {
         "name": "Saro",
-        "line": "Saro runs the chair. The reviews say it in different words: passionate about his work, a proper nice chap, professional and friendly. He reads every review and replies to each one himself. Sit down, say what you want, and he will get it right."
+        "line": "Saro runs the chair. The reviews say it in different words: passionate about his work, a proper nice chap, professional and friendly. He reads every review and replies to each one himself."
       }
     ]
   },
@@ -152,10 +138,10 @@
       },
       {
         "src": "shop-team",
-        "alt": "Saro with five lads from a local school team, one in the chair with a fresh crop, inside the shop",
+        "alt": "Saro with five lads in matching kit inside the shop, one in the chair with a fresh crop",
         "position": "50% 35%",
         "aspect": "4 / 3",
-        "caption": "The team came in together"
+        "caption": "Inside the shop"
       }
     ]
   },
@@ -187,8 +173,8 @@
     "label": "About",
     "heading": "A proper barber's on Fore Street.",
     "paragraphs": [
-      "Unique Barber is in the middle of Ivybridge, under the yellow sign on Fore Street. Wood slat walls, green leather chairs, a barber's pole out front. Saro cuts everything from a tight skin fade to a classic scissor cut, and finishes beards the old way, with a cutthroat razor and a hot towel.",
-      "Sixty-two Google reviews, a 5.0 rating, and a barber who answers every one of them. Open six days a week, nine until six. Walk in, tell him what you want, and leave looking sharp."
+      "Unique Barber is in the middle of Ivybridge, under the yellow sign on Fore Street. Wood slat walls, green leather chairs, a barber’s pole out front. Saro cuts everything from a tight skin fade to a classic scissor cut, and finishes beards the old way, with a cutthroat razor and a hot towel.",
+      "Sixty-two Google reviews, a 5.0 rating, and a barber who answers every one of them. Open Monday to Saturday, nine until six. Call or message, say what you want, and leave looking sharp."
     ]
   },
   "find": {
@@ -196,5 +182,6 @@
     "heading": "Hours and where we are.",
     "mapQuery": "Unique Barber, 35-36 Fore St, Ivybridge PL21 9AE"
   },
-  "buttons": "premium"
+  "buttons": "premium",
+  "priceRange": null
 }
