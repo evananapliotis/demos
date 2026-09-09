@@ -1,0 +1,199 @@
+{
+  "name": "Unique Barber",
+  "url": "https://unique-barber.netlify.app",
+  "area": "Ivybridge, Devon",
+  "seo": {
+    "title": "Unique Barber | Barbers in Ivybridge",
+    "description": "Barbers on Fore Street, Ivybridge. Skin fades, beard trims, hot towel wet shaves and ear flame by Saro. Rated 5.0 from 62 Google reviews. Call 07882 877121."
+  },
+  "phone": {
+    "display": "07882 877121",
+    "tel": "+447882877121",
+    "whatsapp": "447882877121"
+  },
+  "address": {
+    "street": "35–36 Fore Street",
+    "locality": "Ivybridge",
+    "region": "Devon",
+    "postcode": "PL21 9AE",
+    "country": "GB"
+  },
+  "geo": {
+    "lat": 50.389204,
+    "lng": -3.921688
+  },
+  "rating": {
+    "value": 5,
+    "count": 62,
+    "url": "https://www.google.com/maps/search/?api=1&query=Unique+Barber+35-36+Fore+St+Ivybridge+PL21+9AE",
+    "feature": true,
+    "line": "62 Google reviews.\nA perfect 5.0."
+  },
+  "hours": [
+    {
+      "days": "Mon–Sat",
+      "open": "09:00",
+      "close": "18:00"
+    },
+    {
+      "days": "Sun",
+      "closed": true
+    }
+  ],
+  "hoursNote": "Walk in any time. Call or message ahead if you are cutting it fine before six.",
+  "accent": "#e9ab2e",
+  "palette": {
+    "ink-2": "#0e0d0b",
+    "ink-blue": "#100f0d",
+    "surface": "radial-gradient(120% 55% at 50% 0%, rgb(233 171 46 / 0.05), transparent 65%), #100f0d",
+    "hero-scrim": "linear-gradient(to top, rgb(10 10 11 / 0.98) 0%, rgb(10 10 11 / 0.84) 30%, rgb(10 10 11 / 0.3) 58%, rgb(10 10 11 / 0) 80%)",
+    "hero-glow": "none",
+    "footer-line": "linear-gradient(90deg, transparent, rgb(233 171 46 / 0.55), transparent)"
+  },
+  "hero": {
+    "src": "french-crop-drop-fade",
+    "alt": "A French crop with a sharp drop fade, cut at Unique Barber in Ivybridge, seen from behind",
+    "position": "50% 18%",
+    "label": "Barbers · Fore Street, Ivybridge",
+    "line": "Sharp fades. Hot towel shaves.\nThe only ear flame in Ivybridge.",
+    "titleSize": "clamp(4.25rem, 19vw, 9.5rem)",
+    "cta": "Call"
+  },
+  "services": {
+    "label": "Services & prices",
+    "heading": "What we do, and what it costs.",
+    "note": "Walk-ins welcome. Card and cash. Closes at six.",
+    "items": [
+      {
+        "name": "Skin fade",
+        "price": "£20",
+        "note": "Down to the skin, blended clean, lined up to finish."
+      },
+      {
+        "name": "Scissor cut",
+        "price": "£18",
+        "note": "All scissors. Shaped to how you actually wear it."
+      },
+      {
+        "name": "Beard trim",
+        "price": "£10",
+        "note": "Shaped, lined and edged, hot towel to finish."
+      },
+      {
+        "name": "Kids' cut",
+        "price": "£14",
+        "note": "Under 12. Patient, quick, and they leave looking sharp."
+      },
+      {
+        "name": "Hot towel wet shave",
+        "price": "£18",
+        "note": "Cutthroat razor, hot towels, a close shave the old way."
+      },
+      {
+        "name": "Ear flame",
+        "price": "£6",
+        "note": "Fine ear hair singed off with a flame. Nobody else in town does it."
+      },
+      {
+        "name": "Ear & nose hair removal",
+        "price": "£5",
+        "note": "Waxed clean. Quick, and gone for weeks."
+      }
+    ]
+  },
+  "signature": {
+    "label": "Signature · Only here",
+    "heading": "Ear flame.",
+    "body": "A lit taper passed over the ear in a few quick sweeps. It takes the fine hair a razor cannot reach and leaves the edge cleaner than any trimmer. Ten seconds, a bit of theatre, and no other barber in Ivybridge offers it.",
+    "detail": "£6 · add it to any cut",
+    "cta": "Ask for it"
+  },
+  "team": {
+    "label": "The barber",
+    "heading": "Who is cutting.",
+    "members": [
+      {
+        "name": "Saro",
+        "line": "Saro runs the chair. The reviews say it in different words: passionate about his work, a proper nice chap, professional and friendly. He reads every review and replies to each one himself. Sit down, say what you want, and he will get it right."
+      }
+    ]
+  },
+  "gallery": {
+    "label": "The work",
+    "heading": "Recent cuts, and the shop.",
+    "photos": [
+      {
+        "src": "french-crop-drop-fade",
+        "alt": "The same French crop and drop fade, up close",
+        "position": "50% 25%",
+        "aspect": "4 / 5",
+        "caption": "French crop, drop fade"
+      },
+      {
+        "src": "textured-crop-fade",
+        "alt": "A textured crop with a low skin fade, seen from the side in a navy jacket",
+        "position": "50% 30%",
+        "aspect": "4 / 5",
+        "caption": "Textured crop, skin fade"
+      },
+      {
+        "src": "saro-chair",
+        "alt": "Saro giving a thumbs up behind a customer in the chair, in front of the wood slat wall and greenery",
+        "position": "50% 25%",
+        "aspect": "4 / 5",
+        "caption": "Saro, on the shop floor"
+      },
+      {
+        "src": "shopfront",
+        "alt": "The Unique Barber shopfront on Fore Street at sunset, with the yellow sign lit and the barber's pole turning",
+        "position": "55% 50%",
+        "aspect": "4 / 5",
+        "caption": "Fore Street, Ivybridge"
+      },
+      {
+        "src": "shop-team",
+        "alt": "Saro with five lads from a local school team, one in the chair with a fresh crop, inside the shop",
+        "position": "50% 35%",
+        "aspect": "4 / 3",
+        "caption": "The team came in together"
+      }
+    ]
+  },
+  "reviews": {
+    "label": "Reviews",
+    "heading": "Perfect, sixty-two times over.",
+    "standfirst": "Almost nobody holds a 5.0 across sixty-two Google reviews. Saro has, and he replies to every one of them.",
+    "linkText": "Read all 62 reviews on Google",
+    "items": [
+      {
+        "author": "J B",
+        "rating": 5,
+        "text": "Great service and haircut. Professional and friendly. Will be back."
+      },
+      {
+        "author": "Mark Clifton",
+        "rating": 5,
+        "badge": "Local Guide",
+        "text": "Excellent hair cut, with wet shave with cutthroat razor, ear and nose hairs removed and hot towel. Proper nice chap as well, would definitely go here again."
+      },
+      {
+        "author": "Rory Oneill",
+        "rating": 5,
+        "text": "Wow. Best barbers I've been too clean friendly and Saro Is very passionate about his work 10/10"
+      }
+    ]
+  },
+  "about": {
+    "label": "About",
+    "heading": "A proper barber's on Fore Street.",
+    "paragraphs": [
+      "Unique Barber is in the middle of Ivybridge, under the yellow sign on Fore Street. Wood slat walls, green leather chairs, a barber's pole out front. Saro cuts everything from a tight skin fade to a classic scissor cut, and finishes beards the old way, with a cutthroat razor and a hot towel.",
+      "Sixty-two Google reviews, a 5.0 rating, and a barber who answers every one of them. Open six days a week, nine until six. Walk in, tell him what you want, and leave looking sharp."
+    ]
+  },
+  "find": {
+    "label": "Find us",
+    "heading": "Hours and where we are.",
+    "mapQuery": "Unique Barber, 35-36 Fore St, Ivybridge PL21 9AE"
+  }
+}
