@@ -1,6 +1,6 @@
 ---
 import { Image } from 'astro:assets';
-import { galleryImages } from '@/lib/client';
+import { site, galleryImages } from '@/lib/client';
 import Section from './Section.astro';
 // Asymmetric editorial grid. Pattern repeats every 5 photos.
 const spans = [
@@ -10,9 +10,10 @@ const spans = [
   'aspect-[4/5] md:col-span-3 md:aspect-[3/2]',
   'aspect-[4/5] md:col-span-3 md:aspect-[3/2]',
 ];
+const signature = site.signature ?? [];
 ---
 {
-  galleryImages.length > 0 && (
+  galleryImages.length > 0 ? (
     <Section id="gallery" number="02" eyebrow="The work" title="Fresh out of the <em class='italic text-brass font-normal'>chair.</em>" class="bg-ink-2 grain">
       <ul class="grid grid-cols-2 gap-3 md:grid-cols-6 md:gap-4" role="list">
         {galleryImages.map((g, i) => (
@@ -32,5 +33,30 @@ const spans = [
         ))}
       </ul>
     </Section>
-  )
+  ) : signature.length > 0 ? (
+    <Section id="gallery" number="02" eyebrow="Signature cuts" title="Built on the <em class='italic text-brass font-normal'>basics.</em>" class="bg-ink-2 grain">
+      <ul class="grid gap-3 sm:grid-cols-2 md:grid-cols-6 md:gap-4" role="list">
+        {signature.map((t, i) => (
+          <li
+            class={`group relative isolate flex min-h-[15rem] flex-col justify-end overflow-hidden rounded-sm border border-line bg-ink p-6 md:min-h-[18rem] md:p-8 ${
+              i === 0 ? 'md:col-span-4' : i === 1 ? 'md:col-span-2' : 'md:col-span-2'
+            }`}
+          >
+            <span
+              aria-hidden="true"
+              class="pointer-events-none absolute -right-2 -top-6 -z-10 select-none font-display text-[9rem] leading-none text-bone/[0.045] transition-colors duration-500 group-hover:text-brass/[0.08] md:text-[12rem]"
+            >
+              {String(i + 1).padStart(2, '0')}
+            </span>
+            <span class="eyebrow mb-3 text-bone-2">No. {String(i + 1).padStart(2, '0')}</span>
+            <h3 class="font-display text-3xl font-medium leading-none text-bone md:text-4xl">
+              {t.name.split(' ').slice(0, -1).join(' ')}{' '}
+              <em class="font-normal italic text-brass">{t.name.split(' ').slice(-1)}</em>
+            </h3>
+            <p class="mt-3 max-w-xs text-[0.95rem] text-bone-2">{t.line}</p>
+          </li>
+        ))}
+      </ul>
+    </Section>
+  ) : null
 }

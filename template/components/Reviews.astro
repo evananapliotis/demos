@@ -7,34 +7,22 @@ import Icons from './Icons.astro';
 const hasReviews = site.reviews.length > 0;
 ---
 <Section id="reviews" number="03" eyebrow="Reviews" title="Don't take <em class='italic text-brass font-normal'>our</em> word for it.">
-  <div class="grid gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] md:gap-16">
-    <div class="md:sticky md:top-24 md:self-start">
-      <p class="font-display text-[6rem] leading-none text-bone md:text-[8rem]">
-        {site.google.rating.toFixed(1)}
-      </p>
-      <Stars rating={site.google.rating} class="mt-2 text-brass" size={22} />
-      <p class="mt-3 flex items-center gap-2 text-bone-2">
-        <GoogleG size={18} /> from {site.google.reviewCount} Google reviews
-      </p>
-      <a
-        href={site.google.listingUrl}
-        target="_blank"
-        rel="noopener"
-        class="btn btn-ghost mt-6"
-      >
-        Read them all on Google <Icons name="arrow" size={16} />
-      </a>
-    </div>
-
-    {
-      hasReviews ? (
+  {
+    hasReviews ? (
+      <div class="grid gap-10 md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] md:gap-16">
+        <div class="md:sticky md:top-24 md:self-start">
+          <p class="font-display text-[6rem] leading-none text-bone md:text-[8rem]">{site.google.rating.toFixed(1)}</p>
+          <Stars rating={site.google.rating} class="mt-2 text-brass" size={22} />
+          <p class="mt-3 flex items-center gap-2 text-bone-2"><GoogleG size={18} /> from {site.google.reviewCount} Google reviews</p>
+          <a href={site.google.listingUrl} target="_blank" rel="noopener" class="btn btn-ghost mt-6">
+            Read them all on Google <Icons name="arrow" size={16} />
+          </a>
+        </div>
         <ul class="grid gap-4 sm:grid-cols-2" role="list">
           {site.reviews.map((r) => (
             <li class="flex flex-col rounded-sm border border-line bg-ink-2 p-6">
               <Stars rating={r.rating} class="text-brass" size={14} />
-              <blockquote class="mt-4 flex-1 text-[1.05rem] leading-relaxed text-bone">
-                <p>“{r.text}”</p>
-              </blockquote>
+              <blockquote class="mt-4 flex-1 text-[1.05rem] leading-relaxed text-bone"><p>“{r.text}”</p></blockquote>
               <footer class="mt-5 flex items-center justify-between gap-3 text-sm text-bone-2">
                 <cite class="not-italic font-semibold text-bone">{r.author}</cite>
                 <span class="inline-flex items-center gap-1.5"><GoogleG size={14} /> Google{r.date ? ` · ${r.date}` : ''}</span>
@@ -42,15 +30,25 @@ const hasReviews = site.reviews.length > 0;
             </li>
           ))}
         </ul>
-      ) : (
-        <div class="rounded-sm border border-dashed border-brass/40 bg-ink-2 p-6 text-bone-2">
-          <p class="eyebrow mb-3">Demo note</p>
-          <p>
-            Real customer reviews go here, word for word from the Google listing. Nothing is invented on this page:
-            the quotes are dropped in from the shop's listing once the owner confirms which ones to feature.
-          </p>
+      </div>
+    ) : (
+      <div class="grid items-center gap-10 border-y border-line py-12 md:grid-cols-[auto_1fr] md:gap-16 md:py-16">
+        <div class="flex items-end gap-5">
+          <p class="font-display text-[7rem] leading-[0.8] text-bone md:text-[11rem]">{site.google.rating.toFixed(1)}</p>
+          <div class="pb-2">
+            <Stars rating={site.google.rating} class="text-brass" size={22} />
+            <p class="mt-2 text-sm text-bone-2">out of 5</p>
+          </div>
         </div>
-      )
-    }
-  </div>
+        <div class="max-w-xl">
+          <p class="font-display text-2xl leading-snug text-bone md:text-3xl">
+            {site.google.reviewCount} people have rated us on Google. The average is {site.google.rating.toFixed(1)}. Read every one of them, unedited.
+          </p>
+          <a href={site.google.listingUrl} target="_blank" rel="noopener" class="btn btn-ghost mt-6">
+            <GoogleG size={18} /> See the reviews on Google <Icons name="arrow" size={16} />
+          </a>
+        </div>
+      </div>
+    )
+  }
 </Section>

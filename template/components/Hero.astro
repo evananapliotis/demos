@@ -33,9 +33,17 @@ const { hero } = Astro.props;
     <a href="#top" class="font-display text-lg font-semibold tracking-tight text-bone" aria-label={`${site.name} home`}>
       {site.name.split(' ')[0]}<span class="text-brass">.</span>
     </a>
-    <a href={`tel:${site.phone.tel}`} class="hidden items-center gap-2 text-sm font-semibold text-bone/90 hover:text-brass md:inline-flex min-h-11">
-      <Icons name="phone" size={16} /> {site.phone.display}
-    </a>
+    <ul class="hidden items-center gap-7 text-sm font-semibold text-bone/80 md:flex" role="list">
+      <li><a href="#services" class="inline-flex min-h-11 items-center hover:text-brass">Prices</a></li>
+      <li><a href="#gallery" class="inline-flex min-h-11 items-center hover:text-brass">The work</a></li>
+      <li><a href="#reviews" class="inline-flex min-h-11 items-center hover:text-brass">Reviews</a></li>
+      <li><a href="#hours" class="inline-flex min-h-11 items-center hover:text-brass">Hours</a></li>
+      <li>
+        <a href={`tel:${site.phone.tel}`} class="inline-flex min-h-11 items-center gap-2 text-bone hover:text-brass">
+          <Icons name="phone" size={16} class="text-brass" /> {site.phone.display}
+        </a>
+      </li>
+    </ul>
   </nav>
 
   <div class="relative px-5 pb-28 pt-40 sm:px-8 md:pb-20 md:pt-52 lg:px-12">
@@ -71,8 +79,37 @@ const { hero } = Astro.props;
       <p class="mt-8 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-bone-2">
         <span class="inline-flex items-center gap-1.5"><Icons name="pin" size={14} class="text-brass" /> {site.address.street}, {site.address.locality} {site.address.postcode}</span>
         <span class="hidden sm:inline text-bone/30">|</span>
-        <span>{hoursSummary()}</span>
+        <span data-hours={JSON.stringify(site.hours)}>{hoursSummary()}</span>
       </p>
     </div>
   </div>
 </header>
+
+<script>
+  // Swap the static hours line for "Open now · closes 6pm" / "Closed · opens Mon 9am".
+  const el = document.querySelector<HTMLElement>('[data-hours]');
+  if (el) {
+    const hours: Record<string, { open: string; close: string } | null> = JSON.parse(el.dataset.hours!);
+    const now = new Date();
+    const d = now.getDay();
+    const mins = now.getHours() * 60 + now.getMinutes();
+    const toMin = (t: string) => { const [h, m] = t.split(':').map(Number); return h * 60 + m; };
+    const fmt = (t: string) => { const [h, m] = t.split(':').map(Number); const s = h >= 12 ? 'pm' : 'am'; const hh = h % 12 || 12; return m ? `${hh}:${String(m).padStart(2, '0')}${s}` : `${hh}${s}`; };
+    const names = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+    const today = hours[String(d)];
+    let text = '';
+    if (today && mins >= toMin(today.open) && mins < toMin(today.close)) {
+      text = `Open now · closes ${fmt(today.close)}`;
+    } else {
+      for (let i = 0; i < 7; i++) {
+        const nd = (d + i) % 7;
+        const h = hours[String(nd)];
+        if (!h) continue;
+        if (i === 0 && mins >= toMin(h.open)) continue;
+        text = `Closed · opens ${i === 0 ? 'today' : i === 1 ? 'tomorrow' : names[nd]} ${fmt(h.open)}`;
+        break;
+      }
+    }
+    if (text) el.textContent = text;
+  }
+</script>

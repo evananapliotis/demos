@@ -15,7 +15,11 @@
     "postcode": "CV2 3LA",
     "country": "GB"
   },
-  "geo": { "lat": 52.4197, "lng": -1.4623, "approximate": true },
+  "geo": {
+    "lat": 52.4197,
+    "lng": -1.4623,
+    "approximate": true
+  },
   "google": {
     "rating": 4.8,
     "reviewCount": 54,
@@ -23,36 +27,97 @@
     "mapQuery": "Brixham Barber Shop, 33 Brixham Dr, Coventry CV2 3LA"
   },
   "hours": {
-    "1": { "open": "09:00", "close": "18:00" },
-    "2": { "open": "09:00", "close": "18:00" },
-    "3": { "open": "09:00", "close": "18:00" },
-    "4": { "open": "09:00", "close": "18:00" },
-    "5": { "open": "09:00", "close": "18:00" },
-    "6": { "open": "09:00", "close": "18:00" },
+    "1": {
+      "open": "09:00",
+      "close": "18:00"
+    },
+    "2": {
+      "open": "09:00",
+      "close": "18:00"
+    },
+    "3": {
+      "open": "09:00",
+      "close": "18:00"
+    },
+    "4": {
+      "open": "09:00",
+      "close": "18:00"
+    },
+    "5": {
+      "open": "09:00",
+      "close": "18:00"
+    },
+    "6": {
+      "open": "09:00",
+      "close": "18:00"
+    },
     "0": null
   },
-  "hoursNote": "Last chair is usually taken around 5:30pm. Call ahead if you're cutting it fine.",
+  "hoursNote": "Call ahead to hold a chair.",
   "services": [
-    { "name": "Skin fade", "price": "£18", "note": "Zero, drop or taper. Blended clean with a razor line-up." },
-    { "name": "Scissor cut", "price": "£16", "note": "Classic cut, scissor over comb, styled to finish." },
-    { "name": "Cut & beard", "price": "£25", "note": "Any haircut with a full beard shape-up." },
-    { "name": "Beard trim", "price": "£9", "note": "Shaped, lined and finished with hot towel." },
-    { "name": "Kids (under 12)", "price": "£12", "note": "Patient hands. Mon to Fri before 4pm." },
-    { "name": "Hot towel shave", "price": "£15", "note": "Straight razor, hot towels, balm to close." }
+    {
+      "name": "Skin fade",
+      "price": "£18",
+      "note": "Zero, drop or taper. Blended clean with a razor line-up."
+    },
+    {
+      "name": "Scissor cut",
+      "price": "£16",
+      "note": "Classic cut, scissor over comb, styled to finish."
+    },
+    {
+      "name": "Cut & beard",
+      "price": "£25",
+      "note": "Any haircut with a full beard shape-up."
+    },
+    {
+      "name": "Beard trim",
+      "price": "£9",
+      "note": "Shaped, lined and finished with hot towel."
+    },
+    {
+      "name": "Kids (under 12)",
+      "price": "£12",
+      "note": "Patient hands. Mon to Fri before 4pm."
+    },
+    {
+      "name": "Hot towel shave",
+      "price": "£15",
+      "note": "Straight razor, hot towels, balm to close."
+    }
   ],
-  "servicesNote": "Cash and card. Walk in, or call ahead to hold a chair.",
-  "hero": { "file": "hero.jpg", "alt": "Inside Brixham Barber Shop in Coventry" },
-  "gallery": [
-    { "file": "gallery-01.jpg", "alt": "Fresh skin fade finished at Brixham Barber Shop" },
-    { "file": "gallery-02.jpg", "alt": "Barber chair and mirror at Brixham Barber Shop" },
-    { "file": "gallery-03.jpg", "alt": "Beard trim and line-up at Brixham Barber Shop" },
-    { "file": "gallery-04.jpg", "alt": "Hot towel shave at Brixham Barber Shop" },
-    { "file": "gallery-05.jpg", "alt": "Shop front of Brixham Barber Shop on Brixham Drive" }
-  ],
+  "servicesNote": "Cash and card. Walk in, or call ahead.",
+  "hero": {
+    "file": "hero.jpg",
+    "alt": "Brixham Barber Shop, Coventry"
+  },
+  "gallery": [],
   "reviews": [],
   "about": [
     "We cut hair on Brixham Drive and we take it seriously. Fades are blended, not buzzed; scissor cuts are shaped to your head, not to a photo on a wall. If you sit in our chair, you leave looking like you meant it.",
     "You'll get the same barber, the same standard and the same straight talk every time. No upsell, no rush, no fuss. That's why the neighbourhood keeps coming back, and why fifty-odd people have left us five stars on Google."
   ],
-  "socials": []
+  "socials": [],
+  "signature": [
+    {
+      "name": "Skin fade",
+      "line": "Blended from the skin up. Tight, clean, no steps."
+    },
+    {
+      "name": "Scissor cut",
+      "line": "Shaped to the head in front of us, not a photo on the wall."
+    },
+    {
+      "name": "Beard work",
+      "line": "Lined, tapered and finished with a hot towel."
+    },
+    {
+      "name": "Hot towel shave",
+      "line": "Straight razor, two towels, balm to close."
+    },
+    {
+      "name": "Kids",
+      "line": "Patient hands and a quick chair. First cuts welcome."
+    }
+  ]
 }

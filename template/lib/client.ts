@@ -44,6 +44,8 @@ export interface Site {
   services: Service[];
   servicesNote?: string;
   gallery: Photo[];
+  /** Typographic tiles shown in place of the gallery until photos exist. */
+  signature?: { name: string; line: string }[];
   hero: Photo;
   reviews: Review[];
   about: string[]; // paragraphs
