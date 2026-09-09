@@ -1,6 +1,6 @@
 {
   "name": "Unique Barber",
-  "url": "https://unique-barber.netlify.app",
+  "url": "https://unique-barber.pages.dev",
   "area": "Ivybridge, Devon",
   "seo": {
     "title": "Unique Barber | Barbers in Ivybridge",
@@ -195,5 +195,6 @@
     "label": "Find us",
     "heading": "Hours and where we are.",
     "mapQuery": "Unique Barber, 35-36 Fore St, Ivybridge PL21 9AE"
-  }
+  },
+  "buttons": "premium"
 }

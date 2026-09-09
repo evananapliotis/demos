@@ -21,6 +21,8 @@ export interface Client {
   accent: string;
   /** Optional CSS overrides for the dark surfaces, emitted as --p-<key> on <html>: ink-2, ink-blue, surface, hero-scrim, hero-glow, footer-line. */
   palette?: Record<string, string>;
+  /** Button style. 'premium' = pill radius, layered shadow, sheen sweep on the primary CTA. Default keeps the square buttons. */
+  buttons?: 'default' | 'premium';
   hero: Photo & { label: string; line: string; cta: string; /** Optional CSS font-size for the h1, e.g. a clamp(). */ titleSize?: string };
   services: { label: string; heading: string; items: Service[]; note?: string };
   team: { label: string; heading: string; members: Barber[] };
