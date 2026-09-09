@@ -20,6 +20,17 @@ function mix(hex: string, to: number, t: number) {
   const c = [n >> 16, (n >> 8) & 255, n & 255].map((v) => Math.round(v + (to - v) * t));
   return '#' + c.map((v) => v.toString(16).padStart(2, '0')).join('');
 }
+// Text colour on top of the accent: white on a dark accent, ink on a light one (e.g. a yellow sign).
+function onAccent(hex: string) {
+  const n = parseInt(hex.slice(1), 16);
+  const lum = (0.2126 * (n >> 16) + 0.7152 * ((n >> 8) & 255) + 0.0722 * (n & 255)) / 255;
+  return lum > 0.55 ? '#0a0a0b' : '#fff';
+}
+// Optional surface overrides from site.json "palette" -> --p-<key>. Absent keys keep the template defaults.
+const paletteVars = Object.entries(client.palette ?? {}).map(([k, v]) => `--p-${k}:${v}`).join(';');
+const rootStyle = [`--accent:${client.accent}`, `--accent-ink:${accentInk}`, `--accent-deep:${accentDeep}`, `--on-accent:${onAccent(client.accent)}`, paletteVars]
+  .filter(Boolean)
+  .join(';');
 
 const jsonLd = {
   '@context': 'https://schema.org',
@@ -56,7 +67,7 @@ const jsonLd = {
 };
 ---
 <!doctype html>
-<html lang="en-GB" style={`--accent:${client.accent};--accent-ink:${accentInk};--accent-deep:${accentDeep}`}>
+<html lang="en-GB" style={rootStyle}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />

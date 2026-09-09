@@ -1,11 +1,26 @@
 ---
 import { client, telHref } from '../lib/client';
-interface Props { label?: string; class?: string; variant?: 'accent' | 'ghost' | 'paper' }
-const { label, class: cls = '', variant = 'accent' } = Astro.props;
+interface Props {
+  label?: string;
+  class?: string;
+  variant?: 'accent' | 'ghost' | 'paper';
+  /** Override the link target (defaults to tel:). */
+  href?: string;
+  /** Icon to show; 'whatsapp' pairs with a wa.me href. */
+  icon?: 'phone' | 'whatsapp';
+}
+const { label, class: cls = '', variant = 'accent', href = telHref, icon = 'phone' } = Astro.props;
+const external = href.startsWith('http');
 ---
-<a href={telHref} class:list={['btn', variant === 'ghost' && 'btn-ghost', variant === 'paper' && 'btn-paper', cls]}>
-  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
-    <path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
-  </svg>
+<a href={href} class:list={['btn', variant === 'ghost' && 'btn-ghost', variant === 'paper' && 'btn-paper', cls]} rel={external ? 'noopener' : undefined} target={external ? '_blank' : undefined}>
+  {icon === 'whatsapp' ? (
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
+      <path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 1.8a8.2 8.2 0 1 1-4.2 15.3l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 0 1 12 3.8Zm-3.3 4.4c-.2 0-.5.1-.7.3-.3.3-1 1-1 2.3s1 2.7 1.2 2.9c.1.2 2 3.1 4.9 4.2 2.4.9 2.9.8 3.4.7.5 0 1.7-.7 1.9-1.4.2-.7.2-1.2.2-1.4-.1-.1-.3-.2-.6-.3l-2-1c-.3-.1-.5-.2-.7.1l-.9 1.1c-.2.2-.3.2-.6.1-.3-.2-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6l.5-.5.3-.5c.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.3Z"/>
+    </svg>
+  ) : (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+      <path d="M5 3h4l2 5-2.5 1.5a11 11 0 0 0 6 6L16 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 5a2 2 0 0 1 2-2Z" stroke="currentColor" stroke-width="2" stroke-linejoin="round"/>
+    </svg>
+  )}
   <span>{label ?? `Call ${client.phone.display}`}</span>
 </a>

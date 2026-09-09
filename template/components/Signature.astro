@@ -1,0 +1,24 @@
+---
+/** One signature service, given its own moment: big type on the dark ground, no photo needed. Renders only when site.json has "signature". */
+import { client } from '../lib/client';
+import CallButton from './CallButton.astro';
+const sg = client.signature!;
+---
+<section class="section hairline" aria-labelledby="signature">
+  <div class="gutter md:grid md:grid-cols-12 md:items-end md:gap-x-10">
+    <div class="md:col-span-7">
+      <p class="label label-rule" data-reveal>{sg.label}</p>
+      <h2 id="signature" class="display mt-5 text-[clamp(4.5rem,24vw,13rem)] leading-[0.85] tracking-[-0.03em] text-paper" data-reveal data-reveal-delay="1">{sg.heading}</h2>
+    </div>
+    <div class="md:col-span-5 md:pb-2">
+      <div class="mt-10 h-px w-16 bg-accent md:mt-0" data-reveal aria-hidden="true"></div>
+      <p class="mt-8 max-w-[40ch] text-lg leading-relaxed text-paper/85" data-reveal data-reveal-delay="1">{sg.body}</p>
+      {sg.detail && <p class="display-wide mt-6 text-2xl text-gold-soft" data-reveal data-reveal-delay="1">{sg.detail}</p>}
+      {sg.cta && (
+        <div class="mt-10" data-reveal data-reveal-delay="2">
+          <CallButton label={sg.cta} class="w-full md:w-auto" />
+        </div>
+      )}
+    </div>
+  </div>
+</section>

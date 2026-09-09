@@ -5,6 +5,15 @@ const r = client.reviews;
 ---
 <section class="section surface-blue" aria-labelledby="reviews">
   <SectionHead id="reviews" label={r.label} heading={r.heading} />
+  {client.rating.feature && (
+    <div class="gutter mt-12 md:mt-16 md:flex md:items-end md:gap-12" data-reveal>
+      <p class="display rating-size text-paper" aria-label={`${client.rating.value} out of 5`}>{client.rating.value.toFixed(1)}</p>
+      <div class="mt-5 md:mb-2 md:mt-0">
+        <p class="text-gold text-2xl leading-none tracking-[0.2em] md:text-3xl" aria-label="Five stars">★★★★★</p>
+        {r.standfirst && <p class="mt-4 max-w-[34ch] text-lg leading-snug text-paper/85">{r.standfirst}</p>}
+      </div>
+    </div>
+  )}
   <ul class="gutter mt-14 md:mt-20 md:grid md:grid-cols-3 md:gap-x-12" role="list">
     {r.items.map((it, i) => (
       <li class="hairline py-8 md:py-0 md:border-0" data-reveal data-reveal-delay={String(i)}>

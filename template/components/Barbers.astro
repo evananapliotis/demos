@@ -8,8 +8,8 @@ const t = client.team;
   <ul class="gutter mt-14 md:mt-20 md:grid md:grid-cols-2 md:gap-x-16" role="list">
     {t.members.map((m, i) => (
       <li class="hairline py-8 md:py-10" data-reveal data-reveal-delay={String(i)}>
-        <p class="label text-accent-ink">0{i + 1}</p>
-        <h3 class="display mt-3 text-5xl md:text-6xl">{m.name}</h3>
+        {t.members.length > 1 && <p class="label text-accent-ink">0{i + 1}</p>}
+        <h3 class:list={['display text-5xl md:text-6xl', t.members.length > 1 && 'mt-3']}>{m.name}</h3>
         <p class="mt-4 max-w-[36ch] text-paper/85">{m.line}</p>
       </li>
     ))}

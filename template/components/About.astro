@@ -5,15 +5,17 @@ import SectionHead from './SectionHead.astro';
 const ab = client.about;
 ---
 <section class="hairline pt-24 md:pt-32" aria-labelledby="about">
-  <div data-reveal>
-    <Image
-      src={photo(ab.photo.src)} alt={ab.photo.alt}
-      widths={[480, 800, 1200, 1800]} sizes="100vw"
-      format="webp" quality={78} loading="lazy" decoding="async"
-      class="aspect-[4/3] w-full object-cover md:aspect-[21/9]"
-      style={`object-position:${ab.photo.position ?? '50% 50%'}`}
-    />
-  </div>
+  {ab.photo && (
+    <div data-reveal>
+      <Image
+        src={photo(ab.photo.src)} alt={ab.photo.alt}
+        widths={[480, 800, 1200, 1800]} sizes="100vw"
+        format="webp" quality={78} loading="lazy" decoding="async"
+        class="aspect-[4/3] w-full object-cover md:aspect-[21/9]"
+        style={`object-position:${ab.photo.position ?? '50% 50%'}`}
+      />
+    </div>
+  )}
   <div class="section md:grid md:grid-cols-2 md:gap-x-16">
     <SectionHead id="about" label={ab.label} heading={ab.heading} />
     <div class="gutter mt-10 space-y-6 text-paper/85 md:mt-0 md:pl-0" data-reveal data-reveal-delay="1">

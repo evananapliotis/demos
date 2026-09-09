@@ -12,20 +12,24 @@ export interface Client {
   url: string;
   area: string;
   seo: { title: string; description: string };
-  phone: { display: string; tel: string };
+  phone: { display: string; tel: string; /** WhatsApp number, digits only with country code (wa.me). Optional. */ whatsapp?: string };
   address: { street: string; locality: string; region?: string; postcode: string; country: string };
   geo: { lat: number; lng: number };
-  rating: { value: number; count: number; url: string };
+  rating: { value: number; count: number; url: string; /** Give the rating real weight in the hero and reviews (big figure + stars). */ feature?: boolean; /** One line shown next to the featured rating. */ line?: string };
   hours: Hours[];
   hoursNote?: string;
   accent: string;
-  hero: Photo & { label: string; line: string; cta: string };
+  /** Optional CSS overrides for the dark surfaces, emitted as --p-<key> on <html>: ink-2, ink-blue, surface, hero-scrim, hero-glow, footer-line. */
+  palette?: Record<string, string>;
+  hero: Photo & { label: string; line: string; cta: string; /** Optional CSS font-size for the h1, e.g. a clamp(). */ titleSize?: string };
   services: { label: string; heading: string; items: Service[]; note?: string };
   team: { label: string; heading: string; members: Barber[] };
-  offer: { label: string; big: string; heading: string; body: string; cta: string };
+  offer?: { label: string; big: string; heading: string; body: string; cta: string };
+  /** Optional full-bleed statement band for one signature service, rendered after Services. */
+  signature?: { label: string; heading: string; body: string; detail?: string; cta?: string };
   gallery: { label: string; heading: string; photos: Photo[] };
-  reviews: { label: string; heading: string; items: Review[]; linkText: string };
-  about: { label: string; heading: string; photo: Photo; paragraphs: string[] };
+  reviews: { label: string; heading: string; items: Review[]; linkText: string; /** Optional line under the featured rating figure. */ standfirst?: string };
+  about: { label: string; heading: string; photo?: Photo; paragraphs: string[] };
   find: { label: string; heading: string; mapQuery: string };
 }
 
@@ -54,6 +58,8 @@ export function photo(name: string): ImageMetadata {
 }
 
 export const telHref = `tel:${client.phone.tel}`;
+/** https://wa.me/<digits>, or undefined when the client has no WhatsApp number. */
+export const waHref = client.phone.whatsapp ? `https://wa.me/${client.phone.whatsapp.replace(/\D/g, '')}` : undefined;
 
 /** "09:00" -> "9am", "19:00" -> "7pm", "09:30" -> "9:30am". */
 export function fmtTime(t: string): string {

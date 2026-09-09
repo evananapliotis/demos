@@ -1,10 +1,10 @@
 ---
-import { client, telHref, mapsSearchUrl, fmtHours } from '../lib/client';
+import { client, telHref, waHref, mapsSearchUrl, fmtHours } from '../lib/client';
 const a = client.address;
 const year = new Date().getFullYear();
 ---
 <footer class="hairline bg-ink-2 pb-28 pt-14 md:pb-14" aria-label="Footer">
-  <div class="mx-auto mb-12 h-px w-full max-w-84 bg-[linear-gradient(90deg,transparent,rgb(142_166_255/0.6),transparent)]" aria-hidden="true"></div>
+  <div class="footer-line mx-auto mb-12 h-px w-full max-w-84" aria-hidden="true"></div>
   <div class="gutter grid gap-10 md:grid-cols-3">
     <div>
       <p class="display text-3xl uppercase">{client.name}</p>
@@ -14,6 +14,7 @@ const year = new Date().getFullYear();
       <p class="label mb-3">Find us</p>
       <a href={mapsSearchUrl()} rel="noopener" target="_blank" class="hover:text-paper text-paper/85">{a.street}, {a.locality} {a.postcode}</a><br />
       <a href={telHref} class="hover:text-paper text-paper/85">{client.phone.display}</a>
+      {waHref && <><br /><a href={waHref} rel="noopener" target="_blank" class="hover:text-paper text-paper/85">WhatsApp</a></>}
     </div>
     <div class="text-[0.9375rem] leading-relaxed text-paper/85">
       <p class="label mb-3">Hours</p>

@@ -1,20 +1,31 @@
 ---
-import { client, telHref } from '../lib/client';
+import { client, telHref, waHref } from '../lib/client';
 ---
 <div id="sticky-call" class="fixed inset-x-0 bottom-0 z-40 translate-y-full border-t border-paper/10 bg-ink/90 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] shadow-[0_-16px_40px_-12px_rgb(0_0_0/0.8)] backdrop-blur-sm transition-transform duration-300 ease-out md:hidden" aria-hidden="true">
-  <a href={telHref} class="btn w-full" tabindex="-1">
-    <span>Call {client.phone.display}</span>
-  </a>
+  {waHref ? (
+    <div class="grid grid-cols-2 gap-3">
+      <a href={telHref} class="btn btn-tight w-full" tabindex="-1">
+        <span>Call</span>
+      </a>
+      <a href={waHref} rel="noopener" target="_blank" class="btn btn-ghost btn-tight w-full" tabindex="-1">
+        <span>WhatsApp</span>
+      </a>
+    </div>
+  ) : (
+    <a href={telHref} class="btn w-full" tabindex="-1">
+      <span>Call {client.phone.display}</span>
+    </a>
+  )}
 </div>
 <script>
   const bar = document.getElementById('sticky-call');
   const hero = document.getElementById('top');
-  const link = bar?.querySelector('a');
-  if (bar && hero && link) {
+  const links = bar ? Array.from(bar.querySelectorAll('a')) : [];
+  if (bar && hero && links.length) {
     const show = (on: boolean) => {
       bar.classList.toggle('translate-y-full', !on);
       bar.setAttribute('aria-hidden', on ? 'false' : 'true');
-      link.tabIndex = on ? 0 : -1;
+      for (const link of links) link.tabIndex = on ? 0 : -1;
     };
     if ('IntersectionObserver' in window) {
       new IntersectionObserver(([e]) => show(!e.isIntersecting), { threshold: 0.05 }).observe(hero);

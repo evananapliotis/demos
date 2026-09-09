@@ -1,9 +1,10 @@
 ---
-import { client } from '../lib/client';
+import { client, waHref } from '../lib/client';
 import CallButton from './CallButton.astro';
 interface Props { img: { src: string; srcSet: string; sizes: string; width: number; height: number } }
 const { img } = Astro.props;
 const h = client.hero;
+const r = client.rating;
 ---
 <section id="top" class="relative isolate flex min-h-svh flex-col justify-end overflow-hidden" aria-labelledby="site-title">
   <img
@@ -13,21 +14,45 @@ const h = client.hero;
     class="absolute inset-0 -z-20 h-full w-full object-cover"
     style={`object-position:${h.position ?? '50% 50%'}`}
   />
-  <div class="absolute inset-0 -z-10 bg-[linear-gradient(to_top,rgb(10_10_11/0.97)_0%,rgb(11_13_24/0.78)_32%,rgb(12_17_36/0.22)_60%,rgb(10_10_11/0)_82%)]" aria-hidden="true"></div>
-  <div class="absolute inset-x-0 bottom-0 -z-10 h-72 bg-[radial-gradient(80%_100%_at_0%_100%,rgb(47_91_224/0.28),transparent_70%)]" aria-hidden="true"></div>
+  <div class="hero-scrim absolute inset-0 -z-10" aria-hidden="true"></div>
+  <div class="hero-glow absolute inset-x-0 bottom-0 -z-10 h-72" aria-hidden="true"></div>
   <div class="absolute inset-x-0 top-0 -z-10 h-28 bg-[linear-gradient(to_bottom,rgb(10_10_11/0.55),rgb(10_10_11/0))]" aria-hidden="true"></div>
 
   <div class="gutter relative pb-10 pt-40 md:pb-16">
     <p class="label label-rule mb-6">{h.label}</p>
-    <h1 id="site-title" class="display h1-size uppercase text-paper md:max-w-[12ch]">{client.name}</h1>
+    <h1 id="site-title" class="display h1-size uppercase text-paper md:max-w-[12ch]" style={h.titleSize ? `--h1-size:${h.titleSize}` : undefined}>{client.name}</h1>
     <p class="mt-6 max-w-[30ch] text-lg leading-snug text-paper/85 md:text-xl">{h.line.split('\n').map((l, i) => (<>{i > 0 && <br />}{l}</>))}</p>
 
-    <div class="mt-8 flex flex-col gap-6 md:flex-row md:items-center md:gap-10">
-      <CallButton label={`Call ${client.phone.display}`} class="w-full md:w-auto" />
-      <a href={client.rating.url} rel="noopener" target="_blank" class="inline-flex items-center gap-3 self-start rounded-full border border-paper/20 px-4 py-2 text-[0.9375rem] text-paper/85 transition-colors duration-200 hover:border-gold/60 hover:text-paper md:self-auto">
-        <span class="text-gold" aria-hidden="true">★★★★★</span>
-        <span><strong class="font-semibold text-paper">{client.rating.value}</strong> · {client.rating.count} Google reviews</span>
-      </a>
-    </div>
+    {r.feature ? (
+      <>
+        <a href={r.url} rel="noopener" target="_blank" class="group mt-9 flex items-center gap-5 self-start">
+          <span class="display text-[4.75rem] leading-[0.85] tracking-[-0.03em] text-paper md:text-[5.5rem]">{r.value.toFixed(1)}</span>
+          <span class="sr-only">out of 5 on Google. </span>
+          <span class="flex flex-col border-l border-paper/20 pl-5">
+            <span class="text-gold text-[1.375rem] leading-none tracking-[0.16em]" aria-hidden="true">★★★★★</span>
+            <span class="mt-2.5 max-w-[22ch] text-[0.9375rem] leading-snug text-paper/85 transition-colors group-hover:text-paper">{(r.line ?? `${r.count} Google reviews`).split('\n').map((l, i) => (<>{i > 0 && <br />}{l}</>))}</span>
+          </span>
+        </a>
+        <div class:list={['mt-8', waHref ? 'grid grid-cols-2 gap-3 md:flex md:gap-4' : 'flex']}>
+          <CallButton label={h.cta} class:list={[waHref ? 'btn-tight w-full md:w-auto md:px-8' : 'w-full md:w-auto']} />
+          {waHref && <CallButton label="WhatsApp" href={waHref} icon="whatsapp" variant="ghost" class="btn-tight w-full md:w-auto md:px-8" />}
+        </div>
+      </>
+    ) : (
+      <div class="mt-8 flex flex-col gap-6 md:flex-row md:items-center md:gap-10">
+        {waHref ? (
+          <div class="grid grid-cols-2 gap-3 md:flex md:gap-4">
+            <CallButton label="Call" class="btn-tight w-full md:w-auto md:px-8" />
+            <CallButton label="WhatsApp" href={waHref} icon="whatsapp" variant="ghost" class="btn-tight w-full md:w-auto md:px-8" />
+          </div>
+        ) : (
+          <CallButton label={`Call ${client.phone.display}`} class="w-full md:w-auto" />
+        )}
+        <a href={r.url} rel="noopener" target="_blank" class="inline-flex items-center gap-3 self-start rounded-full border border-paper/20 px-4 py-2 text-[0.9375rem] text-paper/85 transition-colors duration-200 hover:border-gold/60 hover:text-paper md:self-auto">
+          <span class="text-gold" aria-hidden="true">★★★★★</span>
+          <span><strong class="font-semibold text-paper">{r.value}</strong> · {r.count} Google reviews</span>
+        </a>
+      </div>
+    )}
   </div>
 </section>
