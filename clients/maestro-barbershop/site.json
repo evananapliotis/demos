@@ -1,0 +1,92 @@
+{
+  "name": "Maestro Barbershop",
+  "url": "https://maestro-barbershop.netlify.app",
+  "area": "Luton",
+  "seo": {
+    "title": "Maestro Barbershop | Barbers in Luton",
+    "description": "Barbers on New Bedford Road, Luton. Skin fades, scissor cuts, beard trims and hot towel shaves by Hamza and Rupesh. Rated 4.7 on Google. Students 20% off on Tuesdays. Call 01582 966060."
+  },
+  "phone": { "display": "01582 966060", "tel": "+441582966060" },
+  "address": { "street": "19 New Bedford Rd", "locality": "Luton", "postcode": "LU1 1SA", "country": "GB" },
+  "geo": { "lat": 51.8823, "lng": -0.4205 },
+  "rating": {
+    "value": 4.7,
+    "count": 66,
+    "url": "https://www.google.com/maps/search/?api=1&query=Maestro+Barbershop+19+New+Bedford+Rd+Luton+LU1+1SA"
+  },
+  "hours": [
+    { "days": "Mon–Sat", "open": "09:00", "close": "19:00" },
+    { "days": "Sun", "closed": true }
+  ],
+  "hoursNote": "Walk in any time. Call ahead if you are cutting it fine.",
+  "accent": "#2f5be0",
+  "hero": {
+    "src": "textured-quiff-fade",
+    "alt": "A high skin fade with a textured quiff, cut at Maestro Barbershop in Luton",
+    "position": "68% 28%",
+    "label": "Barbers · New Bedford Road, Luton",
+    "line": "Clean fades. Sharp beards.\nHot towel to finish.",
+    "cta": "Call the shop"
+  },
+  "services": {
+    "label": "Services & prices",
+    "heading": "What we do, and what it costs.",
+    "note": "Walk-ins welcome. Card and cash.",
+    "items": [
+      { "name": "Skin fade", "price": "£18", "note": "Taken down to the skin and blended clean. Lined up to finish." },
+      { "name": "Scissor cut", "price": "£16", "note": "All scissors. Shaped to how you actually wear it." },
+      { "name": "Beard trim", "price": "£8", "note": "Shaped, lined and edged. Hot towel included." },
+      { "name": "Kids' cut", "price": "£13", "note": "Under 12. Patient, quick, and they leave looking sharp." },
+      { "name": "Hot towel shave", "price": "£15", "note": "Face steam, hot towels, a close shave. Feels like a new man afterwards." },
+      { "name": "Cut & beard", "price": "£24", "note": "Any cut above with a beard trim." }
+    ]
+  },
+  "team": {
+    "label": "The barbers",
+    "heading": "Two chairs. Two names people ask for.",
+    "members": [
+      { "name": "Hamza", "line": "Regulars have been sitting in his chair since 2015. Professional, consistent, and the reason people drive across Luton." },
+      { "name": "Rupesh", "line": "Highly skilled and quick with it. In, cut properly, out. No wasted time." }
+    ]
+  },
+  "offer": {
+    "label": "Student discount",
+    "big": "20% off",
+    "heading": "Students. Tuesdays.",
+    "body": "Bring your student ID any Tuesday and take 20% off any cut on the list. Ten minutes' walk from the University of Bedfordshire, open until 7pm, so it fits around lectures.",
+    "cta": "Call to check the queue"
+  },
+  "gallery": {
+    "label": "The work",
+    "heading": "Recent cuts.",
+    "photos": [
+      { "src": "slick-back-fade", "alt": "Low skin fade with a slicked back top, seen from behind", "position": "50% 40%", "caption": "Low skin fade, slicked back" },
+      { "src": "kids-crop", "alt": "A boy with a fresh textured crop and mid fade, in front of the Maestro Barbershop wall print", "position": "50% 30%", "caption": "Textured crop, mid fade" },
+      { "src": "interior", "alt": "Inside Maestro Barbershop: three black chairs, mirrors and a barber at work", "position": "50% 60%", "aspect": "4 / 3", "caption": "The shop floor" }
+    ]
+  },
+  "reviews": {
+    "label": "Reviews",
+    "heading": "Rated 4.7 from 66 reviews.",
+    "linkText": "Read all 66 reviews on Google",
+    "items": [
+      { "author": "Ismail Mohammed", "rating": 5, "text": "Thanks Hamza for good & professional hair cut. I been with Hamza cutting from 2015, Recommended." },
+      { "author": "Lucas Nowak", "rating": 5, "badge": "Local Guide", "text": "Best cut Ive got in a long time, both gentlemen Hamza and Rupesh are highly skilled and time efficient. Definitely suggest how towels and face steam, felt like a new man afterwards! Thank you guys" },
+      { "author": "Bilal Majeed", "rating": 5, "badge": "Local Guide", "text": "One of the best hairdresser in Luton. Neat and clean place." }
+    ]
+  },
+  "about": {
+    "label": "About",
+    "heading": "A proper barbershop on New Bedford Road.",
+    "photo": { "src": "shopfront", "alt": "Maestro Barbershop shopfront at 19 New Bedford Road, Luton, with the blue sign and the door open", "position": "50% 25%" },
+    "paragraphs": [
+      "Maestro is a small shop a few minutes' walk from the town centre. Hamza and Rupesh cut everything from a tight skin fade to a classic scissor cut, and finish beards the old way, with face steam and a hot towel.",
+      "Neat, clean and well lit, with a 4.7 rating from 66 Google reviews and regulars who have been coming for years. Come in, tell us what you want, and leave looking sharp."
+    ]
+  },
+  "find": {
+    "label": "Find us",
+    "heading": "Hours and where we are.",
+    "mapQuery": "Maestro Barbershop, 19 New Bedford Rd, Luton LU1 1SA"
+  }
+}
