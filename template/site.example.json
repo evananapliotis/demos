@@ -1,0 +1,38 @@
+{
+  "name": "Business Name",
+  "slug": "business-name",
+  "url": "https://business-name.netlify.app",
+  "tagline": "One-line hook. What you do, where you are, why it's good.",
+  "description": "Meta description, ~150 chars: business, services, town, rating, phone.",
+  "phone": { "display": "07000 000000", "tel": "+447000000000", "whatsapp": "447000000000" },
+  "address": { "street": "1 High Street", "locality": "Town", "postcode": "AA1 1AA", "country": "GB" },
+  "geo": { "lat": 52.4068, "lng": -1.5197, "approximate": true },
+  "google": {
+    "rating": 5.0,
+    "reviewCount": 0,
+    "listingUrl": "https://www.google.com/maps/search/?api=1&query=Business+Name+1+High+Street+Town+AA1+1AA",
+    "mapQuery": "Business Name, 1 High Street, Town AA1 1AA"
+  },
+  "hours": {
+    "1": { "open": "09:00", "close": "18:00" },
+    "2": { "open": "09:00", "close": "18:00" },
+    "3": { "open": "09:00", "close": "18:00" },
+    "4": { "open": "09:00", "close": "18:00" },
+    "5": { "open": "09:00", "close": "18:00" },
+    "6": { "open": "09:00", "close": "18:00" },
+    "0": null
+  },
+  "hoursNote": "",
+  "services": [
+    { "name": "Service one", "price": "£00", "note": "Short description." }
+  ],
+  "servicesNote": "",
+  "hero": { "file": "hero.jpg", "alt": "Describe the hero photo" },
+  "gallery": [],
+  "reviews": [],
+  "about": [
+    "First paragraph in the owner's voice.",
+    "Second paragraph."
+  ],
+  "socials": []
+}

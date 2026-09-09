@@ -1,0 +1,78 @@
+---
+import type { GetImageResult } from 'astro';
+import { site, hoursSummary } from '@/lib/client';
+import Icons from './Icons.astro';
+import Stars from './Stars.astro';
+
+interface Props {
+  /** Pre-computed via getImage() in the page so the <head> preload and this <img> share URLs. */
+  hero: GetImageResult | null;
+}
+const { hero } = Astro.props;
+---
+<header class="relative isolate min-h-[100svh] flex flex-col justify-end overflow-hidden bg-ink">
+  {
+    hero && (
+      <img
+        src={hero.src}
+        srcset={hero.srcSet.attribute}
+        sizes="100vw"
+        width={hero.attributes.width}
+        height={hero.attributes.height}
+        alt={site.hero.alt}
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+        class="absolute inset-0 -z-20 h-full w-full object-cover object-center"
+      />
+    )
+  }
+  <div class="absolute inset-0 -z-10 bg-[linear-gradient(to_top,rgb(11_10_8)_0%,rgb(11_10_8/0.85)_28%,rgb(11_10_8/0.35)_60%,rgb(11_10_8/0.55)_100%)]"></div>
+
+  <nav class="absolute inset-x-0 top-0 flex items-center justify-between px-5 py-5 sm:px-8" aria-label="Primary">
+    <a href="#top" class="font-display text-lg font-semibold tracking-tight text-bone" aria-label={`${site.name} home`}>
+      {site.name.split(' ')[0]}<span class="text-brass">.</span>
+    </a>
+    <a href={`tel:${site.phone.tel}`} class="hidden items-center gap-2 text-sm font-semibold text-bone/90 hover:text-brass md:inline-flex min-h-11">
+      <Icons name="phone" size={16} /> {site.phone.display}
+    </a>
+  </nav>
+
+  <div class="relative px-5 pb-28 pt-40 sm:px-8 md:pb-20 md:pt-52 lg:px-12">
+    <div class="mx-auto max-w-6xl">
+      <a
+        href={site.google.listingUrl}
+        target="_blank"
+        rel="noopener"
+        class="mb-6 inline-flex min-h-11 items-center gap-2 rounded-full border border-bone/25 bg-ink/50 px-4 py-2 text-sm font-semibold text-bone backdrop-blur-sm hover:border-brass"
+      >
+        <span class="text-brass">{site.google.rating.toFixed(1)}</span>
+        <Stars rating={site.google.rating} class="text-brass" size={13} />
+        <span class="text-bone/60">·</span>
+        <span>{site.google.reviewCount} Google reviews</span>
+      </a>
+
+      <h1 class="font-display text-[clamp(3.4rem,15vw,9.5rem)] leading-[0.88] text-bone">
+        {site.name.replace(/ Barber Shop$/i, '')}<br />
+        <span class="italic font-normal text-brass">Barber Shop</span>
+      </h1>
+
+      <p class="mt-6 max-w-xl text-lg text-bone/85 sm:text-xl md:text-2xl md:leading-snug">{site.tagline}</p>
+
+      <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+        <a href={`tel:${site.phone.tel}`} class="btn btn-brass">
+          <Icons name="phone" size={18} /> Call {site.phone.display}
+        </a>
+        <a href={`https://wa.me/${site.phone.whatsapp}`} target="_blank" rel="noopener" class="btn btn-ghost">
+          <Icons name="whatsapp" size={18} /> WhatsApp us
+        </a>
+      </div>
+
+      <p class="mt-8 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-bone-2">
+        <span class="inline-flex items-center gap-1.5"><Icons name="pin" size={14} class="text-brass" /> {site.address.street}, {site.address.locality} {site.address.postcode}</span>
+        <span class="hidden sm:inline text-bone/30">|</span>
+        <span>{hoursSummary()}</span>
+      </p>
+    </div>
+  </div>
+</header>

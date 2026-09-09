@@ -1,0 +1,39 @@
+---
+import { getImage } from 'astro:assets';
+import Base from '@/layouts/Base.astro';
+import { site, heroImage } from '@/lib/client';
+import Hero from '@/components/Hero.astro';
+import Services from '@/components/Services.astro';
+import Gallery from '@/components/Gallery.astro';
+import Reviews from '@/components/Reviews.astro';
+import About from '@/components/About.astro';
+import Hours from '@/components/Hours.astro';
+import Footer from '@/components/Footer.astro';
+import StickyBar from '@/components/StickyBar.astro';
+
+const title = `${site.name} | Barbers in ${site.address.locality}`;
+// Same transform as the <Image> in Hero so the preload hits the same URLs.
+const hero = heroImage
+  ? await getImage({
+      src: heroImage,
+      widths: [480, 768, 1080, 1440, 1920],
+      sizes: '100vw',
+      layout: 'full-width',
+      format: 'webp',
+      quality: 72,
+    })
+  : null;
+---
+<Base title={title} description={site.description} hero={hero}>
+  <div id="top"></div>
+  <Hero hero={hero} />
+  <main id="main">
+    <Services />
+    <Gallery />
+    <Reviews />
+    <About />
+    <Hours />
+  </main>
+  <Footer />
+  <StickyBar />
+</Base>

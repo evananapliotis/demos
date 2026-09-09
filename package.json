@@ -1,0 +1,33 @@
+{
+  "name": "demos",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "description": "Reusable Astro + Tailwind single-page site template for local businesses. One template, many clients.",
+  "scripts": {
+    "new": "node scripts/new.mjs",
+    "dev": "node scripts/dev.mjs",
+    "build": "node scripts/build.mjs",
+    "preview": "astro preview",
+    "deploy": "node scripts/deploy.mjs",
+    "check": "astro check",
+    "verify": "node scripts/verify.mjs",
+    "lighthouse": "node scripts/lighthouse.mjs",
+    "placeholders": "node scripts/placeholders.mjs"
+  },
+  "dependencies": {
+    "@fontsource-variable/fraunces": "^5.3.0",
+    "@fontsource-variable/instrument-sans": "^5.3.0",
+    "@tailwindcss/vite": "^4.1.0",
+    "astro": "^5.18.2",
+    "sharp": "^0.34.0",
+    "tailwindcss": "^4.1.0"
+  },
+  "devDependencies": {
+    "lighthouse": "^13.4.1",
+    "playwright-core": "^1.63.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

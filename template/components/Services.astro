@@ -1,0 +1,21 @@
+---
+import { site } from '@/lib/client';
+import Section from './Section.astro';
+---
+<Section id="services" number="01" eyebrow="Services & prices" title="What we <em class='italic text-brass font-normal'>charge.</em>">
+  <ul class="divide-y divide-line border-y border-line" role="list">
+    {
+      site.services.map((s) => (
+        <li class="py-5 md:py-6">
+          <div class="flex items-baseline">
+            <h3 class="font-display text-2xl font-medium leading-tight text-bone md:text-3xl">{s.name}</h3>
+            <span class="leader" aria-hidden="true" />
+            <span class="font-display text-2xl font-semibold tabular-nums text-brass md:text-3xl">{s.price}</span>
+          </div>
+          {s.note && <p class="mt-1.5 max-w-lg text-[0.95rem] text-bone-2 md:text-base">{s.note}</p>}
+        </li>
+      ))
+    }
+  </ul>
+  {site.servicesNote && <p class="mt-6 text-sm text-bone-2">{site.servicesNote}</p>}
+</Section>

@@ -1,0 +1,120 @@
+---
+import '@/styles/global.css';
+import { site, fullAddress, openingHoursSpec } from '@/lib/client';
+import type { GetImageResult } from 'astro';
+
+interface Props {
+  title: string;
+  description: string;
+  /** Hero image result from getImage(); used for preload + og:image. */
+  hero?: GetImageResult | null;
+}
+const { title, description, hero } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site).href.replace(/\/$/, '') || Astro.site;
+const ogImage = hero ? new URL(hero.src, Astro.site).href : undefined;
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'HairSalon',
+  additionalType: 'https://en.wikipedia.org/wiki/Barbershop',
+  '@id': `${Astro.site}#business`,
+  name: site.name,
+  url: Astro.site,
+  telephone: site.phone.tel,
+  description,
+  image: ogImage,
+  priceRange: '££',
+  address: {
+    '@type': 'PostalAddress',
+    streetAddress: site.address.street,
+    addressLocality: site.address.locality,
+    postalCode: site.address.postcode,
+    addressCountry: site.address.country,
+  },
+  ...(site.geo
+    ? { geo: { '@type': 'GeoCoordinates', latitude: site.geo.lat, longitude: site.geo.lng } }
+    : {}),
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    ratingValue: site.google.rating,
+    reviewCount: site.google.reviewCount,
+    bestRating: 5,
+    worstRating: 1,
+  },
+  openingHoursSpecification: openingHoursSpec(),
+  hasMap: site.google.listingUrl,
+  sameAs: [site.google.listingUrl, ...(site.socials ?? []).map((s) => s.url)],
+  ...(site.reviews.length
+    ? {
+        review: site.reviews.map((r) => ({
+          '@type': 'Review',
+          author: { '@type': 'Person', name: r.author },
+          reviewRating: { '@type': 'Rating', ratingValue: r.rating, bestRating: 5 },
+          reviewBody: r.text,
+          ...(r.date ? { datePublished: r.date } : {}),
+        })),
+      }
+    : {}),
+};
+---
+
+<!doctype html>
+<html lang="en-GB" class="bg-ink">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="theme-color" content="#0b0a08" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="robots" content="index,follow" />
+
+    {/* Preload the hero so the LCP image starts fetching before CSS parses. */}
+    {
+      hero && (
+        <link
+          rel="preload"
+          as="image"
+          href={hero.src}
+          imagesrcset={hero.srcSet.attribute}
+          imagesizes={hero.attributes.sizes}
+          fetchpriority="high"
+        />
+      )
+    }
+
+    <meta property="og:type" content="business.business" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:locale" content="en_GB" />
+    {ogImage && <meta property="og:image" content={ogImage} />}
+    {ogImage && <meta property="og:image:alt" content={site.hero.alt} />}
+    <meta property="business:contact_data:street_address" content={site.address.street} />
+    <meta property="business:contact_data:locality" content={site.address.locality} />
+    <meta property="business:contact_data:postal_code" content={site.address.postcode} />
+    <meta property="business:contact_data:country_name" content="United Kingdom" />
+    <meta property="business:contact_data:phone_number" content={site.phone.tel} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    {ogImage && <meta name="twitter:image" content={ogImage} />}
+    {ogImage && <meta name="twitter:image:alt" content={site.hero.alt} />}
+    <meta name="geo.placename" content={fullAddress} />
+    <meta name="geo.region" content="GB-COV" />
+
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </head>
+  <body class="bg-ink text-bone antialiased">
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:rounded-full focus:bg-brass focus:px-4 focus:py-3 focus:text-ink"
+      >Skip to content</a
+    >
+    <slot />
+  </body>
+</html>

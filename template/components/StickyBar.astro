@@ -1,0 +1,16 @@
+---
+import { site } from '@/lib/client';
+import Icons from './Icons.astro';
+---
+<div
+  class="fixed inset-x-0 bottom-0 z-50 grid grid-cols-2 gap-2 border-t border-line bg-ink/90 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur md:hidden"
+  role="region"
+  aria-label="Quick contact"
+>
+  <a href={`tel:${site.phone.tel}`} class="btn btn-brass min-h-12 text-base">
+    <Icons name="phone" size={18} /> Call
+  </a>
+  <a href={`https://wa.me/${site.phone.whatsapp}`} target="_blank" rel="noopener" class="btn btn-ghost min-h-12 text-base">
+    <Icons name="whatsapp" size={18} /> WhatsApp
+  </a>
+</div>

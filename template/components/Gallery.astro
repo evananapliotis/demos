@@ -1,0 +1,36 @@
+---
+import { Image } from 'astro:assets';
+import { galleryImages } from '@/lib/client';
+import Section from './Section.astro';
+// Asymmetric editorial grid. Pattern repeats every 5 photos.
+const spans = [
+  'col-span-2 aspect-[4/3] md:col-span-4 md:row-span-2', // big
+  'aspect-[4/5] md:col-span-2 md:aspect-[4/3]',
+  'aspect-[4/5] md:col-span-2 md:aspect-[4/3]',
+  'aspect-[4/5] md:col-span-3 md:aspect-[3/2]',
+  'aspect-[4/5] md:col-span-3 md:aspect-[3/2]',
+];
+---
+{
+  galleryImages.length > 0 && (
+    <Section id="gallery" number="02" eyebrow="The work" title="Fresh out of the <em class='italic text-brass font-normal'>chair.</em>" class="bg-ink-2 grain">
+      <ul class="grid grid-cols-2 gap-3 md:grid-cols-6 md:gap-4" role="list">
+        {galleryImages.map((g, i) => (
+          <li class={`overflow-hidden rounded-sm bg-ink-3 ${spans[i % spans.length]}`}>
+            <Image
+              src={g.image}
+              alt={g.alt}
+              widths={[360, 640, 960, 1280]}
+              sizes="(min-width: 768px) 50vw, 100vw"
+              format="webp"
+              quality={74}
+              loading="lazy"
+              decoding="async"
+              class="h-full w-full object-cover transition-transform duration-500 hover:scale-[1.02]"
+            />
+          </li>
+        ))}
+      </ul>
+    </Section>
+  )
+}
