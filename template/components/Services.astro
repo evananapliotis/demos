@@ -1,21 +1,36 @@
 ---
 import { site } from '@/lib/client';
 import Section from './Section.astro';
+import Icons from './Icons.astro';
+const anyPrice = site.services.some((s) => s.price);
 ---
-<Section id="services" number="01" eyebrow="Services & prices" title="What we <em class='italic text-brass font-normal'>charge.</em>">
-  <ul class="divide-y divide-line border-y border-line" role="list">
+<Section id="services" number="01" eyebrow="Services" title="What we <em class='italic text-brass font-normal'>do.</em>">
+  <ol class="border-t border-line" role="list">
     {
-      site.services.map((s) => (
-        <li class="py-5 md:py-6">
-          <div class="flex items-baseline">
-            <h3 class="font-display text-2xl font-medium leading-tight text-bone md:text-3xl">{s.name}</h3>
-            <span class="leader" aria-hidden="true" />
-            <span class="font-display text-2xl font-semibold tabular-nums text-brass md:text-3xl">{s.price}</span>
+      site.services.map((s, i) => (
+        <li class="group border-b border-line" data-reveal style={`transition-delay:${i * 60}ms`}>
+          <div class="grid grid-cols-[2.75rem_1fr_auto] items-baseline gap-x-3 py-6 md:grid-cols-[4rem_1fr_auto] md:py-8">
+            <span class="eyebrow tabular-nums tracking-[0.06em] text-bone-2">{String(i + 1).padStart(2, '0')}</span>
+            <div>
+              <h3 class="font-display text-[2rem] font-medium leading-[1] text-bone transition-colors duration-300 group-hover:text-brass md:text-5xl">
+                {s.name}
+              </h3>
+              {s.note && <p class="mt-2 max-w-md text-[0.95rem] text-bone-2 md:mt-3 md:text-base">{s.note}</p>}
+            </div>
+            {s.price ? (
+              <span class="font-display text-2xl font-semibold tabular-nums text-brass md:text-3xl">{s.price}</span>
+            ) : (
+              <span class="hidden text-brass md:block" aria-hidden="true"><Icons name="arrow" size={22} /></span>
+            )}
           </div>
-          {s.note && <p class="mt-1.5 max-w-lg text-[0.95rem] text-bone-2 md:text-base">{s.note}</p>}
         </li>
       ))
     }
-  </ul>
-  {site.servicesNote && <p class="mt-6 text-sm text-bone-2">{site.servicesNote}</p>}
+  </ol>
+  <div class="mt-8 flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between" data-reveal>
+    {site.servicesNote && <p class="max-w-md text-bone-2">{site.servicesNote}</p>}
+    {!anyPrice && (
+      <a href={`tel:${site.phone.tel}`} class="btn btn-brass sm:shrink-0"><Icons name="phone" size={18} /> Ask about prices</a>
+    )}
+  </div>
 </Section>

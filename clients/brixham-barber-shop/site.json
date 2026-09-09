@@ -2,7 +2,7 @@
   "name": "Brixham Barber Shop",
   "slug": "brixham-barber-shop",
   "url": "https://brixham-barber-shop.netlify.app",
-  "tagline": "Sharp fades, proper scissor work and a straight-razor finish. Brixham Drive, Coventry.",
+  "tagline": "Sharp fades, proper scissor work and a straight-razor finish on Brixham Drive.",
   "description": "Brixham Barber Shop, 33 Brixham Dr, Coventry CV2 3LA. Skin fades, scissor cuts, beard trims and hot towel shaves. Rated 4.8 from 54 Google reviews. Call 07941 128633.",
   "phone": {
     "display": "07941 128633",
@@ -57,36 +57,30 @@
   "services": [
     {
       "name": "Skin fade",
-      "price": "£18",
-      "note": "Zero, drop or taper. Blended clean with a razor line-up."
+      "note": "Zero, drop or taper. Blended from the skin up with a razor line."
     },
     {
       "name": "Scissor cut",
-      "price": "£16",
-      "note": "Classic cut, scissor over comb, styled to finish."
+      "note": "Scissor over comb, shaped to your head, styled to finish."
     },
     {
       "name": "Cut & beard",
-      "price": "£25",
-      "note": "Any haircut with a full beard shape-up."
+      "note": "Any cut with a full beard shape-up and hot towel."
     },
     {
       "name": "Beard trim",
-      "price": "£9",
-      "note": "Shaped, lined and finished with hot towel."
-    },
-    {
-      "name": "Kids (under 12)",
-      "price": "£12",
-      "note": "Patient hands. Mon to Fri before 4pm."
+      "note": "Lined, tapered, finished with a hot towel and oil."
     },
     {
       "name": "Hot towel shave",
-      "price": "£15",
-      "note": "Straight razor, hot towels, balm to close."
+      "note": "Straight razor, two towels, balm to close."
+    },
+    {
+      "name": "Kids",
+      "note": "Patient hands and a quick chair. First cuts welcome."
     }
   ],
-  "servicesNote": "Cash and card. Walk in, or call ahead.",
+  "servicesNote": "Prices in shop. Cash and card. Walk in, or call ahead to hold a chair.",
   "hero": {
     "file": "hero.jpg",
     "alt": "Brixham Barber Shop, Coventry"
@@ -102,5 +96,13 @@
     "line": "Walk in.",
     "accent": "Walk out sharp.",
     "sub": "Same barber, same standard, every time."
-  }
+  },
+  "marquee": [
+    "Skin fades",
+    "Scissor cuts",
+    "Beard work",
+    "Hot towel shaves",
+    "Walk-ins welcome",
+    "Brixham Drive, Coventry"
+  ]
 }

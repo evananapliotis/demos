@@ -4,8 +4,8 @@ const { id, number, eyebrow, title, class: cls = '', intro } = Astro.props;
 ---
 <section id={id} class={`scroll-mt-16 px-5 py-20 sm:px-8 md:py-28 lg:px-12 ${cls}`} aria-labelledby={`${id}-title`}>
   <div class="mx-auto max-w-6xl">
-    <div class="mb-10 grid gap-4 md:mb-14 md:grid-cols-[auto_1fr] md:items-end md:gap-10">
-      <p class="eyebrow flex items-center gap-3"><span class="text-bone-2">{number}</span> {eyebrow}</p>
+    <div class="mb-10 grid gap-4 md:mb-14 md:grid-cols-[auto_1fr] md:items-end md:gap-10" data-reveal>
+      <p class="eyebrow flex items-center gap-3"><span class="tracking-[0.06em] text-bone-2">{number}</span> {eyebrow}</p>
       <h2 id={`${id}-title`} class="font-display text-[clamp(2.6rem,9vw,5.5rem)] text-bone" set:html={title} />
     </div>
     {intro && <p class="-mt-4 mb-10 max-w-2xl text-lg text-bone-2 md:-mt-8 md:mb-14">{intro}</p>}

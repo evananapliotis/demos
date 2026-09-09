@@ -1,0 +1,22 @@
+---
+import { site } from '@/lib/client';
+const words = site.marquee ?? [];
+---
+{
+  words.length > 0 && (
+    <div class="overflow-hidden border-y border-brass/30 bg-brass text-ink" aria-hidden="true">
+      <div class="marquee-track py-3 font-display text-xl font-medium italic tracking-tight md:py-3.5 md:text-2xl">
+        {[0, 1].map(() => (
+          <div class="flex shrink-0 items-center">
+            {words.map((w) => (
+              <span class="flex items-center">
+                <span class="px-5">{w}</span>
+                <span class="h-1.5 w-1.5 rounded-full bg-ink/70" />
+              </span>
+            ))}
+          </div>
+        ))}
+      </div>
+    </div>
+  )
+}

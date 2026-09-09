@@ -26,7 +26,8 @@
   "services": [
     { "name": "Service one", "price": "£00", "note": "Short description." }
   ],
-  "servicesNote": "",
+  "servicesNote": "Prices in shop.",
+  "marquee": ["Service one", "Service two", "Walk-ins welcome"],
   "hero": { "file": "hero.jpg", "alt": "Describe the hero photo" },
   "gallery": [],
   "reviews": [],

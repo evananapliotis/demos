@@ -10,6 +10,7 @@ import About from '@/components/About.astro';
 import Hours from '@/components/Hours.astro';
 import Footer from '@/components/Footer.astro';
 import StickyBar from '@/components/StickyBar.astro';
+import Marquee from '@/components/Marquee.astro';
 
 const title = `${site.name} | Barbers in ${site.address.locality}`;
 // Same transform as the <Image> in Hero so the preload hits the same URLs.
@@ -25,8 +26,8 @@ const hero = heroImage
   : null;
 ---
 <Base title={title} description={site.description} hero={hero}>
-  <div id="top"></div>
   <Hero hero={hero} />
+  <Marquee />
   <main id="main">
     <Services />
     <Gallery />

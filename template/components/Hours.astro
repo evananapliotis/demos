@@ -4,7 +4,6 @@ import Section from './Section.astro';
 import Icons from './Icons.astro';
 const rows = hoursRows();
 const mapSrc = `https://www.google.com/maps?q=${encodeURIComponent(site.google.mapQuery)}&z=16&output=embed`;
-const today = new Date().getDay();
 ---
 <Section id="hours" number="05" eyebrow="Hours & where" title="Find <em class='italic text-brass font-normal'>us.</em>">
   <div class="grid gap-10 md:grid-cols-2 md:gap-16">
@@ -14,8 +13,10 @@ const today = new Date().getDay();
         <caption class="sr-only">Opening hours for {site.name}</caption>
         <tbody>
           {rows.map((r) => (
-            <tr class="border-t border-line last:border-b">
-              <th scope="row" class="py-3 pr-4 text-left font-medium text-bone">{r.day}</th>
+            <tr class="border-t border-line last:border-b data-[today]:text-brass" data-day={r.day}>
+              <th scope="row" class="py-3 pr-4 text-left font-medium">
+                {r.day}<span class="hidden data-[today]:inline eyebrow ml-3 align-middle" data-today-label>Today</span>
+              </th>
               <td class={`py-3 text-right tabular-nums ${r.closed ? 'text-bone-2' : 'text-bone'}`}>
                 {r.closed ? 'Closed' : `${fmt(r.open!)} – ${fmt(r.close!)}`}
               </td>
@@ -54,3 +55,12 @@ const today = new Date().getDay();
     </div>
   </div>
 </Section>
+
+<script>
+  const name = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'][new Date().getDay()];
+  const row = document.querySelector<HTMLElement>(`tr[data-day="${name}"]`);
+  if (row) {
+    row.dataset.today = '';
+    row.querySelector<HTMLElement>('[data-today-label]')?.classList.remove('hidden');
+  }
+</script>

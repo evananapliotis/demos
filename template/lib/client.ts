@@ -7,7 +7,8 @@ import type { ImageMetadata } from 'astro';
 
 export interface Service {
   name: string;
-  price: string;
+  /** Optional. Leave out to show names only ("Prices in shop"). */
+  price?: string;
   note?: string;
 }
 export interface Review {
@@ -43,6 +44,8 @@ export interface Site {
   hoursNote?: string;
   services: Service[];
   servicesNote?: string;
+  /** Words for the scrolling brass strip under the hero. */
+  marquee?: string[];
   gallery: Photo[];
   /** Full-bleed statement band shown in place of the gallery until photos exist. */
   statement?: { line: string; accent: string; sub?: string };

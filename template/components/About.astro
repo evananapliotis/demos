@@ -4,12 +4,12 @@ import Section from './Section.astro';
 import Icons from './Icons.astro';
 ---
 <Section id="about" number="04" eyebrow="About the shop" title="Cut properly, <em class='italic text-brass font-normal'>every</em> time." class="bg-ink-2 grain">
-  <div class="grid gap-8 md:grid-cols-2 md:gap-16">
+  <div class="grid gap-8 md:grid-cols-2 md:gap-16" data-reveal>
     {site.about.map((p, i) => (
       <p class={`text-lg leading-relaxed text-bone/90 md:text-xl ${i === 0 ? 'first-letter:font-display first-letter:text-6xl first-letter:font-semibold first-letter:text-brass first-letter:float-left first-letter:mr-3 first-letter:leading-[0.8]' : ''}`}>{p}</p>
     ))}
   </div>
-  <div class="mt-10 flex flex-col gap-3 sm:flex-row">
+  <div class="mt-10 flex flex-col gap-3 sm:flex-row" data-reveal>
     <a href={`tel:${site.phone.tel}`} class="btn btn-brass"><Icons name="phone" size={18} /> Call to book</a>
     <a href={`https://wa.me/${site.phone.whatsapp}`} target="_blank" rel="noopener" class="btn btn-ghost"><Icons name="whatsapp" size={18} /> Message on WhatsApp</a>
   </div>
