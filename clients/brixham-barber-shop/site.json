@@ -1,0 +1,58 @@
+{
+  "name": "Brixham Barber Shop",
+  "slug": "brixham-barber-shop",
+  "url": "https://brixham-barber-shop.netlify.app",
+  "tagline": "Sharp fades, proper scissor work and a straight-razor finish. Brixham Drive, Coventry.",
+  "description": "Brixham Barber Shop, 33 Brixham Dr, Coventry CV2 3LA. Skin fades, scissor cuts, beard trims and hot towel shaves. Rated 4.8 from 54 Google reviews. Call 07941 128633.",
+  "phone": {
+    "display": "07941 128633",
+    "tel": "+447941128633",
+    "whatsapp": "447941128633"
+  },
+  "address": {
+    "street": "33 Brixham Dr",
+    "locality": "Coventry",
+    "postcode": "CV2 3LA",
+    "country": "GB"
+  },
+  "geo": { "lat": 52.4197, "lng": -1.4623, "approximate": true },
+  "google": {
+    "rating": 4.8,
+    "reviewCount": 54,
+    "listingUrl": "https://www.google.com/maps/search/?api=1&query=Brixham+Barber+Shop%2C+33+Brixham+Dr%2C+Coventry+CV2+3LA",
+    "mapQuery": "Brixham Barber Shop, 33 Brixham Dr, Coventry CV2 3LA"
+  },
+  "hours": {
+    "1": { "open": "09:00", "close": "18:00" },
+    "2": { "open": "09:00", "close": "18:00" },
+    "3": { "open": "09:00", "close": "18:00" },
+    "4": { "open": "09:00", "close": "18:00" },
+    "5": { "open": "09:00", "close": "18:00" },
+    "6": { "open": "09:00", "close": "18:00" },
+    "0": null
+  },
+  "hoursNote": "Last chair is usually taken around 5:30pm. Call ahead if you're cutting it fine.",
+  "services": [
+    { "name": "Skin fade", "price": "£18", "note": "Zero, drop or taper. Blended clean with a razor line-up." },
+    { "name": "Scissor cut", "price": "£16", "note": "Classic cut, scissor over comb, styled to finish." },
+    { "name": "Cut & beard", "price": "£25", "note": "Any haircut with a full beard shape-up." },
+    { "name": "Beard trim", "price": "£9", "note": "Shaped, lined and finished with hot towel." },
+    { "name": "Kids (under 12)", "price": "£12", "note": "Patient hands. Mon to Fri before 4pm." },
+    { "name": "Hot towel shave", "price": "£15", "note": "Straight razor, hot towels, balm to close." }
+  ],
+  "servicesNote": "Cash and card. Walk in, or call ahead to hold a chair.",
+  "hero": { "file": "hero.jpg", "alt": "Inside Brixham Barber Shop in Coventry" },
+  "gallery": [
+    { "file": "gallery-01.jpg", "alt": "Fresh skin fade finished at Brixham Barber Shop" },
+    { "file": "gallery-02.jpg", "alt": "Barber chair and mirror at Brixham Barber Shop" },
+    { "file": "gallery-03.jpg", "alt": "Beard trim and line-up at Brixham Barber Shop" },
+    { "file": "gallery-04.jpg", "alt": "Hot towel shave at Brixham Barber Shop" },
+    { "file": "gallery-05.jpg", "alt": "Shop front of Brixham Barber Shop on Brixham Drive" }
+  ],
+  "reviews": [],
+  "about": [
+    "We cut hair on Brixham Drive and we take it seriously. Fades are blended, not buzzed; scissor cuts are shaped to your head, not to a photo on a wall. If you sit in our chair, you leave looking like you meant it.",
+    "You'll get the same barber, the same standard and the same straight talk every time. No upsell, no rush, no fuss. That's why the neighbourhood keeps coming back, and why fifty-odd people have left us five stars on Google."
+  ],
+  "socials": []
+}
