@@ -35,11 +35,12 @@ Without `NETLIFY_AUTH_TOKEN` it writes `<slug>.zip` at the repo root, which drop
    - `address`, `geo` (lat/lng from Google Maps), `rating` (value, count, the listing URL).
    - `hours` – confirm with the owner. `days` takes `Mon–Sat` style ranges.
    - `accent` – one colour lifted from their signage.
+   - `intro` – one editorial sentence shown under the hero, with an optional gold `highlight`.
    - `hero` – `src` is a photo file name without extension. `position` is CSS object-position; keep faces in frame at 390px wide. A `\n` in `line` forces a line break.
-   - `services.items` – real prices if you have them, typical local prices if not (flag them to the owner).
+   - `services.items` – names and one-line notes. Leave `price` out unless the owner has confirmed it; the menu then reads "prices agreed in the chair" (`pricingLabel` / `pricingNote`).
    - `team.members` – one line each, drawn from what reviews actually say.
    - `offer` – their real promotion, or delete the `<Offer />` line in `template/pages/index.astro`.
-   - `gallery.photos`, `reviews.items` (verbatim, never invented), `about.paragraphs`, `find.mapQuery`.
+   - `gallery.photos` (`span: 2` makes a photo full width; the first review becomes the big pull quote), `reviews.items` (verbatim, never invented), `about.paragraphs`, `find.mapQuery`, `sticky` (two short lines beside the mobile Call button).
 4. `npm run dev -- <slug>` and look at it at 390px wide first. Check every face is in frame.
 5. `npm run build -- <slug>` then Lighthouse it against `npm run preview -- <slug>` (mobile, all four ≥ 90).
 6. `npm run deploy -- <slug>`.

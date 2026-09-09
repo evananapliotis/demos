@@ -2,23 +2,39 @@
 import { client } from '../lib/client';
 import SectionHead from './SectionHead.astro';
 const r = client.reviews;
+const [lead, ...rest] = r.items;
 ---
 <section class="section surface-blue" aria-labelledby="reviews">
-  <SectionHead id="reviews" label={r.label} heading={r.heading} />
-  <ul class="gutter mt-14 md:mt-20 md:grid md:grid-cols-3 md:gap-x-12" role="list">
-    {r.items.map((it, i) => (
-      <li class="hairline py-8 md:py-0 md:border-0" data-reveal data-reveal-delay={String(i)}>
+  <div class="gutter md:flex md:items-end md:justify-between md:gap-10">
+    <SectionHead id="reviews" label={r.label} heading={r.heading} bare />
+    <p class="mt-6 flex items-baseline gap-3 md:mt-0 md:pb-2" data-reveal>
+      <span class="display text-5xl text-gold-soft md:text-6xl">{client.rating.value}</span>
+      <span class="text-sm text-paper/70">from {client.rating.count} Google reviews</span>
+    </p>
+  </div>
+
+  {lead && (
+    <figure class="gutter mt-14 md:mt-20" data-reveal>
+      <p class="text-gold tracking-[0.2em]" aria-label={`${lead.rating} out of 5 stars`}>{'★'.repeat(lead.rating)}</p>
+      <blockquote class="display-wide mt-5 max-w-[26ch] text-[1.75rem] leading-[1.18] text-paper md:text-[2.75rem]">
+        <p>“{lead.text}”</p>
+      </blockquote>
+      <figcaption class="mt-6 text-sm text-muted"><span class="font-semibold text-paper/90">{lead.author}</span>{lead.badge && <span> · {lead.badge}</span>}</figcaption>
+    </figure>
+  )}
+
+  <ul class="gutter mt-14 md:mt-20 md:grid md:grid-cols-2 md:gap-x-12" role="list">
+    {rest.map((it, i) => (
+      <li class="hairline py-8 md:py-10" data-reveal data-reveal-delay={String(i)}>
         <p class="text-gold tracking-[0.2em]" aria-label={`${it.rating} out of 5 stars`}>{'★'.repeat(it.rating)}</p>
-        <blockquote class="display-wide mt-4 text-[1.375rem] leading-[1.3] text-paper md:text-2xl">
+        <blockquote class="mt-4 text-[1.0625rem] leading-relaxed text-paper/90">
           <p>“{it.text}”</p>
         </blockquote>
-        <p class="mt-5 text-sm text-muted">
-          <span class="font-semibold text-paper/90">{it.author}</span>{it.badge && <span> · {it.badge}</span>}
-        </p>
+        <p class="mt-5 text-sm text-muted"><span class="font-semibold text-paper/90">{it.author}</span>{it.badge && <span> · {it.badge}</span>}</p>
       </li>
     ))}
   </ul>
-  <p class="gutter mt-10 md:mt-16" data-reveal>
+  <p class="gutter mt-6 md:mt-10" data-reveal>
     <a href={client.rating.url} rel="noopener" target="_blank" class="btn btn-ghost w-full md:w-auto">{r.linkText}</a>
   </p>
 </section>

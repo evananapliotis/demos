@@ -2,6 +2,7 @@
 import { getImage } from 'astro:assets';
 import Base from '../layouts/Base.astro';
 import Hero from '../components/Hero.astro';
+import Intro from '../components/Intro.astro';
 import Services from '../components/Services.astro';
 import Barbers from '../components/Barbers.astro';
 import Offer from '../components/Offer.astro';
@@ -34,6 +35,7 @@ const heroImg = {
 <Base hero={heroImg} ogImage={ogImage}>
   <main id="main">
     <Hero img={heroImg} />
+    <Intro />
     <Services />
     <Barbers />
     <Offer />

@@ -1,0 +1,11 @@
+---
+import { client } from '../lib/client';
+const intro = client.intro;
+---
+{intro && (
+  <section class="gutter pt-24 pb-6 md:pt-32 md:pb-10" aria-label="Introduction">
+    <p class="display-wide max-w-[30ch] text-[1.75rem] leading-[1.22] text-paper md:text-[2.75rem]" data-reveal>
+      {intro.text}{intro.highlight && <>{' '}<span class="text-gold-soft">{intro.highlight}</span></>}
+    </p>
+  </section>
+)}

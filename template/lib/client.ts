@@ -1,10 +1,10 @@
 import type { ImageMetadata } from 'astro';
 
-export interface Service { name: string; price: string; note?: string }
+export interface Service { name: string; price?: string; note?: string }
 export interface Barber { name: string; line: string }
 export interface Review { author: string; rating: number; text: string; badge?: string }
 export interface Hours { days: string; open?: string; close?: string; closed?: boolean }
-export interface Photo { src: string; alt: string; position?: string; caption?: string; /** CSS aspect-ratio for the gallery, e.g. "4 / 3" */ aspect?: string }
+export interface Photo { src: string; alt: string; position?: string; caption?: string; /** CSS aspect-ratio for the gallery, e.g. "4 / 3" */ aspect?: string; /** Gallery columns to span (1 or 2) */ span?: 1 | 2 }
 
 export interface Client {
   slug: string;
@@ -20,13 +20,15 @@ export interface Client {
   hoursNote?: string;
   accent: string;
   hero: Photo & { label: string; line: string; cta: string };
-  services: { label: string; heading: string; items: Service[]; note?: string };
+  intro?: { text: string; highlight?: string };
+  services: { label: string; heading: string; intro?: string; pricingLabel?: string; pricingNote?: string; items: Service[] };
   team: { label: string; heading: string; members: Barber[] };
   offer: { label: string; big: string; heading: string; body: string; cta: string };
   gallery: { label: string; heading: string; photos: Photo[] };
   reviews: { label: string; heading: string; items: Review[]; linkText: string };
   about: { label: string; heading: string; photo: Photo; paragraphs: string[] };
   find: { label: string; heading: string; mapQuery: string };
+  sticky?: { line1?: string; line2?: string };
 }
 
 const slug = process.env.CLIENT;

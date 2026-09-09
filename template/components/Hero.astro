@@ -1,5 +1,5 @@
 ---
-import { client } from '../lib/client';
+import { client, telHref } from '../lib/client';
 import CallButton from './CallButton.astro';
 interface Props { img: { src: string; srcSet: string; sizes: string; width: number; height: number } }
 const { img } = Astro.props;
@@ -16,6 +16,13 @@ const h = client.hero;
   <div class="absolute inset-0 -z-10 bg-[linear-gradient(to_top,rgb(10_10_11/0.97)_0%,rgb(11_13_24/0.78)_32%,rgb(12_17_36/0.22)_60%,rgb(10_10_11/0)_82%)]" aria-hidden="true"></div>
   <div class="absolute inset-x-0 bottom-0 -z-10 h-72 bg-[radial-gradient(80%_100%_at_0%_100%,rgb(47_91_224/0.28),transparent_70%)]" aria-hidden="true"></div>
   <div class="absolute inset-x-0 top-0 -z-10 h-28 bg-[linear-gradient(to_bottom,rgb(10_10_11/0.55),rgb(10_10_11/0))]" aria-hidden="true"></div>
+
+  <div class="absolute inset-x-0 top-0 z-10">
+    <div class="gutter flex items-center justify-between py-5 text-paper/90">
+      <span class="display text-lg uppercase tracking-[0.06em]">{client.name.split(' ')[0]}</span>
+      <a href={telHref} class="text-sm font-medium tracking-wide text-paper/80 transition-colors hover:text-paper">{client.phone.display}</a>
+    </div>
+  </div>
 
   <div class="gutter relative pb-10 pt-40 md:pb-16">
     <p class="label label-rule mb-6">{h.label}</p>
