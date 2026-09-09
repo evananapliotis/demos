@@ -34,7 +34,7 @@
 }
 
 @layer base {
-  html { background: var(--color-ink); color: var(--color-paper); scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  html { background: var(--color-ink); color: var(--color-paper); scroll-behavior: smooth; scroll-padding-top: 1rem; -webkit-text-size-adjust: 100%; }
   @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
   body {
     font-family: var(--font-body);
@@ -103,9 +103,9 @@
 @utility section { padding-block: 6rem; }
 @utility gutter { padding-inline: 1.5rem; max-width: 84rem; margin-inline: auto; }
 @utility btn {
-  position: relative; isolation: isolate;
+  position: relative; isolation: isolate; overflow: hidden;
   display: inline-flex; align-items: center; justify-content: center; gap: 0.75rem;
-  min-height: 3.75rem; padding-inline: 2rem;
+  min-height: 3.75rem; padding-inline: 2.25rem; border-radius: 9999px;
   color: #fff;
   background: linear-gradient(180deg, color-mix(in srgb, var(--color-accent) 84%, white) 0%, var(--color-accent) 45%, var(--color-accent-deep) 100%);
   box-shadow:
@@ -114,7 +114,7 @@
     0 12px 32px -12px color-mix(in srgb, var(--color-accent) 75%, transparent);
   font-family: var(--font-body); font-size: 0.9375rem; font-weight: 600; letter-spacing: 0.04em;
   text-decoration: none; user-select: none; cursor: pointer;
-  transition: transform 180ms cubic-bezier(.2,.7,.2,1), box-shadow 260ms ease, filter 180ms ease;
+  transition: transform 320ms cubic-bezier(.34,1.56,.64,1), box-shadow 300ms ease, filter 180ms ease;
   will-change: transform;
 }
 @utility btn-ghost {
@@ -135,7 +135,65 @@
 .btn-paper:active { filter: brightness(0.97); }
 .btn svg { transition: transform 180ms ease; }
 .btn:hover svg { transform: rotate(-12deg) scale(1.08); }
-@media (prefers-reduced-motion: reduce) { .btn, .btn-ghost { transition: none; } .btn:hover, .btn-ghost:hover { transform: none; } }
+/* Light sweep across the button face on hover. */
+.btn::after {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background: linear-gradient(115deg, transparent 35%, rgb(255 255 255 / 0.22) 50%, transparent 65%);
+  transform: translateX(-130%); transition: transform 0s;
+}
+.btn:hover::after { transform: translateX(130%); transition: transform 720ms cubic-bezier(.2,.7,.2,1); }
+.btn-paper::after { background: linear-gradient(115deg, transparent 35%, rgb(255 255 255 / 0.7) 50%, transparent 65%); }
+.btn:active { transform: translateY(0) scale(0.96); transition-duration: 90ms; }
+/* Touch ripple, injected by the layout script. */
+.btn .ripple {
+  position: absolute; z-index: -1; pointer-events: none; border-radius: 9999px;
+  width: 12px; height: 12px; margin: -6px 0 0 -6px;
+  background: rgb(255 255 255 / 0.35);
+  animation: ripple 620ms cubic-bezier(.2,.7,.2,1) forwards;
+}
+.btn-paper .ripple { background: rgb(47 91 224 / 0.22); }
+.btn-ghost .ripple { background: rgb(236 231 223 / 0.18); }
+@keyframes ripple { to { transform: scale(28); opacity: 0; } }
+:focus-visible.btn { outline-offset: 4px; }
+
+/* Hero entrance: the photo settles in, the words rise. */
+.hero-img { animation: hero-settle 6s cubic-bezier(.2,.6,.2,1) both; transform-origin: 60% 40%; }
+@keyframes hero-settle { from { transform: scale(1.07); } to { transform: scale(1); } }
+.hero-in > * { animation: rise 900ms cubic-bezier(.2,.65,.2,1) both; }
+.hero-in > :nth-child(1) { animation-delay: 120ms; }
+.hero-in > :nth-child(2) { animation-delay: 220ms; }
+.hero-in > :nth-child(3) { animation-delay: 340ms; }
+.hero-in > :nth-child(4) { animation-delay: 460ms; }
+@keyframes rise { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
+
+/* Menu rows respond to the pointer. */
+.menu-row { transition: background-color 260ms ease; }
+.menu-row h3, .menu-row .idx { transition: transform 360ms cubic-bezier(.2,.7,.2,1), color 260ms ease; }
+@media (hover: hover) {
+  .menu-row:hover h3 { transform: translateX(0.5rem); }
+  .menu-row:hover .idx { color: var(--color-gold-soft); transform: translateX(0.25rem); }
+}
+
+/* Text links: underline draws in from the left. */
+.link { background: linear-gradient(currentColor, currentColor) no-repeat 0 100% / 0 1px; transition: background-size 320ms cubic-bezier(.2,.7,.2,1), color 200ms ease; padding-bottom: 2px; }
+.link:hover { background-size: 100% 1px; }
+
+/* Slow light drifting over the signage-blue block. */
+.surface-accent { position: relative; overflow: hidden; }
+.surface-accent::before {
+  content: ""; position: absolute; inset: -20%; z-index: 0; pointer-events: none;
+  background: radial-gradient(40% 50% at 30% 40%, rgb(255 255 255 / 0.14), transparent 70%);
+  animation: drift 16s ease-in-out infinite alternate;
+}
+.surface-accent > * { position: relative; z-index: 1; }
+@keyframes drift { from { transform: translate(-6%, -4%); } to { transform: translate(10%, 8%); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .btn, .btn-ghost, .menu-row h3, .menu-row .idx { transition: none; }
+  .btn:hover, .btn-ghost:hover, .menu-row:hover h3, .menu-row:hover .idx { transform: none; }
+  .btn::after, .btn .ripple, .surface-accent::before { animation: none; display: none; }
+  .hero-img, .hero-in > * { animation: none; }
+}
 
 /* Photos: gentle lift on hover for pointer devices only. */
 @media (hover: hover) {

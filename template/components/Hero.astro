@@ -10,7 +10,7 @@ const h = client.hero;
     src={img.src} srcset={img.srcSet} sizes={img.sizes}
     width={img.width} height={img.height}
     alt={h.alt} loading="eager" fetchpriority="high" decoding="sync"
-    class="absolute inset-0 -z-20 h-full w-full object-cover"
+    class="hero-img absolute inset-0 -z-20 h-full w-full object-cover"
     style={`object-position:${h.position ?? '50% 50%'}`}
   />
   <div class="absolute inset-0 -z-10 bg-[linear-gradient(to_top,rgb(10_10_11/0.97)_0%,rgb(11_13_24/0.78)_32%,rgb(12_17_36/0.22)_60%,rgb(10_10_11/0)_82%)]" aria-hidden="true"></div>
@@ -19,19 +19,19 @@ const h = client.hero;
 
   <div class="absolute inset-x-0 top-0 z-10">
     <div class="gutter flex items-center justify-between py-5 text-paper/90">
-      <span class="display text-lg uppercase tracking-[0.06em]">{client.name.split(' ')[0]}</span>
-      <a href={telHref} class="text-sm font-medium tracking-wide text-paper/80 transition-colors hover:text-paper">{client.phone.display}</a>
+      <a href="#top" class="display text-lg uppercase tracking-[0.06em] transition-opacity hover:opacity-80" title="Back to top">{client.name.split(' ')[0]}</a>
+      <a href={telHref} class="link text-sm font-medium tracking-wide text-paper/80 hover:text-paper">{client.phone.display}</a>
     </div>
   </div>
 
-  <div class="gutter relative pb-10 pt-40 md:pb-16">
+  <div class="hero-in gutter relative pb-10 pt-40 md:pb-16">
     <p class="label label-rule mb-6">{h.label}</p>
     <h1 id="site-title" class="display h1-size uppercase text-paper md:max-w-[12ch]">{client.name}</h1>
     <p class="mt-6 max-w-[30ch] text-lg leading-snug text-paper/85 md:text-xl">{h.line.split('\n').map((l, i) => (<>{i > 0 && <br />}{l}</>))}</p>
 
     <div class="mt-8 flex flex-col gap-6 md:flex-row md:items-center md:gap-10">
       <CallButton label={`Call ${client.phone.display}`} class="w-full md:w-auto" />
-      <a href={client.rating.url} rel="noopener" target="_blank" class="inline-flex items-center gap-3 self-start rounded-full border border-paper/20 px-4 py-2 text-[0.9375rem] text-paper/85 transition-colors duration-200 hover:border-gold/60 hover:text-paper md:self-auto">
+      <a href={client.rating.url} rel="noopener" target="_blank" class="inline-flex items-center gap-3 self-start rounded-full border border-paper/20 px-4 py-2.5 text-[0.9375rem] text-paper/85 transition-[border-color,background-color,transform,color] duration-300 hover:-translate-y-0.5 hover:border-gold/60 hover:bg-paper/5 hover:text-paper active:translate-y-0 md:self-auto">
         <span class="text-gold" aria-hidden="true">★★★★★</span>
         <span><strong class="font-semibold text-paper">{client.rating.value}</strong> · {client.rating.count} Google reviews</span>
       </a>
