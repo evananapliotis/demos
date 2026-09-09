@@ -37,8 +37,8 @@ reports/             lighthouse + screenshot output from the last run
    `null` = closed), `services` with prices, `hero.alt`, `gallery[]` with alt text.
 4. **Reviews** — paste real reviews from the Google listing into `reviews[]` (author, rating, text,
    date). Never invent one; leave the array empty and the section becomes a rating band with a link.
-   No photos yet? Leave `gallery` empty and fill `signature[]` (name + one line) to get typographic
-   tiles instead of a gallery; run `npm run placeholders -- <slug>` for a hero backdrop.
+   No photos yet? Leave `gallery` empty and set `statement` (line, accent, sub) to get a full-bleed
+   editorial band instead of a gallery; run `npm run placeholders -- <slug>` for a hero backdrop.
 5. **Copy** — `tagline` (one line), `description` (meta, ~150 chars), `about` (two short paragraphs
    in the owner's voice). Optional `hoursNote`, `servicesNote`, `socials`.
 6. **Geo** — set `geo.lat/lng` from the Google listing (right-click the pin → copy coordinates) and

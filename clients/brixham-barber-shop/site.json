@@ -98,26 +98,9 @@
     "You'll get the same barber, the same standard and the same straight talk every time. No upsell, no rush, no fuss. That's why the neighbourhood keeps coming back, and why fifty-odd people have left us five stars on Google."
   ],
   "socials": [],
-  "signature": [
-    {
-      "name": "Skin fade",
-      "line": "Blended from the skin up. Tight, clean, no steps."
-    },
-    {
-      "name": "Scissor cut",
-      "line": "Shaped to the head in front of us, not a photo on the wall."
-    },
-    {
-      "name": "Beard work",
-      "line": "Lined, tapered and finished with a hot towel."
-    },
-    {
-      "name": "Hot towel shave",
-      "line": "Straight razor, two towels, balm to close."
-    },
-    {
-      "name": "Kids",
-      "line": "Patient hands and a quick chair. First cuts welcome."
-    }
-  ]
+  "statement": {
+    "line": "Walk in.",
+    "accent": "Walk out sharp.",
+    "sub": "Same barber, same standard, every time."
+  }
 }
