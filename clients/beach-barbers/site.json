@@ -1,0 +1,171 @@
+{
+  "name": "The Beach Barbers",
+  "url": "https://beach-barbers.pages.dev",
+  "area": "Blackpool",
+  "seo": {
+    "title": "The Beach Barbers | Barbers in Blackpool",
+    "description": "Barbers at 128 Highfield Road, Blackpool. Skin fades, scissor cuts, beard trims and the Kurdish hot towel shave. Walk in Mon–Sat 9am–6pm, or call 07398 989866."
+  },
+  "phone": {
+    "display": "07398 989866",
+    "tel": "+447398989866"
+  },
+  "address": {
+    "street": "128 Highfield Rd",
+    "locality": "Blackpool",
+    "postcode": "FY4 2JG",
+    "country": "GB"
+  },
+  "geo": {
+    "lat": 53.7862,
+    "lng": -3.0415
+  },
+  "rating": {
+    "value": 4.8,
+    "count": 60,
+    "url": "https://www.google.com/maps/search/?api=1&query=The+Beach+Barbers+128+Highfield+Rd+Blackpool+FY4+2JG"
+  },
+  "hours": [
+    {
+      "days": "Mon–Sat",
+      "open": "09:00",
+      "close": "18:00"
+    },
+    {
+      "days": "Sun",
+      "closed": true
+    }
+  ],
+  "hoursNote": "Walk in any time. Last cut goes in the chair before 6pm.",
+  "accent": "#d42027",
+  "hero": {
+    "src": "hero",
+    "alt": "Kurdish Hot Towel Shave, the strapline from The Beach Barbers sign on Highfield Road, Blackpool, in white on black with red rules",
+    "position": "50% 42%",
+    "label": "Barbers · Highfield Road, Blackpool",
+    "line": "Sharp cuts. Proper beards.\nThe Kurdish hot towel shave.",
+    "cta": "Call the shop"
+  },
+  "intro": {
+    "text": "A Kurdish barbers on Highfield Road, South Shore. No booking, no fuss, and every cut finished with a hot towel.",
+    "highlight": "Open six days until 6pm."
+  },
+  "services": {
+    "label": "The menu",
+    "heading": "What we do.",
+    "intro": "Sit down, say what you want, and the barber takes it from there. Fades, scissor work, beards and the shave the sign is famous for.",
+    "pricingLabel": "Prices agreed in the chair",
+    "pricingNote": "Your barber quotes the price before the first snip, so there are no surprises at the till.",
+    "items": [
+      {
+        "name": "Skin fade",
+        "note": "Taken down clean and blended tight. Lined up to finish."
+      },
+      {
+        "name": "Scissor cut",
+        "note": "All scissors, shaped to how you actually wear it."
+      },
+      {
+        "name": "Beard trim",
+        "note": "Shaped, lined and edged. Hot towel included."
+      },
+      {
+        "name": "Kurdish hot towel shave",
+        "note": "Steam, hot towels, a straight razor and a cold towel to close. The one on the sign."
+      },
+      {
+        "name": "Head shave",
+        "note": "Down to the skin, with a hot towel to settle it."
+      },
+      {
+        "name": "Cut & beard",
+        "note": "Any cut on the list with the beard done to match."
+      }
+    ]
+  },
+  "team": {
+    "label": "The barbers",
+    "heading": "The names people ask for.",
+    "members": [
+      {
+        "name": "Nik",
+        "line": "Knowledgeable and chatty, in the words of the reviews. The perfect combination if you like a barber who talks you through it."
+      },
+      {
+        "name": "Lucas",
+        "line": "The newer chair, and already the reason first-timers come back. Treated nicely, cut properly."
+      }
+    ]
+  },
+  "offer": {
+    "label": "The signature",
+    "big": "Kurdish",
+    "heading": "Hot towel shave.",
+    "body": "It is on the sign for a reason. Hot towels to open the skin, a straight razor taken slowly, then a cold towel and balm to close it down. Twenty minutes in the chair and you walk out on Highfield Road feeling brand new.",
+    "cta": "Call to book a shave"
+  },
+  "gallery": {
+    "label": "The work",
+    "heading": "Recent cuts.",
+    "photos": [
+      {
+        "src": "cut-1",
+        "alt": "Photo slot for a recent cut at The Beach Barbers, Blackpool",
+        "position": "50% 40%"
+      },
+      {
+        "src": "cut-2",
+        "alt": "Photo slot for a recent cut at The Beach Barbers, Blackpool",
+        "position": "50% 40%"
+      },
+      {
+        "src": "interior",
+        "alt": "Photo slot for the inside of The Beach Barbers on Highfield Road",
+        "position": "50% 50%",
+        "span": 2,
+        "caption": "The shop floor"
+      }
+    ]
+  },
+  "reviews": {
+    "label": "Reviews",
+    "heading": "What Blackpool says.",
+    "linkText": "Read all reviews on Google",
+    "items": [
+      {
+        "author": "Verified client",
+        "rating": 5,
+        "badge": "via Fresha",
+        "text": "Nik is a brilliant barber, knowledgeable and chatty, perfect combination!"
+      },
+      {
+        "author": "Verified client",
+        "rating": 5,
+        "badge": "via Fresha",
+        "text": "Had my first haircut by Lucas and it was the best experience ever and I would recommend going to this barbers, treated nicely and best experience ever"
+      }
+    ]
+  },
+  "about": {
+    "label": "About",
+    "heading": "A proper barbers on Highfield Road.",
+    "photo": {
+      "src": "shopfront",
+      "alt": "Photo slot for The Beach Barbers shopfront at 128 Highfield Road, Blackpool",
+      "position": "50% 30%"
+    },
+    "paragraphs": [
+      "The Beach Barbers is a Kurdish barbershop at 128 Highfield Road, South Shore, a short walk from the Pleasure Beach end of town. Skin fades, scissor cuts and beards, all finished the old way with steam and a hot towel.",
+      "Sports on the telly while you wait, a clean shop, and barbers who ask what you want and then do exactly that. Walk in Monday to Saturday until 6pm."
+    ]
+  },
+  "find": {
+    "label": "Find us",
+    "heading": "Hours and where we are.",
+    "mapQuery": "The Beach Barbers, 128 Highfield Rd, Blackpool FY4 2JG"
+  },
+  "sticky": {
+    "line1": "Walk-ins welcome",
+    "line2": "Mon–Sat until 6pm"
+  }
+}
