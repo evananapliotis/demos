@@ -4,7 +4,7 @@ import SectionHead from './SectionHead.astro';
 const f = client.find;
 const a = client.address;
 ---
-<section class="section hairline" aria-labelledby="find">
+<section class="section surface-blue" aria-labelledby="find">
   <SectionHead id="find" label={f.label} heading={f.heading} />
   <div class="gutter mt-14 md:mt-20 md:grid md:grid-cols-2 md:gap-x-16">
     <div data-reveal>
@@ -24,10 +24,10 @@ const a = client.address;
       <address class="display-wide mt-4 text-2xl not-italic leading-[1.25]">
         {a.street}<br />{a.locality} {a.postcode}
       </address>
-      <p class="mt-5 flex flex-wrap gap-x-8 gap-y-2 text-[0.9375rem]">
-        <a href={mapsSearchUrl()} rel="noopener" target="_blank" class="border-b border-paper/40 pb-0.5 font-medium hover:border-paper">Directions</a>
-        <a href={telHref} class="border-b border-paper/40 pb-0.5 font-medium hover:border-paper">{client.phone.display}</a>
-      </p>
+      <div class="mt-8 flex flex-col gap-3 md:flex-row">
+        <a href={telHref} class="btn w-full md:w-auto">Call {client.phone.display}</a>
+        <a href={mapsSearchUrl()} rel="noopener" target="_blank" class="btn btn-ghost w-full md:w-auto">Get directions</a>
+      </div>
     </div>
   </div>
   <div class="mt-14 md:mt-20" data-reveal>

@@ -13,10 +13,11 @@ const canonical = new URL(Astro.url.pathname, Astro.site).href.replace(/\/$/, ''
 const a = client.address;
 
 // Accent text tint for use on the dark ground (lighter than the CTA blue).
-const accentInk = lighten(client.accent, 0.42);
-function lighten(hex: string, t: number) {
+const accentInk = mix(client.accent, 255, 0.42);
+const accentDeep = mix(client.accent, 0, 0.22);
+function mix(hex: string, to: number, t: number) {
   const n = parseInt(hex.slice(1), 16);
-  const c = [n >> 16, (n >> 8) & 255, n & 255].map((v) => Math.round(v + (255 - v) * t));
+  const c = [n >> 16, (n >> 8) & 255, n & 255].map((v) => Math.round(v + (to - v) * t));
   return '#' + c.map((v) => v.toString(16).padStart(2, '0')).join('');
 }
 
@@ -55,7 +56,7 @@ const jsonLd = {
 };
 ---
 <!doctype html>
-<html lang="en-GB" style={`--accent:${client.accent};--accent-ink:${accentInk}`}>
+<html lang="en-GB" style={`--accent:${client.accent};--accent-ink:${accentInk};--accent-deep:${accentDeep}`}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />

@@ -8,7 +8,7 @@ const g = client.gallery;
   <SectionHead id="gallery" label={g.label} heading={g.heading} />
   <div class="mt-14 grid gap-3 md:mt-20 md:grid-cols-2">
     {g.photos.map((p, i) => (
-      <figure class:list={['relative', i === g.photos.length - 1 && g.photos.length % 2 === 1 && 'md:col-span-2']} data-reveal>
+      <figure class:list={['relative photo-hover', i === g.photos.length - 1 && g.photos.length % 2 === 1 && 'md:col-span-2']} data-reveal>
         <Image
           src={photo(p.src)} alt={p.alt}
           widths={[480, 800, 1200, 1600]} sizes="(min-width: 48rem) 50vw, 100vw"
@@ -16,7 +16,8 @@ const g = client.gallery;
           class:list={['w-full object-cover', i === g.photos.length - 1 && g.photos.length % 2 === 1 && 'md:aspect-[16/7]']}
           style={`aspect-ratio:${p.aspect ?? '4 / 5'};object-position:${p.position ?? '50% 50%'}`}
         />
-        {p.caption && <figcaption class="label mt-3 px-6 text-paper/60 md:px-0 md:absolute md:bottom-4 md:left-4 md:mt-0 md:text-paper/90">{p.caption}</figcaption>}
+        <div class="pointer-events-none absolute inset-x-0 bottom-0 hidden h-32 bg-[linear-gradient(to_top,rgb(10_10_11/0.7),transparent)] md:block" aria-hidden="true"></div>
+        {p.caption && <figcaption class="label mt-3 px-6 text-paper/60 md:absolute md:bottom-5 md:left-5 md:mt-0 md:px-0 md:text-paper/90">{p.caption}</figcaption>}
       </figure>
     ))}
   </div>

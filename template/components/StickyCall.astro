@@ -1,7 +1,7 @@
 ---
 import { client, telHref } from '../lib/client';
 ---
-<div id="sticky-call" class="fixed inset-x-0 bottom-0 z-40 translate-y-full bg-ink/85 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur-sm transition-transform duration-300 ease-out md:hidden" aria-hidden="true">
+<div id="sticky-call" class="fixed inset-x-0 bottom-0 z-40 translate-y-full border-t border-paper/10 bg-ink/90 p-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] shadow-[0_-16px_40px_-12px_rgb(0_0_0/0.8)] backdrop-blur-sm transition-transform duration-300 ease-out md:hidden" aria-hidden="true">
   <a href={telHref} class="btn w-full" tabindex="-1">
     <span>Call {client.phone.display}</span>
   </a>
