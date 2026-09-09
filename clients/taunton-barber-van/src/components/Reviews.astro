@@ -1,0 +1,40 @@
+---
+import { client } from '../lib/client';
+import Stars from './Stars.astro';
+const r = client.reviews;
+---
+<section id="reviews" class="section bg-paper text-ink" aria-labelledby="reviews-title">
+  <div class="gutter md:grid md:grid-cols-12 md:gap-x-12">
+    <header class="md:col-span-7" data-reveal>
+      <p class="label label-rule mb-6 text-muted-ink">{r.label}</p>
+      <a href={client.rating.url} rel="noopener" target="_blank" class="flex w-fit items-end gap-5">
+        <span class="display text-[6.5rem] leading-[0.85] text-brass-deep md:text-[9rem]">{client.rating.value.toFixed(1)}</span>
+        <span class="flex flex-col gap-2 pb-2">
+          <Stars class="text-brass-deep" size={14} />
+          <span class="text-[0.9375rem] leading-none text-ink/70">{client.rating.count} Google reviews</span>
+        </span>
+      </a>
+      <h2 id="reviews-title" class="display h2-size mt-10 max-w-[12ch] text-ink">
+        {r.heading.split('\n').map((l, i) => (<>{i > 0 && <br />}{l}</>))}<br /><span class="accent-word text-brass-deep">{r.accent}</span>
+      </h2>
+    </header>
+    <p class="measure mt-8 text-ink/72 md:col-span-4 md:col-start-9 md:mt-0 md:self-end" data-reveal data-reveal-delay="1">{r.intro}</p>
+  </div>
+
+  <ul class="gutter mt-16 md:mt-24 md:grid md:grid-cols-2 md:gap-x-16" role="list">
+    {r.items.map((it, i) => (
+      <li class="hairline-ink py-9 first:border-t-0 first:pt-0 md:py-10 md:[&:nth-child(2)]:border-t-0 md:[&:nth-child(2)]:pt-0" data-reveal data-reveal-delay={String(i % 2)}>
+        <article>
+          <Stars class="text-brass-deep" size={12} />
+          <blockquote class="mt-4">
+            <p class="text-[1.0625rem] leading-[1.6] text-ink/88 md:text-[1.125rem]">“{it.text}”</p>
+          </blockquote>
+          <p class="mt-5 text-sm"><span class="font-semibold text-ink">{it.author}</span><span class="text-ink/55"> · Google</span></p>
+        </article>
+      </li>
+    ))}
+  </ul>
+  <p class="gutter mt-10 md:mt-14" data-reveal>
+    <a href={client.rating.url} rel="noopener" target="_blank" class="btn btn-ghost-ink w-full md:w-auto">{r.linkText}</a>
+  </p>
+</section>

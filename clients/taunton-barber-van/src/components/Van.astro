@@ -1,0 +1,17 @@
+---
+import { client } from '../lib/client';
+import SectionHead from './SectionHead.astro';
+const v = client.van;
+---
+<section id="van" class="section hairline" aria-labelledby="van-title">
+  <div class="gutter md:grid md:grid-cols-12 md:gap-x-12">
+    <div class="md:col-span-7">
+      <SectionHead id="van-title" label={v.label} heading={v.heading} accent={v.accent} wide />
+    </div>
+    <div class="mt-12 md:col-span-5 md:mt-3 md:pt-1">
+      {v.paragraphs.map((p, i) => (
+        <p class:list={['measure text-paper/80', i > 0 && 'mt-6']} data-reveal data-reveal-delay={String(i + 1)}>{p}</p>
+      ))}
+    </div>
+  </div>
+</section>

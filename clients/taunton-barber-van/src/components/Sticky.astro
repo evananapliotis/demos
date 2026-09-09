@@ -1,0 +1,32 @@
+---
+import { client } from '../lib/client';
+import Cta from './Cta.astro';
+const s = client.sticky;
+---
+<div id="sticky-bar" class="fixed inset-x-0 bottom-0 z-40 translate-y-full border-t border-paper/10 bg-ink/92 px-4 pt-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] backdrop-blur-sm transition-transform duration-500 [transition-timing-function:cubic-bezier(.22,.61,.36,1)] md:hidden" aria-hidden="true">
+  <div class="flex items-center gap-3">
+    <p class="min-w-0 shrink pr-1 text-[0.75rem] leading-snug text-paper/65">
+      <span class="block font-semibold text-paper/90">{s.line1}</span>
+      <span class="block">{s.line2}</span>
+    </p>
+    <Cta kind="whatsapp" label="WhatsApp" class="min-h-[3.25rem] flex-1 px-3" tabindex={-1} />
+    <Cta kind="call" variant="ghost" iconOnly class="min-h-[3.25rem]" tabindex={-1} />
+  </div>
+</div>
+<script>
+  const bar = document.getElementById('sticky-bar');
+  const hero = document.getElementById('top');
+  const links = bar ? Array.from(bar.querySelectorAll('a')) : [];
+  if (bar && hero) {
+    const show = (on: boolean) => {
+      bar.classList.toggle('translate-y-full', !on);
+      bar.setAttribute('aria-hidden', on ? 'false' : 'true');
+      links.forEach((l) => (l.tabIndex = on ? 0 : -1));
+    };
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(([e]) => show(!e.isIntersecting), { threshold: 0.05 }).observe(hero);
+    } else {
+      show(true);
+    }
+  }
+</script>

@@ -1,0 +1,202 @@
+{
+  "name": "Taunton Barber Van",
+  "barber": "Lewis",
+  "url": "https://tauntonbarbervan.co.uk",
+  "area": "Taunton",
+  "region": "Somerset",
+  "seo": {
+    "title": "Taunton Barber Van | Mobile Barber in Taunton",
+    "description": "A proper barbershop built into the back of a van. Lewis comes to your door across Taunton and the villages around it. Skin fades, scissor cuts, beard trims and kids' cuts. Rated 5.0 from 58 Google reviews. WhatsApp or call 07475 512586."
+  },
+  "phone": {
+    "display": "07475 512586",
+    "tel": "+447475512586",
+    "whatsapp": "447475512586",
+    "whatsappText": "Hi Lewis, I'd like to book a cut."
+  },
+  "base": {
+    "street": "Creech Heathfield Rd",
+    "locality": "Taunton",
+    "postcode": "TA3 5DW",
+    "country": "GB"
+  },
+  "rating": {
+    "value": 5,
+    "count": 58,
+    "url": "https://www.google.com/maps/search/?api=1&query=Taunton+Barber+Van+Creech+Heathfield+Rd+Taunton+TA3+5DW"
+  },
+  "hours": [
+    {
+      "days": "Mon–Sat",
+      "open": "09:00",
+      "close": "17:30"
+    },
+    {
+      "days": "Sun",
+      "closed": true
+    }
+  ],
+  "hero": {
+    "src": "van-interior",
+    "alt": "Inside the Taunton Barber Van: a black barber's chair, warm oak panelling, a round mirror and a small fridge of cold water",
+    "position": "58% 50%",
+    "label": "Mobile barber · Taunton",
+    "line": "A proper barbershop built into the back of a van. Lewis comes to you.",
+    "cta": "WhatsApp Lewis"
+  },
+  "van": {
+    "label": "The van",
+    "heading": "No queue. No waiting room. Nobody dragged into",
+    "accent": "town.",
+    "paragraphs": [
+      "Oak panelling, one black chair, a round mirror and a fridge of cold water. Everything a good barbershop has, parked outside your front door.",
+      "One barber, one chair, one customer at a time. Lewis takes his time, listens to what you want, and tells you straight what will suit you."
+    ]
+  },
+  "how": {
+    "label": "How it works",
+    "heading": "Three steps.",
+    "accent": "That's it.",
+    "steps": [
+      {
+        "title": "Message Lewis",
+        "body": "WhatsApp is quickest. Say what you're after and roughly when."
+      },
+      {
+        "title": "Agree a time and place",
+        "body": "Home, work, wherever suits. Lewis confirms a slot and the price."
+      },
+      {
+        "title": "The van turns up",
+        "body": "Step in, sit down, step out sharp. Nobody goes anywhere."
+      }
+    ]
+  },
+  "families": {
+    "label": "Families",
+    "heading": "Three kids.\nOne doorstep.",
+    "accent": "No town.",
+    "paragraphs": [
+      "Parents book Lewis for a reason. Nobody sits in a waiting room while their brother has his turn. Nobody gets marched round Taunton on a Saturday. The van parks up, each of them takes the chair, and the afternoon carries on.",
+      "Patient with the nervous ones. Easy to talk to for the ten-year-olds with opinions. Dads get a cut while the van's there."
+    ],
+    "quote": {
+      "text": "my 10 year old even commented how he liked how easy he was to talk with",
+      "author": "Jennifer Jackson"
+    },
+    "photos": [
+      {
+        "src": "kids-cut-wavy",
+        "alt": "A boy with a fresh cut: wavy fringe left long on top, faded short at the sides",
+        "position": "72% 30%",
+        "caption": "Wavy crop"
+      },
+      {
+        "src": "kids-cut-crop",
+        "alt": "A boy with a textured crop and a clean taper fade, cut in the van",
+        "position": "0% 35%",
+        "caption": "Textured crop"
+      }
+    ]
+  },
+  "services": {
+    "label": "Services",
+    "heading": "What Lewis",
+    "accent": "does.",
+    "pricingLabel": "Prices agreed before we start",
+    "pricingNote": "Ask when you message. Lewis tells you the price before the clippers come out, so there are no surprises on the day.",
+    "items": [
+      {
+        "name": "Skin fade",
+        "note": "Taken down clean and blended sharp. Lined up to finish."
+      },
+      {
+        "name": "Scissor cut",
+        "note": "All scissors. Shaped to how you actually wear it."
+      },
+      {
+        "name": "Beard trim",
+        "note": "Neat, sharp and shaped properly."
+      },
+      {
+        "name": "Kids' cuts",
+        "note": "Patient, quick and no fuss. Brothers done back to back."
+      },
+      {
+        "name": "House visits",
+        "note": "The van comes to your door. Taunton and the villages around it."
+      }
+    ]
+  },
+  "work": {
+    "label": "The work",
+    "heading": "Cut properly.",
+    "accent": "Every time.",
+    "photos": [
+      {
+        "src": "skin-fade",
+        "alt": "Side profile of a mid skin fade with a textured top, freshly cut in the Taunton Barber Van",
+        "position": "50% 35%",
+        "caption": "Mid skin fade, textured top"
+      },
+      {
+        "src": "crew-cut",
+        "alt": "A man's short crew cut with a high skin fade, seen from the side",
+        "position": "50% 35%",
+        "caption": "Crew cut, high fade"
+      }
+    ]
+  },
+  "reviews": {
+    "label": "Reviews",
+    "heading": "A perfect\nscore.",
+    "accent": "58 times over.",
+    "intro": "Every one of the 58 reviews on Google gives Lewis five stars.",
+    "linkText": "Read all 58 reviews on Google",
+    "items": [
+      {
+        "author": "Joshua Durell",
+        "rating": 5,
+        "text": "Absolutely brilliant haircut from Lewis. Such a unique setup with the barbershop converted into the back of a van – it looks great and has a really relaxed atmosphere. Lewis is friendly, takes his time, and really listens to what you want."
+      },
+      {
+        "author": "Ashley Hart",
+        "rating": 5,
+        "text": "Lewis provides a fantastic mobile barber service for myself and my kids. Having 3 children, taking them all into town for haircuts can be stressful with them having to sit and wait for each other, so having Lewis come to the house is so..."
+      },
+      {
+        "author": "Jennifer Jackson",
+        "rating": 5,
+        "text": "Lewis is the absolute best barber iv ever taken my son to. The van is top class and so smart. Lewis is so lovely and my 10 year old even commented how he liked how easy he was to talk with. He really understood exactly what style my son..."
+      },
+      {
+        "author": "Rob Ford",
+        "rating": 5,
+        "text": "Met Lewis for the first time today and honestly couldn't recommend him enough. Really nice bloke, very prompt and friendly from the start. He took the time to ask what I liked and wanted, and explained what would actually suit me best,..."
+      },
+      {
+        "author": "Mathew Kramer",
+        "rating": 5,
+        "text": "Absolutely brilliant experience in the Barber van, I had a beard trim and it looks perfect exactly how I wanted, neat, sharp and shaped really well. He also cut my young son's hair and was amazing with him, so patient, friendly and made him..."
+      },
+      {
+        "author": "Tom Hodge",
+        "rating": 5,
+        "text": "First time getting a cut from Lewis at Taunton Barber Van and I'll tell ya what top class. I hadn't had my hair cut for nearly a year so it was well overdue, but he sorted it right out. Took his time and done a proper tidy job, fade's bang..."
+      }
+    ]
+  },
+  "book": {
+    "label": "How to book",
+    "heading": "Message Lewis.",
+    "accent": "Sorted.",
+    "body": "WhatsApp is quickest. Say what you're after, where you are and when suits, and Lewis comes back with a time. Prefer to talk? Call.",
+    "baseNote": "The van covers Taunton and the villages around it. Home, work, or wherever there's room to park.",
+    "whatsapp": "WhatsApp Lewis",
+    "call": "Call 07475 512586"
+  },
+  "sticky": {
+    "line1": "Book by message",
+    "line2": "Mon–Sat until 5:30pm"
+  }
+}

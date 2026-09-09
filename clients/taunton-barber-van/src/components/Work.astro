@@ -1,0 +1,36 @@
+---
+import { Image } from 'astro:assets';
+import { client, photo } from '../lib/client';
+import SectionHead from './SectionHead.astro';
+const w = client.work;
+const [main, second] = w.photos;
+---
+<section id="work" class="section hairline" aria-labelledby="work-title">
+  <div class="gutter">
+    <SectionHead id="work-title" label={w.label} heading={w.heading} accent={w.accent} />
+  </div>
+  <div class="mt-14 md:mt-20">
+    <div class="gutter md:grid md:grid-cols-12 md:items-end md:gap-x-6">
+      <figure class="photo-hover -mx-6 md:col-span-8 md:mx-0" data-reveal>
+        <Image
+          src={photo(main.src)} alt={main.alt}
+          widths={[480, 800, 1200, 1600]} sizes="(min-width: 48rem) 60vw, 100vw"
+          format="webp" quality={76} loading="lazy" decoding="async"
+          class="photo aspect-[4/5] w-full object-cover md:aspect-[5/4]"
+          style={`object-position:${main.position ?? '50% 50%'}`}
+        />
+        {main.caption && <figcaption class="label mt-4 px-6 text-paper/60 md:px-0">{main.caption}</figcaption>}
+      </figure>
+      <figure class="photo-hover ml-[22%] mt-10 md:col-span-4 md:ml-0 md:mt-0 md:pb-16" data-reveal data-reveal-delay="1">
+        <Image
+          src={photo(second.src)} alt={second.alt}
+          widths={[320, 480, 720, 960]} sizes="(min-width: 48rem) 30vw, 78vw"
+          format="webp" quality={76} loading="lazy" decoding="async"
+          class="photo aspect-[4/5] w-full object-cover"
+          style={`object-position:${second.position ?? '50% 50%'}`}
+        />
+        {second.caption && <figcaption class="label mt-4 text-paper/60">{second.caption}</figcaption>}
+      </figure>
+    </div>
+  </div>
+</section>

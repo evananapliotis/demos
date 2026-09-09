@@ -1,0 +1,176 @@
+@import "tailwindcss";
+@source "../";
+
+@font-face {
+  font-family: "Archivo";
+  font-style: normal;
+  font-weight: 100 900;
+  font-stretch: 62% 125%;
+  font-display: swap;
+  src: url("/fonts/archivo-wdth.woff2") format("woff2-variations");
+}
+@font-face {
+  font-family: "Instrument Serif";
+  font-style: italic;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/fonts/instrument-serif-italic.woff2") format("woff2");
+}
+@font-face {
+  font-family: "InterVar";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/inter-wght.woff2") format("woff2-variations");
+}
+
+@theme {
+  --color-ink: #0a0a0b;
+  --color-ink-2: #101011;
+  --color-paper: #f2eee6;
+  --color-paper-2: #e8e2d7;
+  --color-muted: #a49d92;
+  --color-muted-ink: #5f584e;
+  --color-brass: #c8a165;
+  --color-brass-soft: #dcbf8c;
+  --color-brass-deep: #7a5a30;
+  --color-line: rgb(242 238 230 / 0.14);
+  --color-line-ink: rgb(10 10 11 / 0.14);
+  --font-display: "Archivo", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  --font-serif: "Instrument Serif", Georgia, "Times New Roman", serif;
+  --font-body: "InterVar", "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  --ease-out-soft: cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+@layer base {
+  html { background: var(--color-ink); color: var(--color-paper); scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body {
+    font-family: var(--font-body);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    font-feature-settings: "cv11", "ss01";
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  @media (min-width: 48rem) { body { font-size: 1.125rem; } }
+  ::selection { background: var(--color-brass); color: var(--color-ink); }
+  :focus-visible { outline: 2px solid var(--color-brass); outline-offset: 4px; }
+  img { display: block; }
+  a, button { -webkit-tap-highlight-color: transparent; touch-action: manipulation; }
+  /* Fine film grain so the dark ground reads as paper, not a flat screen. */
+  body::after {
+    content: ""; position: fixed; inset: 0; z-index: 60; pointer-events: none; opacity: 0.045;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='180' height='180'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 0.9 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    background-size: 180px 180px;
+  }
+}
+
+/* Type */
+@utility display {
+  font-family: var(--font-display);
+  font-stretch: 66%;
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  text-wrap: balance;
+}
+@utility display-mid {
+  font-family: var(--font-display);
+  font-stretch: 70%;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.015em;
+}
+/* The one italic word in a heading. */
+@utility accent-word {
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-stretch: 100%;
+  text-transform: none;
+  letter-spacing: 0;
+  font-size: 1.04em;
+  color: var(--color-brass);
+}
+@utility label {
+  font-family: var(--font-body);
+  font-size: 0.71875rem;
+  font-weight: 600;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+@utility label-rule {
+  display: inline-flex; align-items: center; gap: 0.875rem;
+}
+.label-rule::before { content: ""; width: 2rem; height: 1px; background: var(--color-brass); }
+@utility h1-size { font-size: clamp(3.75rem, 19.5vw, 10.5rem); }
+@utility h2-size { font-size: clamp(2.75rem, 12.5vw, 6.75rem); }
+@utility h3-size { font-size: clamp(1.75rem, 7.5vw, 2.5rem); }
+@utility measure { max-width: 36ch; }
+@utility hairline { border-top: 1px solid var(--color-line); }
+@utility hairline-ink { border-top: 1px solid var(--color-line-ink); }
+
+/* Layout */
+@utility section { padding-block: 7rem; }
+@utility gutter { padding-inline: 1.5rem; max-width: 88rem; margin-inline: auto; }
+@media (min-width: 48rem) { .section { padding-block: 9rem; } .gutter { padding-inline: 3rem; } }
+@media (min-width: 64rem) { .section { padding-block: 11rem; } .gutter { padding-inline: 5rem; } }
+
+/* Buttons: squared, tall, tracked caps. Brass on ink, ink on paper. */
+@utility btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.75rem;
+  min-height: 3.5rem; padding-inline: 1.75rem; border-radius: 3px;
+  font-family: var(--font-body); font-size: 0.875rem; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+  text-decoration: none; user-select: none; cursor: pointer;
+  background: var(--color-brass); color: var(--color-ink);
+  transition: background-color 240ms var(--ease-out-soft), color 240ms var(--ease-out-soft), transform 240ms var(--ease-out-soft), box-shadow 240ms var(--ease-out-soft);
+}
+.btn:hover { background: var(--color-brass-soft); }
+.btn:active { transform: translateY(1px); }
+@utility btn-ghost { background: transparent; color: var(--color-paper); box-shadow: inset 0 0 0 1px rgb(242 238 230 / 0.32); }
+.btn-ghost:hover { background: rgb(242 238 230 / 0.06); box-shadow: inset 0 0 0 1px rgb(242 238 230 / 0.6); }
+@utility btn-ink { background: var(--color-ink); color: var(--color-paper); }
+.btn-ink:hover { background: #26241f; }
+@utility btn-ghost-ink { background: transparent; color: var(--color-ink); box-shadow: inset 0 0 0 1px rgb(10 10 11 / 0.35); }
+.btn-ghost-ink:hover { background: rgb(10 10 11 / 0.05); box-shadow: inset 0 0 0 1px rgb(10 10 11 / 0.7); }
+@utility btn-icon { min-width: 3.5rem; padding-inline: 0; }
+
+/* Text links: underline draws in from the left. */
+@utility link { background: linear-gradient(currentColor, currentColor) no-repeat 0 100% / 0 1px; transition: background-size 320ms var(--ease-out-soft), color 200ms ease; padding-bottom: 2px; }
+.link:hover { background-size: 100% 1px; }
+
+/* Photos: unified, slightly filmic. */
+@utility photo { filter: saturate(0.94) contrast(1.02); }
+@media (hover: hover) {
+  .photo-hover { overflow: hidden; }
+  .photo-hover img { transition: transform 1100ms var(--ease-out-soft); }
+  .photo-hover:hover img { transform: scale(1.03); }
+}
+
+/* Hero entrance: the photo settles, the words rise. */
+.hero-img { animation: hero-settle 5s var(--ease-out-soft) both; transform-origin: 55% 45%; }
+@keyframes hero-settle { from { transform: scale(1.06); } to { transform: scale(1); } }
+.hero-in > * { animation: rise 760ms var(--ease-out-soft) both; }
+.hero-in > :nth-child(1) { animation-delay: 140ms; }
+.hero-in > :nth-child(2) { animation-delay: 220ms; }
+.hero-in > :nth-child(3) { animation-delay: 300ms; }
+.hero-in > :nth-child(4) { animation-delay: 380ms; }
+.hero-in > :nth-child(5) { animation-delay: 460ms; }
+@keyframes rise { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
+
+/* Scroll reveal: only with JS running, never for reduced motion. */
+html.js [data-reveal] { opacity: 0; transform: translateY(16px); transition: opacity 560ms var(--ease-out-soft), transform 560ms var(--ease-out-soft); }
+html.js [data-reveal].is-in { opacity: 1; transform: none; }
+html.js [data-reveal][data-reveal-delay="1"] { transition-delay: 70ms; }
+html.js [data-reveal][data-reveal-delay="2"] { transition-delay: 140ms; }
+html.js [data-reveal][data-reveal-delay="3"] { transition-delay: 210ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  html.js [data-reveal] { opacity: 1; transform: none; transition: none; }
+  .hero-img, .hero-in > * { animation: none; }
+  .btn, .link, .photo-hover img { transition: none; }
+  .btn:active { transform: none; }
+}

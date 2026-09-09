@@ -1,0 +1,120 @@
+---
+import '../styles/global.css';
+import { client, openingHoursSpec, waHref } from '../lib/client';
+
+interface Props {
+  hero: { src: string; srcSet: string; sizes: string };
+  ogImage: string;
+}
+const { hero, ogImage } = Astro.props;
+const canonical = new URL(Astro.url.pathname, Astro.site).href.replace(/\/$/, '');
+
+const jsonLd = {
+  '@context': 'https://schema.org',
+  '@type': 'HairSalon',
+  '@id': `${canonical}/#business`,
+  name: client.name,
+  alternateName: `${client.name} (${client.barber})`,
+  description: client.seo.description,
+  url: canonical,
+  image: ogImage,
+  telephone: client.phone.tel,
+  priceRange: '££',
+  currenciesAccepted: 'GBP',
+  areaServed: [
+    { '@type': 'City', name: client.area },
+    { '@type': 'AdministrativeArea', name: client.region },
+  ],
+  address: {
+    '@type': 'PostalAddress',
+    addressLocality: client.base.locality,
+    addressRegion: client.region,
+    postalCode: client.base.postcode,
+    addressCountry: client.base.country,
+  },
+  employee: { '@type': 'Person', name: client.barber, jobTitle: 'Barber' },
+  contactPoint: [
+    { '@type': 'ContactPoint', contactType: 'reservations', telephone: client.phone.tel, url: waHref, availableLanguage: 'en' },
+  ],
+  hasMap: client.rating.url,
+  aggregateRating: {
+    '@type': 'AggregateRating',
+    ratingValue: client.rating.value,
+    reviewCount: client.rating.count,
+    bestRating: 5,
+    worstRating: 1,
+  },
+  openingHoursSpecification: openingHoursSpec(),
+  makesOffer: client.services.items.map((s) => ({
+    '@type': 'Offer',
+    itemOffered: { '@type': 'Service', name: s.name, description: s.note, provider: { '@id': `${canonical}/#business` } },
+  })),
+  review: client.reviews.items.map((r) => ({
+    '@type': 'Review',
+    author: { '@type': 'Person', name: r.author },
+    reviewRating: { '@type': 'Rating', ratingValue: r.rating, bestRating: 5 },
+    reviewBody: r.text,
+  })),
+};
+---
+<!doctype html>
+<html lang="en-GB">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{client.seo.title}</title>
+    <meta name="description" content={client.seo.description} />
+    <link rel="canonical" href={canonical} />
+    <meta name="theme-color" content="#0a0a0b" />
+    <meta name="color-scheme" content="dark" />
+
+    <meta property="og:type" content="business.business" />
+    <meta property="og:site_name" content={client.name} />
+    <meta property="og:title" content={client.seo.title} />
+    <meta property="og:description" content={client.seo.description} />
+    <meta property="og:url" content={canonical} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={client.hero.alt} />
+    <meta property="og:locale" content="en_GB" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={client.seo.title} />
+    <meta name="twitter:description" content={client.seo.description} />
+    <meta name="twitter:image" content={ogImage} />
+
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+
+    <link rel="preload" href="/fonts/archivo-wdth.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/instrument-serif-italic.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/inter-wght.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" as="image" href={hero.src} imagesrcset={hero.srcSet} imagesizes={hero.sizes} fetchpriority="high" />
+
+    <script is:inline>document.documentElement.classList.add('js');</script>
+    <script type="application/ld+json" set:html={JSON.stringify(jsonLd)} />
+  </head>
+  <body class="bg-ink text-paper">
+    <slot />
+    <script>
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+      const items = document.querySelectorAll<HTMLElement>('[data-reveal]');
+      if (reduce || !('IntersectionObserver' in window)) {
+        items.forEach((el) => el.classList.add('is-in'));
+      } else {
+        const io = new IntersectionObserver(
+          (entries) => {
+            for (const e of entries) {
+              if (e.isIntersecting) {
+                (e.target as HTMLElement).classList.add('is-in');
+                io.unobserve(e.target);
+              }
+            }
+          },
+          { rootMargin: '0px 0px -10% 0px', threshold: 0.06 },
+        );
+        items.forEach((el) => io.observe(el));
+      }
+    </script>
+  </body>
+</html>
