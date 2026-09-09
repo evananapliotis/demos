@@ -1,0 +1,19 @@
+---
+import { client } from '../lib/client';
+import CallButton from './CallButton.astro';
+const o = client.offer;
+---
+<section class="bg-paper text-ink" aria-labelledby="students">
+  <div class="section gutter">
+    <p class="label text-ink/60" data-reveal>{o.label}</p>
+    <p class="display big-size mt-4 -ml-[0.04em] text-ink" data-reveal aria-hidden="true">{o.big}</p>
+    <h2 id="students" class="display h2-size mt-2 text-ink" data-reveal data-reveal-delay="1">
+      <span class="sr-only">{o.big}. </span>{o.heading}
+    </h2>
+    <div class="mt-10 h-px w-16 bg-accent" data-reveal aria-hidden="true"></div>
+    <p class="mt-8 max-w-[40ch] text-lg leading-relaxed text-ink/80" data-reveal data-reveal-delay="1">{o.body}</p>
+    <div class="mt-10" data-reveal data-reveal-delay="2">
+      <CallButton label={o.cta} class="w-full md:w-auto" />
+    </div>
+  </div>
+</section>

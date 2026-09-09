@@ -1,0 +1,104 @@
+@import "tailwindcss";
+
+@font-face {
+  font-family: "Bricolage";
+  font-style: normal;
+  font-weight: 200 800;
+  font-stretch: 75% 100%;
+  font-display: swap;
+  src: url("/fonts/bricolage-grotesque-latin-wdth.woff2") format("woff2-variations");
+}
+@font-face {
+  font-family: "InterVar";
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+  src: url("/fonts/inter-latin-wght.woff2") format("woff2-variations");
+}
+
+@theme {
+  --color-ink: #0a0a0b;
+  --color-ink-2: #111113;
+  --color-paper: #ece7df;
+  --color-paper-2: #e2dcd2;
+  --color-muted: #a6a097;
+  --color-line: rgb(236 231 223 / 0.14);
+  --color-accent: var(--accent, #2f5be0);
+  --color-accent-ink: var(--accent-ink, #8ea6ff);
+  --font-display: "Bricolage", "Arial Narrow", "Helvetica Neue", Arial, sans-serif;
+  --font-body: "InterVar", "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+}
+
+@layer base {
+  html { background: var(--color-ink); color: var(--color-paper); scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  body {
+    font-family: var(--font-body);
+    font-size: 1.0625rem;
+    line-height: 1.6;
+    font-feature-settings: "cv11", "ss01";
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  ::selection { background: var(--color-accent); color: #fff; }
+  :focus-visible { outline: 2px solid var(--color-accent-ink); outline-offset: 3px; }
+  img { display: block; }
+}
+
+@utility display {
+  font-family: var(--font-display);
+  font-stretch: 75%;
+  font-weight: 700;
+  line-height: 0.92;
+  letter-spacing: -0.015em;
+  text-wrap: balance;
+}
+@utility display-wide {
+  font-family: var(--font-display);
+  font-stretch: 90%;
+  font-weight: 500;
+  line-height: 1.15;
+  letter-spacing: -0.01em;
+}
+@utility label {
+  font-family: var(--font-body);
+  font-size: 0.6875rem;
+  font-weight: 600;
+  letter-spacing: 0.22em;
+  text-transform: uppercase;
+  color: var(--color-muted);
+}
+@utility hairline { border-top: 1px solid var(--color-line); }
+@utility h1-size { font-size: clamp(3.25rem, 15vw, 8.5rem); }
+@utility h2-size { font-size: clamp(2.5rem, 10.5vw, 5.5rem); }
+@utility big-size { font-size: clamp(6rem, 30vw, 16rem); }
+@utility section { padding-block: 6rem; }
+@utility gutter { padding-inline: 1.5rem; }
+@utility btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 0.75rem;
+  min-height: 3.5rem; padding-inline: 1.75rem;
+  background: var(--color-accent); color: #fff;
+  font-family: var(--font-body); font-size: 0.9375rem; font-weight: 600; letter-spacing: 0.04em;
+  text-decoration: none; transition: background-color 160ms ease, transform 160ms ease;
+}
+@utility btn-dark { background: var(--color-ink); color: var(--color-paper); }
+
+.btn:hover { filter: brightness(1.08); }
+.btn:active { transform: translateY(1px); }
+
+/* Scroll reveal: only applies when JS is running, and never for reduced motion. */
+html.js [data-reveal] { opacity: 0; transform: translateY(18px); transition: opacity 700ms cubic-bezier(.2,.65,.2,1), transform 700ms cubic-bezier(.2,.65,.2,1); }
+html.js [data-reveal].is-in { opacity: 1; transform: none; }
+html.js [data-reveal][data-reveal-delay="1"] { transition-delay: 90ms; }
+html.js [data-reveal][data-reveal-delay="2"] { transition-delay: 180ms; }
+@media (prefers-reduced-motion: reduce) {
+  html.js [data-reveal] { opacity: 1; transform: none; transition: none; }
+}
+
+@media (min-width: 48rem) {
+  .section { padding-block: 8rem; }
+  .gutter { padding-inline: 3rem; }
+}
+@media (min-width: 64rem) {
+  .gutter { padding-inline: 4.5rem; }
+}

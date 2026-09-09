@@ -1,0 +1,23 @@
+---
+import { Image } from 'astro:assets';
+import { client, photo } from '../lib/client';
+import SectionHead from './SectionHead.astro';
+const g = client.gallery;
+---
+<section class="section" aria-labelledby="gallery">
+  <SectionHead id="gallery" label={g.label} heading={g.heading} />
+  <div class="mt-14 grid gap-3 md:mt-20 md:grid-cols-2">
+    {g.photos.map((p, i) => (
+      <figure class:list={['relative', i === g.photos.length - 1 && g.photos.length % 2 === 1 && 'md:col-span-2']} data-reveal>
+        <Image
+          src={photo(p.src)} alt={p.alt}
+          widths={[480, 800, 1200, 1600]} sizes="(min-width: 48rem) 50vw, 100vw"
+          format="webp" quality={78} loading="lazy" decoding="async"
+          class:list={['w-full object-cover', i === g.photos.length - 1 && g.photos.length % 2 === 1 && 'md:aspect-[16/7]']}
+          style={`aspect-ratio:${p.aspect ?? '4 / 5'};object-position:${p.position ?? '50% 50%'}`}
+        />
+        {p.caption && <figcaption class="label mt-3 px-6 text-paper/60 md:px-0 md:absolute md:bottom-4 md:left-4 md:mt-0 md:text-paper/90">{p.caption}</figcaption>}
+      </figure>
+    ))}
+  </div>
+</section>

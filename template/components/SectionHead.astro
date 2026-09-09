@@ -1,0 +1,8 @@
+---
+interface Props { label: string; heading: string; id?: string; tone?: 'dark' | 'light'; class?: string }
+const { label, heading, id, tone = 'dark', class: cls = '' } = Astro.props;
+---
+<header class={`gutter ${cls}`} data-reveal>
+  <p class:list={['label mb-5', tone === 'light' && 'text-ink/60']}>{label}</p>
+  <h2 id={id} class:list={['display h2-size max-w-[12ch]', tone === 'light' ? 'text-ink' : 'text-paper']}>{heading}</h2>
+</header>

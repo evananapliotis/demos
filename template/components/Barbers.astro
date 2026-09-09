@@ -1,0 +1,16 @@
+---
+import { client } from '../lib/client';
+import SectionHead from './SectionHead.astro';
+const t = client.team;
+---
+<section class="section hairline" aria-labelledby="barbers">
+  <SectionHead id="barbers" label={t.label} heading={t.heading} />
+  <ul class="gutter mt-14 md:mt-20 md:grid md:grid-cols-2 md:gap-x-16" role="list">
+    {t.members.map((m, i) => (
+      <li class="hairline py-8 md:py-10" data-reveal data-reveal-delay={String(i)}>
+        <h3 class="display text-5xl md:text-6xl">{m.name}</h3>
+        <p class="mt-4 max-w-[36ch] text-paper/85">{m.line}</p>
+      </li>
+    ))}
+  </ul>
+</section>

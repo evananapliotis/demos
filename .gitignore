@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.astro/
+# built site bundles (<slug>.zip) are committed on purpose so they survive ephemeral sessions
+.netlify/
+.env
+.DS_Store

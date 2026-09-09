@@ -1,0 +1,20 @@
+---
+import { client } from '../lib/client';
+import SectionHead from './SectionHead.astro';
+const s = client.services;
+---
+<section class="section hairline" aria-labelledby="services">
+  <SectionHead id="services" label={s.label} heading={s.heading} />
+  <ul class="gutter mt-14 md:mt-20 md:grid md:grid-cols-2 md:gap-x-16" role="list">
+    {s.items.map((it, i) => (
+      <li class="hairline flex items-baseline justify-between gap-6 py-6" data-reveal data-reveal-delay={String(Math.min(i % 3, 2))}>
+        <div>
+          <h3 class="display-wide text-2xl md:text-[1.75rem]">{it.name}</h3>
+          {it.note && <p class="mt-1.5 max-w-[34ch] text-[0.9375rem] leading-relaxed text-muted">{it.note}</p>}
+        </div>
+        <span class="display shrink-0 text-3xl tabular-nums text-paper md:text-4xl">{it.price}</span>
+      </li>
+    ))}
+  </ul>
+  {s.note && <p class="gutter mt-8 text-sm text-muted" data-reveal>{s.note}</p>}
+</section>

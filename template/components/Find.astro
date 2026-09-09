@@ -1,0 +1,42 @@
+---
+import { client, mapsEmbedUrl, mapsSearchUrl, telHref, fmtHours } from '../lib/client';
+import SectionHead from './SectionHead.astro';
+const f = client.find;
+const a = client.address;
+---
+<section class="section hairline" aria-labelledby="find">
+  <SectionHead id="find" label={f.label} heading={f.heading} />
+  <div class="gutter mt-14 md:mt-20 md:grid md:grid-cols-2 md:gap-x-16">
+    <div data-reveal>
+      <h3 class="label">Opening hours</h3>
+      <dl class="mt-4">
+        {client.hours.map((h) => (
+          <div class="hairline flex items-baseline justify-between py-4">
+            <dt class="display-wide text-xl">{h.days}</dt>
+            <dd class="display text-2xl tabular-nums">{fmtHours(h)}</dd>
+          </div>
+        ))}
+      </dl>
+      {client.hoursNote && <p class="mt-5 text-[0.9375rem] text-muted">{client.hoursNote}</p>}
+    </div>
+    <div class="mt-14 md:mt-0" data-reveal data-reveal-delay="1">
+      <h3 class="label">Address</h3>
+      <address class="display-wide mt-4 text-2xl not-italic leading-[1.25]">
+        {a.street}<br />{a.locality} {a.postcode}
+      </address>
+      <p class="mt-5 flex flex-wrap gap-x-8 gap-y-2 text-[0.9375rem]">
+        <a href={mapsSearchUrl()} rel="noopener" target="_blank" class="border-b border-paper/40 pb-0.5 font-medium hover:border-paper">Directions</a>
+        <a href={telHref} class="border-b border-paper/40 pb-0.5 font-medium hover:border-paper">{client.phone.display}</a>
+      </p>
+    </div>
+  </div>
+  <div class="mt-14 md:mt-20" data-reveal>
+    <iframe
+      title={`Map showing ${client.name} at ${a.street}, ${a.locality}`}
+      src={mapsEmbedUrl()}
+      width="100%" height="360" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+      allowfullscreen class="block h-[360px] w-full border-0 bg-ink-2 md:h-[480px]"
+      style="filter: grayscale(1) contrast(1.05) brightness(0.92)"
+    ></iframe>
+  </div>
+</section>

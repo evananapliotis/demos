@@ -1,0 +1,31 @@
+{
+  "name": "{{NAME}}",
+  "url": "https://{{SLUG}}.netlify.app",
+  "area": "Town",
+  "seo": { "title": "{{NAME}} | Barbers in Town", "description": "One sentence: what they do, where they are, the phone number." },
+  "phone": { "display": "01234 567890", "tel": "+441234567890" },
+  "address": { "street": "1 High Street", "locality": "Town", "postcode": "AB1 2CD", "country": "GB" },
+  "geo": { "lat": 51.5, "lng": -0.1 },
+  "rating": { "value": 4.8, "count": 10, "url": "https://www.google.com/maps/search/?api=1&query={{NAME}}+Town" },
+  "hours": [ { "days": "Mon–Sat", "open": "09:00", "close": "18:00" }, { "days": "Sun", "closed": true } ],
+  "hoursNote": "Walk in any time.",
+  "accent": "#2f5be0",
+  "hero": { "src": "hero", "alt": "Describe the photo", "position": "50% 30%", "label": "Barbers · Town", "line": "One short confident line.\nUse \\n for a deliberate break.", "cta": "Call the shop" },
+  "services": {
+    "label": "Services & prices", "heading": "What we do, and what it costs.", "note": "Walk-ins welcome.",
+    "items": [ { "name": "Skin fade", "price": "£18", "note": "One line." }, { "name": "Scissor cut", "price": "£16", "note": "One line." } ]
+  },
+  "team": { "label": "The barbers", "heading": "The people behind the chairs.", "members": [ { "name": "Name", "line": "One line drawn from what reviews say." } ] },
+  "offer": { "label": "Offer", "big": "20% off", "heading": "Students. Tuesdays.", "body": "Two sentences on the deal.", "cta": "Call to check the queue" },
+  "gallery": { "label": "The work", "heading": "Recent cuts.", "photos": [ { "src": "cut-1", "alt": "Describe the cut", "position": "50% 40%", "caption": "Skin fade" } ] },
+  "reviews": {
+    "label": "Reviews", "heading": "4.8 on Google, from 10 reviews.", "linkText": "Read all reviews on Google",
+    "items": [ { "author": "Name", "rating": 5, "text": "Paste the real review, verbatim." } ]
+  },
+  "about": {
+    "label": "About", "heading": "A proper barbershop on High Street.",
+    "photo": { "src": "shopfront", "alt": "Shopfront", "position": "50% 30%" },
+    "paragraphs": [ "First short paragraph.", "Second short paragraph." ]
+  },
+  "find": { "label": "Find us", "heading": "Hours and where we are.", "mapQuery": "{{NAME}}, 1 High Street, Town AB1 2CD" }
+}

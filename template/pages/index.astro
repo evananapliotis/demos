@@ -1,0 +1,47 @@
+---
+import { getImage } from 'astro:assets';
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import Services from '../components/Services.astro';
+import Barbers from '../components/Barbers.astro';
+import Offer from '../components/Offer.astro';
+import Gallery from '../components/Gallery.astro';
+import Reviews from '../components/Reviews.astro';
+import About from '../components/About.astro';
+import Find from '../components/Find.astro';
+import Footer from '../components/Footer.astro';
+import StickyCall from '../components/StickyCall.astro';
+import { client, photo } from '../lib/client';
+
+const heroSrc = photo(client.hero.src);
+const hero = await getImage({
+  src: heroSrc,
+  widths: [480, 800, 1200, 1600, 2000],
+  sizes: '100vw',
+  format: 'webp',
+  quality: 74,
+});
+const og = await getImage({ src: heroSrc, width: 1200, height: 630, format: 'jpg', quality: 80, fit: 'cover', position: 'attention' });
+const ogImage = new URL(og.src, Astro.site).href;
+const heroImg = {
+  src: hero.src,
+  srcSet: hero.srcSet.attribute,
+  sizes: '100vw',
+  width: hero.attributes.width as number,
+  height: hero.attributes.height as number,
+};
+---
+<Base hero={heroImg} ogImage={ogImage}>
+  <main id="main">
+    <Hero img={heroImg} />
+    <Services />
+    <Barbers />
+    <Offer />
+    <Gallery />
+    <Reviews />
+    <About />
+    <Find />
+  </main>
+  <Footer />
+  <StickyCall />
+</Base>
