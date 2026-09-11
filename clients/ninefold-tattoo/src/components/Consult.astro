@@ -19,6 +19,7 @@ import { consult as c, artists, site } from '../data/site';
         action="/thanks"
         data-netlify="true"
         netlify-honeypot="bot-field"
+        data-endpoint={site.formEndpoint}
         class="grid gap-7"
         novalidate
       >
@@ -138,11 +139,16 @@ import { consult as c, artists, site } from '../data/site';
     if ((data.get('bot-field') as string)?.length) return; // honeypot tripped: drop silently
     submit.disabled = true;
     try {
-      const res = await fetch('/', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-        body: new URLSearchParams(data as unknown as Record<string, string>).toString(),
-      });
+      const endpoint = form.dataset.endpoint || '';
+      const res = endpoint
+        ? // A form service (Formspree, Basin, Getform…): works on Cloudflare Pages or any static host.
+          await fetch(endpoint, { method: 'POST', headers: { Accept: 'application/json' }, body: data })
+        : // Netlify Forms: the page's own path accepts the post when deployed on Netlify.
+          await fetch('/', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: new URLSearchParams(data as unknown as Record<string, string>).toString(),
+          });
       if (!res.ok) throw new Error(String(res.status));
       showSuccess(false);
     } catch {

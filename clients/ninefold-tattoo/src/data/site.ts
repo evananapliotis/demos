@@ -15,7 +15,13 @@ export const styles: { key: StyleKey; label: string }[] = [
 export const site = {
   name: 'Ninefold Tattoo',
   shortName: 'Ninefold',
-  url: 'https://ninefold-tattoo.netlify.app',
+  url: 'https://ninefold-tattoo.pages.dev',
+  /**
+   * Where the consultation form posts. Leave empty on Netlify (Netlify Forms picks it up). On
+   * Cloudflare Pages or any other static host, paste a Formspree, Basin or Getform endpoint,
+   * e.g. 'https://formspree.io/f/xxxxxxxx'. If the post fails, the visitor's email app opens instead.
+   */
+  formEndpoint: '',
   established: '2017',
   area: 'Northern Quarter',
   city: 'Manchester',

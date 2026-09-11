@@ -58,9 +58,18 @@ pnpm dev                 # local dev server
 SITE_URL=https://example.co.uk node build.mjs   # override the deploy URL
 ```
 
-`ninefold-tattoo.zip` drops straight onto https://app.netlify.com/drop. The consultation form is
-wired for Netlify Forms (`data-netlify`, honeypot, `/thanks` for the no-JS path); on any other
-host the script falls back to opening the visitor's email app with the enquiry filled in.
+`ninefold-tattoo.zip` uploads as-is to Cloudflare Pages (Direct Upload) or Netlify Drop.
+`public/_headers` works on both. Set `SITE_URL` (or `url` in `src/data/site.ts`) to the address
+the site will actually live at before building; it feeds the canonical, Open Graph and JSON-LD.
+
+The consultation form works three ways, in this order:
+
+1. `formEndpoint` in `src/data/site.ts` set to a Formspree, Basin or Getform URL: the form posts
+   there with JSON accept headers. This is the route for Cloudflare Pages and any other static host.
+2. Empty `formEndpoint` on Netlify: Netlify Forms picks up the post (`data-netlify`, honeypot,
+   `/thanks` for the no-JS path).
+3. Anything else, or a failed post: the visitor's email app opens with the enquiry filled in, and
+   the page shows the success state with a note saying so.
 
 ## Design notes
 

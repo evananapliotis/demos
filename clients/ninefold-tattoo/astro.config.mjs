@@ -7,7 +7,7 @@ import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
-  site: process.env.SITE_URL || 'https://ninefold-tattoo.netlify.app',
+  site: process.env.SITE_URL || 'https://ninefold-tattoo.pages.dev',
   output: 'static',
   trailingSlash: 'never',
   compressHTML: true,
