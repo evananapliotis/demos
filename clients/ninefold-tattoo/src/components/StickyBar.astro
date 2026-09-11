@@ -1,0 +1,26 @@
+---
+import { stickyBar, telHref } from '../data/site';
+---
+<div class="sticky-bar" id="sticky-bar" aria-hidden="true">
+  <a class="btn btn-block min-h-[3.75rem] border-0" href="#consultation" tabindex="-1">{stickyBar.book}</a>
+  <a class="btn btn-ghost min-h-[3.75rem] border-0 border-l border-l-hairline px-7" href={telHref} tabindex="-1" aria-label="Call the studio">{stickyBar.call}</a>
+</div>
+
+<script>
+  const bar = document.getElementById('sticky-bar')!;
+  const hero = document.getElementById('top');
+  const form = document.getElementById('consultation');
+  const links = bar.querySelectorAll('a');
+  let heroOut = false;
+  let formIn = false;
+  const update = () => {
+    const on = heroOut && !formIn;
+    bar.classList.toggle('is-on', on);
+    bar.setAttribute('aria-hidden', String(!on));
+    links.forEach((a) => { a.tabIndex = on ? 0 : -1; });
+  };
+  if (hero && 'IntersectionObserver' in window) {
+    new IntersectionObserver(([e]) => { heroOut = !e.isIntersecting; update(); }, { threshold: 0.12 }).observe(hero);
+    if (form) new IntersectionObserver(([e]) => { formIn = e.isIntersecting; update(); }, { threshold: 0.15 }).observe(form);
+  }
+</script>

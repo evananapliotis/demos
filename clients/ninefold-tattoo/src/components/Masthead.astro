@@ -1,0 +1,19 @@
+---
+import { site, telHref } from '../data/site';
+import { markSvg } from '../lib/favicon';
+---
+<header class="absolute inset-x-0 top-0 z-20">
+  <div class="wrap gutter flex items-center justify-between py-5 md:py-7">
+    <a href="#top" class="flex items-center gap-3 text-bone" aria-label={`${site.name}, top of page`}>
+      <span class="block h-4 w-4 [&>svg]:h-full [&>svg]:w-full" set:html={markSvg(64, true)} />
+      <span class="font-serif text-[1.375rem] leading-none tracking-tight">{site.shortName}</span>
+    </a>
+    <nav aria-label="Sections" class="hidden items-center gap-9 md:flex">
+      <a class="label text-bone! link" href="#work">Work</a>
+      <a class="label text-bone! link" href="#artists">Artists</a>
+      <a class="label text-bone! link" href="#aftercare">Aftercare</a>
+      <a class="label text-bone! link" href="#consultation">Book</a>
+    </nav>
+    <a class="label text-bone! md:hidden" href={telHref}>{site.phone.display}</a>
+  </div>
+</header>

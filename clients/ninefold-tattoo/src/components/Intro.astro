@@ -1,0 +1,31 @@
+---
+import { Image } from 'astro:assets';
+import SectionHead from './SectionHead.astro';
+import { intro, site } from '../data/site';
+import { photo } from '../lib/images';
+---
+<section class="section" aria-labelledby="intro-h">
+  <div class="wrap gutter">
+    <SectionHead id="intro-h" label={intro.label} heading={intro.heading} accent={intro.accent} />
+    <ul class="mt-12 border-t border-hairline md:mt-16 md:max-w-3xl">
+      {intro.lines.map((line, i) => (
+        <li class="border-b border-hairline py-6 font-serif text-[1.375rem] leading-[1.25] md:py-7 md:text-[1.75rem]" data-reveal style={`--d:${i + 1}`}>{line}</li>
+      ))}
+    </ul>
+  </div>
+  <figure class="mt-16 md:mt-24" data-reveal>
+    <div class="aspect-[4/3] overflow-hidden md:aspect-[21/9]">
+      <Image
+        src={photo('studio-interior')}
+        alt="Inside Ninefold Tattoo: two stations under low lamps, framed flash on dark walls"
+        widths={[640, 960, 1440, 1920]}
+        sizes="100vw"
+        quality={74}
+        loading="lazy"
+        decoding="async"
+        class="photo h-full w-full object-cover"
+      />
+    </div>
+    <figcaption class="wrap gutter label pt-4">{site.address.street} · {site.area}</figcaption>
+  </figure>
+</section>

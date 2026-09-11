@@ -1,0 +1,34 @@
+---
+import type { GetImageResult } from 'astro';
+import Masthead from './Masthead.astro';
+import { hero, site } from '../data/site';
+interface Props { img: GetImageResult }
+const { img } = Astro.props;
+---
+<section id="top" class="scrim grain relative h-svh max-h-[1100px] min-h-[640px] overflow-hidden">
+  <img
+    src={img.src}
+    srcset={img.srcSet.attribute}
+    sizes="100vw"
+    width={img.attributes.width}
+    height={img.attributes.height}
+    alt={hero.alt}
+    loading="eager"
+    fetchpriority="high"
+    decoding="async"
+    class="hero-zoom photo absolute inset-0 h-full w-full object-cover"
+    style={`object-position:${hero.position}`}
+  />
+  <Masthead />
+  <div class="wrap gutter relative z-10 flex h-full flex-col justify-end pb-12 md:pb-20">
+    <div class="hero-in">
+      <p class="label text-bone-70!">{hero.label}</p>
+      <h1 class="display h1-size mt-5 whitespace-nowrap">{site.shortName} <span class="accent">Tattoo</span></h1>
+      <p class="lede measure mt-6">{hero.line}</p>
+      <div class="xs:flex-row mt-9 flex flex-col gap-3">
+        <a class="btn" href={hero.primary.href}>{hero.primary.label}</a>
+        <a class="btn btn-ghost" href={hero.secondary.href}>{hero.secondary.label}</a>
+      </div>
+    </div>
+  </div>
+</section>

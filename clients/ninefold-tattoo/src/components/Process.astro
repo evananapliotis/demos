@@ -1,0 +1,32 @@
+---
+import { Image } from 'astro:assets';
+import SectionHead from './SectionHead.astro';
+import { process as p } from '../data/site';
+import { photo } from '../lib/images';
+---
+<section id="process" class="section" aria-labelledby="process-h">
+  <div class="wrap gutter md:grid md:grid-cols-12 md:gap-12">
+    <div class="md:col-span-5">
+      <SectionHead id="process-h" label={p.label} heading={p.heading} accent={p.accent} end={p.headingEnd} />
+    </div>
+    <ol class="mt-12 border-t border-hairline md:col-span-7 md:mt-2">
+      {p.steps.map((st, i) => (
+        <li class="grid grid-cols-[2.75rem_1fr] gap-4 border-b border-hairline py-7 md:py-8" data-reveal style={`--d:${i}`}>
+          <span class="num pt-1">0{i + 1}</span>
+          <div>
+            <h3 class="font-serif text-[1.75rem] leading-none tracking-tight md:text-[2rem]">{st.title}</h3>
+            <p class="muted mt-3 max-w-[46ch]">{st.line}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </div>
+  <div class="mt-16 grid grid-cols-2 gap-[2px] md:mt-24" data-reveal>
+    <div class="aspect-[4/5] overflow-hidden md:aspect-[3/2]">
+      <Image src={photo(p.slot)} alt={p.alt} widths={[480, 640, 960, 1440]} sizes="50vw" quality={74} loading="lazy" decoding="async" class="photo h-full w-full object-cover" />
+    </div>
+    <div class="aspect-[4/5] overflow-hidden md:aspect-[3/2]">
+      <Image src={photo('stencil')} alt="A hand-drawn design on tracing paper beside the stencil it became" widths={[480, 640, 960, 1440]} sizes="50vw" quality={74} loading="lazy" decoding="async" class="photo h-full w-full object-cover" />
+    </div>
+  </div>
+</section>

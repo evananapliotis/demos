@@ -1,0 +1,12 @@
+---
+import Base from '../layouts/Base.astro';
+import { site, consult } from '../data/site';
+---
+<Base title={`Thanks | ${site.name}`} description="Your consultation enquiry has been sent." noindex>
+  <main id="main" class="flex min-h-svh flex-col justify-center wrap gutter py-24">
+    <p class="label">Consultation</p>
+    <h1 class="display h2-size mt-5">{consult.success.heading.replace(/\.$/, '')} <span class="accent">Thank you.</span></h1>
+    <p class="mt-8 measure-wide muted text-lg">{consult.success.body}</p>
+    <a class="btn btn-ghost mt-10 self-start" href="/">Back to the studio</a>
+  </main>
+</Base>

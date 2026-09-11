@@ -1,0 +1,31 @@
+---
+import { Image } from 'astro:assets';
+import SectionHead from './SectionHead.astro';
+import { aftercare as ac } from '../data/site';
+import { photo } from '../lib/images';
+---
+<section id="aftercare" class="section" aria-labelledby="aftercare-h">
+  <div class="wrap gutter md:grid md:grid-cols-12 md:gap-12">
+    <div class="md:col-span-5">
+      <SectionHead id="aftercare-h" label={ac.label} heading={ac.heading} accent={ac.accent} end={ac.headingEnd} />
+      <p class="muted mt-6 max-w-[42ch] text-lg" data-reveal style="--d:1">{ac.intro}</p>
+      <div class="mt-12 hidden aspect-[4/5] overflow-hidden md:block" data-reveal>
+        <Image src={photo('ink-machine')} alt="Ink caps lined up beside a tattoo machine on a wrapped station" widths={[480, 640, 960]} sizes="(min-width: 768px) 40vw, 100vw" quality={74} loading="lazy" decoding="async" class="photo h-full w-full object-cover" />
+      </div>
+    </div>
+    <ol class="mt-12 border-t border-hairline md:col-span-7 md:mt-2">
+      {ac.items.map((it, i) => (
+        <li class="grid grid-cols-[2.75rem_1fr] gap-4 border-b border-hairline py-7" data-reveal style={`--d:${i % 3}`}>
+          <span class="num pt-1">0{i + 1}</span>
+          <div>
+            <h3 class="font-serif text-[1.625rem] leading-none tracking-tight md:text-[1.875rem]">{it.title}</h3>
+            <p class="muted mt-3 max-w-[48ch]">{it.body}</p>
+          </div>
+        </li>
+      ))}
+    </ol>
+  </div>
+  <div class="mt-16 aspect-[3/2] overflow-hidden md:hidden" data-reveal>
+    <Image src={photo('ink-machine')} alt="Ink caps lined up beside a tattoo machine on a wrapped station" widths={[640, 960, 1440]} sizes="100vw" quality={74} loading="lazy" decoding="async" class="photo h-full w-full object-cover" />
+  </div>
+</section>

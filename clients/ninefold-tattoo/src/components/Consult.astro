@@ -1,0 +1,158 @@
+---
+import SectionHead from './SectionHead.astro';
+import { consult as c, artists, site } from '../data/site';
+---
+<section id="consultation" class="section border-t border-hairline" aria-labelledby="consult-h">
+  <div class="wrap gutter md:grid md:grid-cols-12 md:gap-12">
+    <div class="md:col-span-5">
+      <SectionHead id="consult-h" label={c.label} heading={c.heading} accent={c.accent} />
+      <p class="muted mt-6 max-w-[42ch] text-lg" data-reveal style="--d:1">{c.intro}</p>
+      <p class="mt-8 border-t border-b border-hairline py-5 text-[0.9375rem]" data-reveal style="--d:2">{c.deposit}</p>
+      <p class="mt-4 text-sm text-bone-55" data-reveal style="--d:2">{c.referenceNote}</p>
+    </div>
+
+    <div class="mt-12 md:col-span-7 md:mt-2">
+      <form
+        id="consult-form"
+        name="consultation"
+        method="POST"
+        action="/thanks"
+        data-netlify="true"
+        netlify-honeypot="bot-field"
+        class="grid gap-7"
+        novalidate
+      >
+        <input type="hidden" name="form-name" value="consultation" />
+        <p class="hidden" aria-hidden="true">
+          <label>Leave this empty <input name="bot-field" tabindex="-1" autocomplete="off" /></label>
+        </p>
+        <p id="booking-with" class="label" hidden></p>
+
+        <div class="grid gap-7 sm:grid-cols-2">
+          <label class="field">
+            <span>Name</span>
+            <input class="input" type="text" name="name" autocomplete="name" required />
+          </label>
+          <label class="field">
+            <span>Email</span>
+            <input class="input" type="email" name="email" autocomplete="email" inputmode="email" required />
+          </label>
+          <label class="field">
+            <span>Phone</span>
+            <input class="input" type="tel" name="phone" autocomplete="tel" inputmode="tel" />
+          </label>
+          <label class="field">
+            <span>Artist</span>
+            <select class="input" name="artist" id="artist">
+              <option value="No preference">No preference</option>
+              {artists.map((a) => <option value={a.name}>{a.name} · {a.style}</option>)}
+            </select>
+          </label>
+          <label class="field">
+            <span>Placement</span>
+            <input class="input" type="text" name="placement" placeholder="Inner forearm, calf, full back…" />
+          </label>
+          <label class="field">
+            <span>Style</span>
+            <select class="input" name="style">
+              {c.styleOptions.map((o) => <option value={o}>{o}</option>)}
+            </select>
+          </label>
+        </div>
+
+        <fieldset class="field">
+          <legend class="label mb-3">Size</legend>
+          <div class="seg">
+            {c.sizes.map((s, i) => (
+              <label><input type="radio" name="size" value={s} checked={i === 1} /><span>{s}</span></label>
+            ))}
+          </div>
+        </fieldset>
+
+        <fieldset class="field">
+          <legend class="label mb-3">Budget range</legend>
+          <div class="seg">
+            {c.budgets.map((b, i) => (
+              <label><input type="radio" name="budget" value={b} checked={i === 1} /><span>{b}</span></label>
+            ))}
+          </div>
+        </fieldset>
+
+        <label class="field">
+          <span>Description</span>
+          <textarea class="input" name="description" rows="4" placeholder="What it is, why, and anything you already know you don’t want." required></textarea>
+        </label>
+
+        <div class="mt-2 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+          <button class="btn" type="submit" id="consult-submit">{c.submit}</button>
+          <p class="text-sm text-bone-55">Or email <a class="link text-bone" href={`mailto:${site.email}`}>{site.email}</a></p>
+        </div>
+        <p id="consult-error" class="text-sm text-bone-70" hidden aria-live="polite"></p>
+      </form>
+
+      <div id="consult-success" class="border-t border-hairline pt-10" hidden tabindex="-1">
+        <h3 class="display h3-size">{c.success.heading}</h3>
+        <p class="muted mt-5 max-w-[46ch] text-lg">{c.success.body}</p>
+        <p id="consult-mailto-note" class="mt-4 text-sm text-bone-55" hidden>{c.mailtoNotice}</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  const form = document.getElementById('consult-form') as HTMLFormElement;
+  const submit = document.getElementById('consult-submit') as HTMLButtonElement;
+  const success = document.getElementById('consult-success') as HTMLElement;
+  const mailtoNote = document.getElementById('consult-mailto-note') as HTMLElement;
+  const bookingWith = document.getElementById('booking-with') as HTMLElement;
+  const artist = document.getElementById('artist') as HTMLSelectElement;
+  const email = form.dataset.email || (document.querySelector('#consultation a[href^="mailto:"]') as HTMLAnchorElement).href.replace('mailto:', '');
+
+  // "Book with <artist>" buttons pre-select that artist and say so above the form.
+  document.querySelectorAll<HTMLAnchorElement>('[data-book]').forEach((a) => {
+    a.addEventListener('click', () => {
+      const name = a.textContent?.replace(/^Book with\s+/i, '').trim() || '';
+      const opt = [...artist.options].find((o) => o.value === name);
+      if (opt) {
+        artist.value = opt.value;
+        bookingWith.textContent = `Booking with ${name}`;
+        bookingWith.hidden = false;
+      }
+    });
+  });
+
+  const labels: Record<string, string> = {
+    name: 'Name', email: 'Email', phone: 'Phone', artist: 'Artist', placement: 'Placement', style: 'Style', size: 'Size', budget: 'Budget', description: 'Description',
+  };
+  const showSuccess = (viaMailto: boolean) => {
+    form.hidden = true;
+    success.hidden = false;
+    mailtoNote.hidden = !viaMailto;
+    success.focus({ preventScroll: false });
+  };
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!form.reportValidity()) return;
+    const data = new FormData(form);
+    if ((data.get('bot-field') as string)?.length) return; // honeypot tripped: drop silently
+    submit.disabled = true;
+    try {
+      const res = await fetch('/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: new URLSearchParams(data as unknown as Record<string, string>).toString(),
+      });
+      if (!res.ok) throw new Error(String(res.status));
+      showSuccess(false);
+    } catch {
+      // Not on Netlify (or offline): hand the enquiry to the visitor's email app instead.
+      const lines = Object.keys(labels).map((k) => `${labels[k]}: ${(data.get(k) as string) || '—'}`);
+      const subject = `Consultation enquiry from ${data.get('name')}`;
+      window.location.href = `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(lines.join('\n'))}`;
+      showSuccess(true);
+    } finally {
+      submit.disabled = false;
+    }
+  });
+</script>

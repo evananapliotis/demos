@@ -1,0 +1,8 @@
+---
+interface Props { id: string; label: string; heading: string; accent: string; end?: string; class?: string }
+const { id, label, heading, accent, end, class: cls } = Astro.props;
+---
+<div class:list={[cls]} data-reveal>
+  <p class="label">{label}</p>
+  <h2 id={id} class="display h2-size mt-5">{heading} <span class="accent">{accent}</span>{end ? ` ${end}` : ''}</h2>
+</div>

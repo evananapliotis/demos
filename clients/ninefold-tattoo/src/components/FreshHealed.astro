@@ -1,0 +1,61 @@
+---
+import { Image } from 'astro:assets';
+import SectionHead from './SectionHead.astro';
+import { freshHealed as fh } from '../data/site';
+import { photo, hasPhoto } from '../lib/images';
+
+// The pair is derived from one photograph by scripts/prepare-images.mjs so it is
+// genuinely the same piece. Until that has run, both layers fall back to the base photo.
+const healed = hasPhoto('pair-healed') ? photo('pair-healed') : photo(fh.baseSlot);
+const fresh = hasPhoto('pair-fresh') ? photo('pair-fresh') : photo(fh.baseSlot);
+---
+<section id="healed" class="section" aria-labelledby="fh-h">
+  <div class="wrap gutter">
+    <SectionHead id="fh-h" label={fh.label} heading={fh.heading} accent={fh.accent} end={fh.headingEnd} />
+  </div>
+  <div class="compare mt-10 aspect-[4/5] md:mt-14 md:aspect-[16/9] xl:aspect-[2.2/1]" id="compare" data-reveal>
+    <Image src={healed} alt="" widths={[640, 960, 1440, 1920]} sizes="100vw" quality={76} loading="lazy" decoding="async" class="photo" draggable="false" />
+    <Image src={fresh} alt={fh.alt} widths={[640, 960, 1440, 1920]} sizes="100vw" quality={76} loading="lazy" decoding="async" class="top photo" draggable="false" />
+    <div class="rule" aria-hidden="true"></div>
+    <div class="knob" aria-hidden="true">
+      <svg width="20" height="12" viewBox="0 0 20 12" fill="none" stroke="currentColor" stroke-width="1.25"><path d="M5 1L1 6l4 5M15 1l4 5-4 5" /></svg>
+    </div>
+    <span class="tag label text-bone! left-5">{fh.freshLabel}</span>
+    <span class="tag label text-bone! right-5">{fh.healedLabel}</span>
+    <label class="sr-only" for="compare-range">Slide to compare fresh and healed</label>
+    <input id="compare-range" type="range" min="0" max="100" value="50" step="1" aria-valuetext="50% fresh" />
+  </div>
+  <div class="wrap gutter mt-10 grid gap-6 md:mt-14 md:grid-cols-2 md:gap-12">
+    {fh.paragraphs.map((p, i) => <p class="muted max-w-[46ch] text-[1.0625rem] md:text-lg" data-reveal style={`--d:${i}`}>{p}</p>)}
+    <p class="text-sm text-bone-55 md:col-span-2" data-reveal>{fh.note}</p>
+  </div>
+</section>
+
+<script>
+  const c = document.getElementById('compare')!;
+  const r = c.querySelector<HTMLInputElement>('input[type="range"]')!;
+  const set = (v: number) => {
+    v = Math.max(0, Math.min(100, v));
+    c.style.setProperty('--pos', `${v}%`);
+    r.value = String(Math.round(v));
+    r.setAttribute('aria-valuetext', `${Math.round(v)}% fresh`);
+  };
+  const fromEvent = (e: PointerEvent) => {
+    const b = c.getBoundingClientRect();
+    return ((e.clientX - b.left) / b.width) * 100;
+  };
+  let dragging = false;
+  c.addEventListener('dragstart', (e) => e.preventDefault());
+  c.addEventListener('pointerdown', (e) => {
+    if (e.button !== 0) return;
+    e.preventDefault();
+    dragging = true;
+    c.setPointerCapture(e.pointerId);
+    set(fromEvent(e));
+  });
+  c.addEventListener('pointermove', (e) => { if (dragging) set(fromEvent(e)); });
+  const end = () => { dragging = false; };
+  c.addEventListener('pointerup', end);
+  c.addEventListener('pointercancel', end);
+  r.addEventListener('input', () => set(Number(r.value)));
+</script>

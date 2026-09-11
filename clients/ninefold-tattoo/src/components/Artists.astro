@@ -1,0 +1,37 @@
+---
+import { Image } from 'astro:assets';
+import SectionHead from './SectionHead.astro';
+import { artists, artistsSection as s } from '../data/site';
+import { photo } from '../lib/images';
+---
+<section id="artists" class="section" aria-labelledby="artists-h">
+  <div class="wrap gutter">
+    <SectionHead id="artists-h" label={s.label} heading={s.heading} accent={s.accent} />
+    <p class="muted mt-6 max-w-[44ch] text-lg md:mt-8" data-reveal style="--d:1">{s.intro}</p>
+  </div>
+  <ul class="mt-12 grid gap-[2px] md:mt-16 md:grid-cols-2 xl:grid-cols-4">
+    {artists.map((a, i) => (
+      <li class="flex flex-col border-b border-hairline md:border-b-0" data-reveal style={`--d:${i % 2}`}>
+        <div class="aspect-square overflow-hidden md:aspect-[4/5]">
+          <Image
+            src={photo(a.slot)}
+            alt={a.alt}
+            widths={[480, 640, 960, 1440]}
+            sizes="(min-width: 1280px) 25vw, (min-width: 768px) 50vw, 100vw"
+            quality={76}
+            loading="lazy"
+            decoding="async"
+            class="photo h-full w-full object-cover"
+            style={a.position ? `object-position:${a.position}` : undefined}
+          />
+        </div>
+        <div class="flex flex-1 flex-col px-5 py-8 md:px-6 md:py-9">
+          <p class="label">{a.style}</p>
+          <h3 class="display h3-size mt-3">{a.name}</h3>
+          <p class="muted mt-4 mb-7 max-w-[38ch]">{a.bio}</p>
+          <a class="btn btn-ghost mt-auto self-start" href="#consultation" data-book={a.key}>{s.cta(a.name)}</a>
+        </div>
+      </li>
+    ))}
+  </ul>
+</section>

@@ -1,0 +1,160 @@
+---
+import { Image, getImage } from 'astro:assets';
+import SectionHead from './SectionHead.astro';
+import { work, styles, artistByKey } from '../data/site';
+import { photo } from '../lib/images';
+
+const styleLabel = Object.fromEntries(styles.map((s) => [s.key, s.label]));
+const pieces = await Promise.all(
+  work.pieces.map(async (p) => {
+    const src = photo(p.slot);
+    const full = await getImage({ src, widths: [960, 1600], sizes: '100vw', format: 'webp', quality: 82 });
+    return { ...p, src, full, artistName: artistByKey[p.artist].name, styleName: styleLabel[p.style] };
+  }),
+);
+const lead = pieces.find((p) => p.lead) ?? pieces[0];
+const rest = pieces.filter((p) => p !== lead);
+---
+<section id="work" class="section" aria-labelledby="work-h">
+  <div class="wrap gutter">
+    <SectionHead id="work-h" label={work.label} heading={work.heading} accent={work.accent} />
+    <div class="mt-10 flex flex-wrap items-center gap-x-7 gap-y-1 md:mt-12" role="group" aria-label="Filter the work by style" data-reveal>
+      <button class="chip" type="button" aria-pressed="true" data-filter="all">All</button>
+      {styles.map((s) => <button class="chip" type="button" aria-pressed="false" data-filter={s.key}>{s.label}</button>)}
+      <p id="work-status" class="sr-only" aria-live="polite"></p>
+    </div>
+  </div>
+
+  <div class="mt-8 md:mt-12" id="work-grid">
+    <figure class="mb-[2px]" data-piece data-style={lead.style} data-reveal>
+      <button
+        class="tile"
+        type="button"
+        data-full={lead.full.src}
+        data-srcset={lead.full.srcSet.attribute}
+        data-alt={lead.alt}
+        data-title={lead.title}
+        data-caption={`${lead.artistName} · ${lead.styleName}`}
+        aria-label={`Open ${lead.title}, ${lead.artistName}, ${lead.styleName}`}
+      >
+        <div class="overflow-hidden md:aspect-[16/9] xl:aspect-[2/1]">
+          <Image src={lead.src} alt={lead.alt} widths={[640, 960, 1440, 1920]} sizes="100vw" quality={78} loading="lazy" decoding="async" class="photo h-auto w-full md:h-full md:object-cover" style={lead.position ? `object-position:${lead.position}` : undefined} />
+        </div>
+      </button>
+      <figcaption class="gutter flex items-baseline justify-between gap-4 pt-3 pb-4 text-[0.6875rem] tracking-[0.18em] text-bone-55 uppercase">
+        <span>{lead.artistName} · {lead.styleName}</span>
+        <span class="hidden sm:inline">{lead.title}</span>
+      </figcaption>
+    </figure>
+
+    <div class="columns-2 gap-[2px] md:columns-3 xl:columns-4">
+      {rest.map((p, i) => (
+        <figure class="mb-[2px] break-inside-avoid" data-piece data-style={p.style} data-reveal style={`--d:${(i % 2) + 1}`}>
+          <button
+            class="tile"
+            type="button"
+            data-full={p.full.src}
+            data-srcset={p.full.srcSet.attribute}
+            data-alt={p.alt}
+            data-title={p.title}
+            data-caption={`${p.artistName} · ${p.styleName}`}
+            aria-label={`Open ${p.title}, ${p.artistName}, ${p.styleName}`}
+          >
+            <Image src={p.src} alt={p.alt} widths={[480, 640, 960, 1440]} sizes="(min-width: 1280px) 25vw, (min-width: 768px) 33vw, 50vw" quality={76} loading="lazy" decoding="async" class="photo h-auto w-full" />
+          </button>
+          <figcaption class="px-3 pt-2.5 pb-4 text-[0.6875rem] tracking-[0.18em] text-bone-55 uppercase">{p.artistName} · {p.styleName}</figcaption>
+        </figure>
+      ))}
+    </div>
+  </div>
+
+  <dialog class="lightbox" id="lightbox" aria-labelledby="lb-title">
+    <div class="flex h-full flex-col">
+      <div class="gutter flex items-center justify-between gap-4 py-4">
+        <p class="label" id="lb-caption"></p>
+        <button class="icon-btn" type="button" data-close aria-label="Close">
+          <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.25" aria-hidden="true"><path d="M3 3l12 12M15 3L3 15" /></svg>
+        </button>
+      </div>
+      <div class="relative flex min-h-0 flex-1 items-center justify-center px-2" data-stage>
+        <img id="lb-img" class="lightbox-img" alt="" />
+      </div>
+      <div class="gutter flex items-center justify-between gap-4 py-4">
+        <p class="text-sm text-bone-70"><span id="lb-title"></span> <span class="text-bone-55" id="lb-count"></span></p>
+        <div class="flex gap-2">
+          <button class="icon-btn" type="button" data-prev aria-label="Previous piece">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.25" aria-hidden="true"><path d="M11 3L5 9l6 6" /></svg>
+          </button>
+          <button class="icon-btn" type="button" data-next aria-label="Next piece">
+            <svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="1.25" aria-hidden="true"><path d="M7 3l6 6-6 6" /></svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  </dialog>
+</section>
+
+<script>
+  const root = document.getElementById('work')!;
+  const chips = root.querySelectorAll<HTMLButtonElement>('.chip');
+  const figs = [...root.querySelectorAll<HTMLElement>('[data-piece]')];
+  const status = document.getElementById('work-status')!;
+  const dialog = document.getElementById('lightbox') as HTMLDialogElement;
+  const stage = dialog.querySelector<HTMLElement>('[data-stage]')!;
+  const img = dialog.querySelector<HTMLImageElement>('#lb-img')!;
+  const cap = dialog.querySelector<HTMLElement>('#lb-caption')!;
+  const ttl = dialog.querySelector<HTMLElement>('#lb-title')!;
+  const count = dialog.querySelector<HTMLElement>('#lb-count')!;
+
+  let visible = figs;
+  let idx = 0;
+  let last: HTMLElement | null = null;
+
+  function applyFilter(key: string) {
+    figs.forEach((f) => { f.hidden = key !== 'all' && f.dataset.style !== key; });
+    visible = figs.filter((f) => !f.hidden);
+    chips.forEach((c) => c.setAttribute('aria-pressed', String(c.dataset.filter === key)));
+    status.textContent = `Showing ${visible.length} ${visible.length === 1 ? 'piece' : 'pieces'}`;
+  }
+  chips.forEach((c) => c.addEventListener('click', () => applyFilter(c.dataset.filter || 'all')));
+
+  function show(i: number) {
+    if (!visible.length) return;
+    idx = (i + visible.length) % visible.length;
+    const b = visible[idx].querySelector<HTMLButtonElement>('.tile')!;
+    img.removeAttribute('srcset');
+    img.src = b.dataset.full || '';
+    if (b.dataset.srcset) { img.srcset = b.dataset.srcset; img.sizes = '100vw'; }
+    img.alt = b.dataset.alt || '';
+    cap.textContent = b.dataset.caption || '';
+    ttl.textContent = b.dataset.title || '';
+    count.textContent = `· ${idx + 1} of ${visible.length}`;
+  }
+  function open(f: HTMLElement, trigger: HTMLElement) {
+    last = trigger;
+    show(visible.indexOf(f));
+    if (!dialog.open) dialog.showModal();
+    document.documentElement.style.overflow = 'hidden';
+  }
+  figs.forEach((f) => f.querySelector<HTMLButtonElement>('.tile')!.addEventListener('click', (e) => open(f, e.currentTarget as HTMLElement)));
+  dialog.querySelector('[data-prev]')!.addEventListener('click', () => show(idx - 1));
+  dialog.querySelector('[data-next]')!.addEventListener('click', () => show(idx + 1));
+  dialog.querySelector('[data-close]')!.addEventListener('click', () => dialog.close());
+  stage.addEventListener('click', (e) => { if (e.target === stage) dialog.close(); });
+  dialog.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') show(idx + 1);
+    if (e.key === 'ArrowLeft') show(idx - 1);
+  });
+  let startX = 0;
+  stage.addEventListener('pointerdown', (e) => { startX = e.clientX; });
+  stage.addEventListener('pointerup', (e) => {
+    const dx = e.clientX - startX;
+    if (Math.abs(dx) > 48) show(dx < 0 ? idx + 1 : idx - 1);
+  });
+  dialog.addEventListener('close', () => {
+    document.documentElement.style.overflow = '';
+    img.removeAttribute('src');
+    img.removeAttribute('srcset');
+    last?.focus();
+  });
+</script>

@@ -1,0 +1,23 @@
+---
+import SectionHead from './SectionHead.astro';
+import { kindWords as kw } from '../data/site';
+---
+<section id="kind-words" class="section" aria-labelledby="kw-h">
+  <div class="wrap gutter">
+    <SectionHead id="kw-h" label={kw.label} heading={kw.heading} accent={kw.accent} />
+    <p class="mt-5 text-sm text-bone-55" data-reveal style="--d:1">{kw.sampleNote}</p>
+    <ul class="mt-12 border-t border-hairline md:mt-16 md:grid md:grid-cols-3 md:gap-x-12 md:border-t-0">
+      {kw.items.map((t, i) => (
+        <li class="border-b border-hairline py-9 md:border-t md:border-b-0 md:pt-10 md:pb-0" data-reveal style={`--d:${i}`}>
+          <blockquote>
+            <p class="quote-size font-serif leading-[1.12] tracking-tight text-bone">“{t.quote}”</p>
+            <footer class="mt-6 flex flex-col gap-1">
+              <cite class="text-[0.9375rem] font-semibold not-italic">{t.name}</cite>
+              <span class="label">{t.piece}</span>
+            </footer>
+          </blockquote>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>

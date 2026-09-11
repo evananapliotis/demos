@@ -1,0 +1,7 @@
+node_modules/
+dist/
+.astro/
+.DS_Store
+*.log
+src/images/_dev/
+reports/lighthouse-mobile.report.html
