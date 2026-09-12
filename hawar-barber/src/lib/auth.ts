@@ -3,7 +3,7 @@
  * Wrong guesses are counted per connection in D1: after 10 in 15 minutes the door stays shut for a while.
  */
 import type { Env } from './db';
-import { ensureSchema, countAuthFailures, recordAuthFailure, ipKey } from './db';
+import { ensureSchema, allowAuthAttempt, clearAuthAttempts, ipKey } from './db';
 
 const MAX_FAILURES = 10;
 const WINDOW_MINUTES = 15;
@@ -41,21 +41,28 @@ export async function requireAdmin(request: Request, env: Env): Promise<Response
     return new Response('Admin is switched off: set the ADMIN_PASSWORD secret on the Cloudflare Pages project.', { status: 503, headers: TEXT });
   }
   const ip = ipKey(request.headers.get('cf-connecting-ip') ?? '');
-  if (env.DB && ip) {
-    await ensureSchema(env.DB);
-    if ((await countAuthFailures(env.DB, ip, WINDOW_MINUTES)) >= MAX_FAILURES) {
-      return new Response('Too many sign-in attempts. Try again in 15 minutes.', { status: 429, headers: { ...TEXT, 'Retry-After': String(WINDOW_MINUTES * 60) } });
+  const header = request.headers.get('authorization') ?? '';
+  // Every request that presents credentials counts as an attempt, atomically, before we look at the password.
+  if (header && env.DB && ip) {
+    try {
+      await ensureSchema(env.DB);
+      if (!(await allowAuthAttempt(env.DB, ip, MAX_FAILURES, WINDOW_MINUTES))) {
+        return new Response('Too many sign-in attempts. Try again in 15 minutes.', { status: 429, headers: { ...TEXT, 'Retry-After': String(WINDOW_MINUTES * 60) } });
+      }
+    } catch (e) {
+      console.error('auth lockout check failed', e); // D1 trouble degrades to the plain password check
     }
   }
-  const header = request.headers.get('authorization') ?? '';
   const [scheme, encoded] = header.split(' ');
   let ok = false;
   if (scheme === 'Basic' && encoded) {
     const decoded = decodeBasic(encoded);
     if (decoded !== null) ok = safeEqual(decoded.slice(decoded.indexOf(':') + 1), env.ADMIN_PASSWORD);
   }
-  if (ok) return null;
-  if (header && env.DB && ip) await recordAuthFailure(env.DB, ip);
+  if (ok) {
+    if (env.DB && ip) await clearAuthAttempts(env.DB, ip).catch(() => {});
+    return null;
+  }
   return new Response('Sign in to see booking requests.', {
     status: 401,
     headers: { ...TEXT, 'WWW-Authenticate': 'Basic realm="Booking requests", charset="UTF-8"' },

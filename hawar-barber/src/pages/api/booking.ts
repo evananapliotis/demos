@@ -39,7 +39,8 @@ export const POST: APIRoute = async ({ request, locals, redirect }) => {
   if (!site.booking.enabled) return isForm ? redirect('/book', 303) : json(404, { error: 'disabled' });
   if (!env.DB) return isForm ? redirect('/book/unavailable', 303) : json(503, { error: 'not_configured' });
 
-  const result = validateBooking(input, londonToday(), londonNowMinutes());
+  const now = new Date();
+  const result = validateBooking(input, londonToday(now), londonNowMinutes(now));
   if (!result.ok) return isForm ? htmlErrors(result.errors) : json(400, { error: 'invalid', errors: result.errors });
 
   const ip = ipKey(request.headers.get('cf-connecting-ip') ?? '');

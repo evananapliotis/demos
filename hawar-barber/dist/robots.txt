@@ -1,8 +1,0 @@
-User-agent: *
-Allow: /
-Disallow: /admin
-Disallow: /api/
-Disallow: /book/sent
-Disallow: /book/unavailable
-
-Sitemap: https://hawar-barber.pages.dev/sitemap.xml

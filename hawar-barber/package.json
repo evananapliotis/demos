@@ -14,7 +14,7 @@
     "preview:cf": "wrangler pages dev dist",
     "deploy": "npm run preflight && npm run build && wrangler pages deploy dist --branch main",
     "preflight": "node scripts/preflight.mjs",
-    "zip": "cd dist && rm -f ../hawar-barber.zip && zip -rq -X ../hawar-barber.zip . -x '.DS_Store'"
+    "zip": "cd dist && rm -f ../hawar-barber.zip && zip -rq -X ../hawar-barber.zip . -x '.DS_Store' '*/.DS_Store'"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^12.6.13",

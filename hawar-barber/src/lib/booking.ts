@@ -103,13 +103,15 @@ export function fmtTime(hhmm: string): string {
   return m ? `${hh}:${String(m).padStart(2, '0')}${suffix}` : `${hh}${suffix}`;
 }
 
-const str = (v: unknown, max: number) => (typeof v === 'string' ? v.replace(/\s+/g, ' ').trim().slice(0, max + 1) : '');
-/** Free text: keep line breaks, drop control and invisible-formatting characters (they can forge lines in the email). */
+/** Control, bidi-override, zero-width and line/paragraph separator characters: none belong in a name or a note. */
+const INVISIBLE = /[\u0000-\u0009\u000b-\u001f\u007f-\u009f\u00ad\u061c\u200b-\u200f\u2028-\u202e\u2060-\u2064\u2066-\u2069\ufeff]/g;
+const str = (v: unknown, max: number) => (typeof v === 'string' ? v.replace(INVISIBLE, '').replace(/\s+/g, ' ').trim().slice(0, max + 1) : '');
+/** Free text: keep line breaks, drop everything invisible (it can forge lines in the email). */
 const text = (v: unknown, max: number) =>
   typeof v === 'string'
     ? v
         .replace(/\r\n?/g, '\n')
-        .replace(/[\u0000-\u0009\u000b-\u001f\u007f-\u009f\u200b-\u200f\u202a-\u202e\u2066-\u2069\ufeff]/g, '')
+        .replace(INVISIBLE, '')
         .replace(/[ \t]+/g, ' ')
         .replace(/\n{3,}/g, '\n\n')
         .trim()

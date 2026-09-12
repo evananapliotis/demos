@@ -179,7 +179,9 @@ const latest = fmtTime(latestTime(SUNDAY));
       const isToday = day.value === iso(new Date());
       const now = new Date();
       const nextQuarter = Math.ceil((now.getHours() * 60 + now.getMinutes() + 1) / 15) * 15;
-      const minToday = `${pad(Math.floor(nextQuarter / 60) % 24)}:${pad(nextQuarter % 60)}`;
+      // "24:00" sorts above every HH:MM, so late at night nothing is left today.
+      const minToday = nextQuarter >= 1440 ? '24:00' : `${pad(Math.floor(nextQuarter / 60))}:${pad(nextQuarter % 60)}`;
+      const noneLeft = isToday && minToday > w.latest;
       if (time instanceof HTMLSelectElement && w.slots) {
         const current = time.value;
         const slots = isToday ? w.slots.filter((t) => t >= minToday) : w.slots;
@@ -188,8 +190,9 @@ const latest = fmtTime(latestTime(SUNDAY));
         if (!slots.length) hint.textContent = 'No times left today. Pick another day.';
       } else if (time instanceof HTMLInputElement) {
         time.max = w.latest;
-        if (isToday) time.min = minToday;
+        if (isToday && !noneLeft) time.min = minToday;
         else time.removeAttribute('min');
+        if (noneLeft) hint.textContent = 'No times left today. Pick another day.';
       }
     };
     day.addEventListener('change', syncTime);
@@ -259,7 +262,7 @@ const latest = fmtTime(latestTime(SUNDAY));
         } else if (res.status === 400 && data.errors) {
           showErrors(data.errors);
         } else if (res.status === 429) {
-          showErrors({ rate: `Too many requests from this connection. Call ${cfg.telDisplay} instead.` });
+          showErrors({ rate: 'Too many requests from this connection right now.' });
         } else {
           fallback('server');
         }
