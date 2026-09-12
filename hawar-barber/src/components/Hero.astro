@@ -23,7 +23,7 @@ const letters = (word: string, offset: number) => [...word].map((ch, i) => ({ ch
         quality={70}
         loading="eager"
         fetchpriority="high"
-        class={`absolute inset-0 -z-20 h-full w-full object-cover object-center opacity-45 ${heroImage.width < 1000 ? 'scale-105 blur-[2px]' : ''}`}
+        class={`absolute inset-0 -z-20 !h-full !w-full object-cover object-center opacity-45 ${heroImage.width < 1000 ? 'scale-105 blur-[2px]' : ''}`}
       />
     )
   }
