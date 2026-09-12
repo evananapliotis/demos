@@ -88,7 +88,7 @@ export const EXAMPLE_PHONE = '07700 900123'; // Ofcom drama range: never a real 
 /** Control, bidi-override, zero-width and separator characters: none belong in a name. */
 const INVISIBLE = /[\u0000-\u0009\u000b-\u001f\u007f-\u009f\u00ad\u061c\u200b-\u200f\u2028-\u202e\u2060-\u2064\u2066-\u2069\ufeff]/g;
 export const clean = (v: unknown, max: number) => (typeof v === 'string' ? v.replace(INVISIBLE, '').replace(/\s+/g, ' ').trim().slice(0, max + 1) : '');
-const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+const EMAIL = /^[^\s@<>"'(),;]+@[^\s@<>"'(),;]+\.[^\s@<>"'(),;]{2,}$/;
 
 export interface BookingInput { serviceId: string; date: string; time: string; name: string; phone: string; email: string | null }
 export type Validation = { ok: true; value: BookingInput; service: Service; start: Date } | { ok: false; status: number; errors: Record<string, string> };

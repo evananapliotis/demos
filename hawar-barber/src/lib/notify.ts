@@ -28,6 +28,8 @@ async function send(env: Env, to: string, subject: string, lines: string[]): Pro
 }
 
 const when = (b: BookingRow) => `${fmtDayLong(b.local_date)} at ${fmtTime(b.local_time)}`;
+/** One word of the name, letters only, for the greeting in mail that goes to the customer. */
+const firstName = (name: string) => (name.split(' ')[0] ?? '').replace(/[^\p{L}\p{M}'-]/gu, '').slice(0, 20);
 const endTime = (b: BookingRow) => {
   const [h, m] = b.local_time.split(':').map(Number);
   const e = h * 60 + m + b.minutes;
@@ -50,7 +52,7 @@ export async function notifyNewBooking(env: Env, b: BookingRow): Promise<void> {
   }
   if (b.email) {
     await send(env, b.email, `Booked: ${b.service_name} at ${site.name}, ${when(b)}`, [
-      `Hi ${b.name}, you're booked in.`,
+      `Hi ${firstName(b.name) || 'there'}, you're booked in.`,
       `${b.service_name} (${b.minutes} min), ${when(b)}.`,
       `${site.name}, ${site.address.street}, ${site.address.locality} ${site.address.postcode}.`,
       '',
@@ -64,7 +66,7 @@ export async function notifyNewBooking(env: Env, b: BookingRow): Promise<void> {
 export async function notifyCancelledByShop(env: Env, b: BookingRow): Promise<void> {
   if (!b.email) return;
   await send(env, b.email, `Cancelled: your ${b.service_name} at ${site.name}, ${when(b)}`, [
-    `Hi ${b.name}, sorry: the shop has had to cancel your ${b.service_name} on ${when(b)}.`,
+    `Hi ${firstName(b.name) || 'there'}, sorry: the shop has had to cancel your ${b.service_name} on ${when(b)}.`,
     `Book another time: ${site.url}/book`,
     `Or call ${site.phone.display}.`,
   ]);

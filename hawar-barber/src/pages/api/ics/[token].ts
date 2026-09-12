@@ -5,7 +5,7 @@ import { site } from '@config';
 import { bookingByToken } from '@/lib/db';
 
 const basic = (iso: string) => iso.replace(/[-:]/g, '').replace(/\.\d{3}/, '');
-const esc = (s: string) => s.replace(/\\/g, '\\\\').replace(/;/g, '\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n');
+const esc = (s: string) => s.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n');
 
 export const GET: APIRoute = async ({ params, locals }) => {
   const env = locals.runtime?.env;
