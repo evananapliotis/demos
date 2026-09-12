@@ -93,6 +93,7 @@ for (const [bw, bh] of [[390, 844], [320, 568]]) {
   check(/^\d{4}-\d{2}-\d{2}$/.test(dayMin), `date min set by script: ${dayMin}`);
   const clipped = await page.$$eval('#day, #time', (els) => els.filter((e) => e.scrollWidth > e.clientWidth + 1).map((e) => e.id));
   check(clipped.length === 0, `day/time controls not clipped ${clipped.length ? JSON.stringify(clipped) : ''}`);
+  await page.evaluate(() => document.querySelectorAll('[data-reveal]').forEach((e) => e.classList.add('is-in')));
   await page.screenshot({ path: `reports/book-${bw}.png`, fullPage: true });
   await ctx.close();
 }

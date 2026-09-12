@@ -49,20 +49,20 @@ const latest = fmtTime(latestTime(SUNDAY));
 
               <div role="alert" tabindex="-1" class="rounded-md text-cream [&:not(:empty)]:border [&:not(:empty)]:border-amber/50 [&:not(:empty)]:bg-amber/10 [&:not(:empty)]:px-4 [&:not(:empty)]:py-3" data-summary></div>
 
-              <div data-reveal>
+              <div>
                 <label for="name" class="mb-2 block font-bold text-cream">Your name</label>
                 <input id="name" name="name" type="text" required minlength="2" maxlength="80" autocomplete="name" class="input" aria-describedby="name-err" />
                 <p id="name-err" class="mt-2 hidden text-sm font-bold text-amber" data-err="name"></p>
               </div>
 
-              <div data-reveal style="transition-delay:60ms">
+              <div>
                 <label for="phone" class="mb-2 block font-bold text-cream">Phone number</label>
                 <input id="phone" name="phone" type="tel" required inputmode="tel" autocomplete="tel" placeholder={EXAMPLE_PHONE} class="input" aria-describedby="phone-hint phone-err" />
                 <p id="phone-hint" class="mt-1 text-sm text-cream-2">The shop uses this number to confirm. A mobile is best for texts.</p>
                 <p id="phone-err" class="mt-2 hidden text-sm font-bold text-amber" data-err="phone"></p>
               </div>
 
-              <div class="grid grid-cols-1 gap-3 xs:grid-cols-2" data-reveal style="transition-delay:120ms">
+              <div class="grid grid-cols-1 gap-3 xs:grid-cols-2">
                 <div>
                   <label for="day" class="mb-2 block font-bold text-cream">Day</label>
                   <input id="day" name="day" type="date" required class="input" aria-describedby="hours-hint day-err" />
@@ -85,7 +85,7 @@ const latest = fmtTime(latestTime(SUNDAY));
               </div>
               <p id="hours-hint" class="-mt-2 text-sm text-cream-2" aria-live="polite" data-hours-hint>{hasSlots ? 'Times follow the shop’s opening hours.' : `The shop closes at ${closes}, so the last request is ${latest}. Weekly hours aren’t published online yet, so the shop will say if it’s closed that day.`}</p>
 
-              <div data-reveal style="transition-delay:180ms">
+              <div>
                 <label for="service" class="mb-2 block font-bold text-cream">What are you coming in for? <span class="font-normal text-cream-2">(optional)</span></label>
                 {
                   site.services.length ? (
@@ -100,7 +100,7 @@ const latest = fmtTime(latestTime(SUNDAY));
                 <p id="service-err" class="mt-2 hidden text-sm font-bold text-amber" data-err="service"></p>
               </div>
 
-              <div data-reveal style="transition-delay:240ms">
+              <div>
                 <label for="notes" class="mb-2 block font-bold text-cream">Anything else? <span class="font-normal text-cream-2">(optional)</span></label>
                 <textarea id="notes" name="notes" rows="3" maxlength="300" class="input min-h-[6rem] py-3" aria-describedby="notes-err"></textarea>
                 <p id="notes-err" class="mt-2 hidden text-sm font-bold text-amber" data-err="notes"></p>
