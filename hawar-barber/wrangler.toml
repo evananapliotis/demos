@@ -20,7 +20,7 @@ enabled = true
 [[d1_databases]]
 binding = "DB"
 database_name = "hawar-barber-bookings"
-database_id = "REPLACE-WITH-THE-ID-FROM-wrangler-d1-create"
+database_id = "7eb67276-073d-41e1-80ab-29349e8c0117"
 migrations_dir = "migrations"
 
 # Nightly at 03:30 UTC: delete bookings older than site.config.ts → booking.retentionDays.
