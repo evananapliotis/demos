@@ -83,13 +83,18 @@ export const site = {
     /**
      * Alt text per file. Every photo is a real photo of the shop, named to match this list.
      * Gallery order: back-of-head fades first, then barbers at work, then face-on and profile cuts and beards.
-     * Only full-size photos are kept; the shopfront slot is empty until a full-size shopfront photo arrives.
+     * Only full-size photos are kept (JPEG or WebP, any size). The shopfront slot is empty until a shopfront photo arrives.
      */
     alt: {
       'hero.jpg': 'Inside HAWAR BARBER in Darlington: a row of black and gold barber chairs under hexagon ceiling lights',
       'gallery-0.jpg': 'Blonde skin fade with a slicked-back top, seen from behind, cut at HAWAR BARBER in Darlington',
-      'gallery-1.jpg': 'A barber at HAWAR BARBER in Darlington cutting a client in a striped cape at a black and gold station',
-      'gallery-2.jpg': 'A barber at work under the hexagon ceiling lights at HAWAR BARBER in Darlington',
+      'gallery-1.webp': 'Skin fade with a shaved line detail at the nape, seen from behind, cut at HAWAR BARBER in Darlington',
+      'gallery-2.webp': 'A barber cutting a client in a striped cape at a black and gold station, the street outside the window, at HAWAR BARBER in Darlington',
+      'gallery-3.webp': 'A barber combing a client’s slicked-back hair at the chair at HAWAR BARBER in Darlington',
+      'gallery-4.webp': 'Wide view of the shop floor at HAWAR BARBER in Darlington: two barbers at work, a marble floor and green seating under the hexagon lights',
+      'gallery-5.webp': 'A row of black and gold chairs with striped capes ready under the hexagon ceiling lights at HAWAR BARBER in Darlington',
+      'gallery-6.webp': 'The shop floor at HAWAR BARBER in Darlington: gold-trimmed chairs on a marble floor under the hexagon lights',
+      'gallery-7.webp': 'Textured crop with a low fade and a shaped beard, face on, at HAWAR BARBER in Darlington',
     } as Record<string, string>,
     galleryAlt: 'Haircut from the chair at HAWAR BARBER, Darlington',
   },
