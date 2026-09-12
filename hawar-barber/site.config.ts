@@ -7,7 +7,7 @@
  * fill them in and the matching section appears.
  *
  * Photos: drop real photos into public/images/ and reference them in `images`.
- *   hero.jpg       big cut shot behind the hero (optional; without it the hero is type + 3D pole)
+ *   hero.jpg       big cut shot behind the hero (optional; without it the hero is type on a dark gradient)
  *   shopfront.jpg  the front of the shop (optional; shown in the About section)
  *   gallery-1.jpg, gallery-2.jpg …  (optional; the gallery appears when at least one exists)
  */

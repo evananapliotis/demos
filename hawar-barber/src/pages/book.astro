@@ -142,10 +142,12 @@ const config = {
     let busy = false;
     const wantedDate = new URLSearchParams(location.search).get('date') ?? '';
 
+    // Steps scroll into view when the visitor opens them. Not while a deep link opens them on load: the page then stays at the top.
+    let booting = true;
     const reveal = (el: HTMLElement, scroll = true) => {
       if (!el.hidden) return;
       el.hidden = false;
-      if (scroll) requestAnimationFrame(() => el.scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }));
+      if (scroll && !booting) requestAnimationFrame(() => el.scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }));
     };
     const dayWord = (d: Day) => (d.date === today ? 'Today' : d.date === addDays(today, 1) ? 'Tomorrow' : d.label);
     const paintSummary = () => {
@@ -230,6 +232,7 @@ const config = {
       preInput.checked = true;
       preInput.dispatchEvent(new Event('change', { bubbles: true }));
     }
+    booting = false;
 
     const showErrors = (errors: Record<string, string>) => {
       form.querySelectorAll<HTMLElement>('[data-err]').forEach((el) => {

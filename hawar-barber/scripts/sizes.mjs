@@ -14,5 +14,3 @@ console.log('asset'.padEnd(64), 'raw'.padStart(10), 'gzip'.padStart(10));
 for (const r of rows) console.log(r.f.padEnd(64), kb(r.raw).padStart(10), kb(r.gz).padStart(10));
 const html = readFileSync('dist/index.html');
 console.log('\nindex.html'.padEnd(64), kb(html.length).padStart(10), kb(gzipSync(html).length).padStart(10));
-const pole = rows.find((r) => /^pole\..*\.js$/.test(r.f));
-if (pole) console.log(`\n3D chunk (three.js included): ${kb(pole.gz)} gzipped  ${pole.gz <= 150 * 1024 ? 'OK ≤150KB' : 'OVER 150KB'}`);

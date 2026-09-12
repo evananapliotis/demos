@@ -1,6 +1,6 @@
 # HAWAR BARBER — 321 North Rd, Darlington
 
-Static, phone-first one-page site. Astro 5 + Tailwind 4, a three.js barber pole in the hero, a tap-to-enlarge
+Static, phone-first one-page site. Astro 5 + Tailwind 4, the shop's own photo behind the hero, a tap-to-enlarge
 photo gallery, a photo-backed link preview for WhatsApp and Facebook, and a home-screen icon (web manifest).
 Nothing runs on a server: upload `dist/` (or `hawar-barber.zip`) to any static host.
 

@@ -76,9 +76,6 @@ async function run(width, height, tag) {
     check(w0 <= width && w1 <= width, `/book has no horizontal scroll before or after picking a service and day (${w0}/${w1} vs ${width})`);
     await page.goto(url, { waitUntil: 'networkidle' });
   }
-  // 3D
-  const has3d = await page.waitForSelector('[data-pole-slot].has-3d', { timeout: 12000 }).then(() => true).catch(() => false);
-  console.log(`3D  pole canvas mounted: ${has3d}`);
   // lazy images + full page shot
   await page.evaluate(async () => {
     for (let y = 0; y < document.body.scrollHeight; y += 500) { scrollTo(0, y); await new Promise((r) => setTimeout(r, 80)); }
@@ -111,7 +108,7 @@ async function run(width, height, tag) {
   await page.evaluate(() => document.querySelectorAll('[data-reveal]').forEach((e) => e.classList.add('is-in')));
   await page.waitForTimeout(800);
   await page.screenshot({ path: `reports/mobile-${tag}.png`, fullPage: true });
-  console.log(`weight (same-origin, incl. 3D chunk): ${(weight / 1024).toFixed(0)} KB raw / ${(weightGz / 1024).toFixed(0)} KB gzip`);
+  console.log(`weight (same-origin): ${(weight / 1024).toFixed(0)} KB raw / ${(weightGz / 1024).toFixed(0)} KB gzip`);
   console.log(urls.map((u) => '   ' + u).join('\n'));
   await ctx.close();
 }

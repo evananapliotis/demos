@@ -4,24 +4,6 @@ import tailwindcss from '@tailwindcss/vite';
 import cloudflare from '@astrojs/cloudflare';
 import { site } from './site.config.ts';
 
-/** Keep the 3D hero and its three.js imports in one clearly named lazy chunk (client build only). */
-const poleChunk = {
-  name: 'pole-chunk',
-  hooks: {
-    'astro:build:setup': ({ vite, target }) => {
-      if (target !== 'client') return;
-      vite.build ??= {};
-      vite.build.rollupOptions ??= {};
-      const output = vite.build.rollupOptions.output;
-      const out = Array.isArray(output) ? output[0] : (output ?? {});
-      out.manualChunks = (id) => {
-        if (id.includes('/hero3d/') || id.includes('node_modules/three')) return 'pole';
-      };
-      vite.build.rollupOptions.output = out;
-    },
-  },
-};
-
 export default defineConfig({
   output: 'static',
   // Cloudflare Workers: the marketing pages stay prerendered; /api/*, /admin and /cancel/* render on request.
@@ -32,7 +14,6 @@ export default defineConfig({
     // src/worker.ts adds the cron handler for the nightly clean-up.
     workerEntryPoint: { path: 'src/worker.ts' },
   }),
-  integrations: [poleChunk],
   site: site.url,
   trailingSlash: 'never',
   build: { inlineStylesheets: 'always', format: 'file' },

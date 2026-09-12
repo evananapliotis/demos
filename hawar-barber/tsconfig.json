@@ -6,6 +6,6 @@
     "resolveJsonModule": true,
     "baseUrl": ".",
     "paths": { "@/*": ["src/*"], "@config": ["site.config.ts"] },
-    "types": ["@types/three"]
+    "types": []
   }
 }
