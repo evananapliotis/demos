@@ -1,0 +1,20 @@
+# Cloudflare Workers (static assets + the booking Worker). Deploy with: npm run deploy:workers
+# Same D1 / secrets story as wrangler.toml; the site lives at https://hawar-barber.<your-subdomain>.workers.dev
+name = "hawar-barber"
+main = "dist/_worker.js/index.js"
+compatibility_date = "2025-09-01"
+compatibility_flags = ["nodejs_compat"]
+
+[assets]
+directory = "dist"
+binding = "ASSETS"
+not_found_handling = "404-page"
+
+[observability]
+enabled = true
+
+# npx wrangler d1 create hawar-barber-bookings → paste the database_id here (and in wrangler.toml).
+[[d1_databases]]
+binding = "DB"
+database_name = "hawar-barber-bookings"
+database_id = "00000000-0000-0000-0000-000000000000"

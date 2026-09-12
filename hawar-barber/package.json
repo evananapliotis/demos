@@ -15,7 +15,9 @@
     "deploy": "npm run preflight && npm run build && wrangler pages deploy dist --branch main",
     "preflight": "node scripts/preflight.mjs",
     "zip": "cd dist && rm -f ../hawar-barber.zip && zip -rq -X ../hawar-barber.zip . -x '.DS_Store' '*/.DS_Store'",
-    "zip:static": "cd dist && rm -f ../hawar-barber-static.zip && zip -rq -X ../hawar-barber-static.zip . -x '.DS_Store' '*/.DS_Store' '_routes.json' '_worker.js/*'"
+    "zip:static": "cd dist && rm -f ../hawar-barber-static.zip && zip -rq -X ../hawar-barber-static.zip . -x '.DS_Store' '*/.DS_Store' '_routes.json' '_worker.js/*'",
+    "deploy:workers": "npm run preflight && npm run build && wrangler deploy -c wrangler.workers.toml",
+    "preview:workers": "wrangler dev -c wrangler.workers.toml --port 8790"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^12.6.13",

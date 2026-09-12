@@ -69,6 +69,23 @@ Local run with a throwaway database: copy `.dev.vars.example` to `.dev.vars`, th
 The build prints "Enabling sessions with Cloudflare KV" every time; that notice can be ignored and no
 `SESSION` binding is needed.
 
+## Deploy as a Worker (the newer Cloudflare flow)
+
+The same build also runs as a Worker with static assets, which is what the "Create application → Workers"
+side of the dashboard creates. The dashboard's drag-and-drop there only takes static files, so the full
+site (booking API, `/admin`) goes up from the command line:
+
+```sh
+npx wrangler login
+npx wrangler d1 create hawar-barber-bookings      # paste the id into wrangler.workers.toml (and wrangler.toml)
+npx wrangler secret put ADMIN_PASSWORD -c wrangler.workers.toml
+npm run deploy:workers                            # preflight, build, wrangler deploy -c wrangler.workers.toml
+```
+
+That publishes to `https://hawar-barber.<your-subdomain>.workers.dev`; set `url` in `site.config.ts` to
+match and rebuild. `npm run preview:workers` runs the same thing locally on http://localhost:8790.
+`hawar-barber-static.zip` (from `npm run zip:static`) is the front end only, for the dashboard drag-and-drop.
+
 ## Deploy (Cloudflare Pages)
 
 `npm run deploy` is the route that works out of the box (see Booking requests above).
