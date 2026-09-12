@@ -1,0 +1,37 @@
+---
+import Base from '@/layouts/Base.astro';
+import { site } from '@/lib/site';
+import { galleryImages } from '@/lib/images';
+import Hero from '@/components/Hero.astro';
+import TrustStrip from '@/components/TrustStrip.astro';
+import Ticker from '@/components/Ticker.astro';
+import Prices from '@/components/Prices.astro';
+import Gallery from '@/components/Gallery.astro';
+import Reviews from '@/components/Reviews.astro';
+import About from '@/components/About.astro';
+import FindUs from '@/components/FindUs.astro';
+import FinalCta from '@/components/FinalCta.astro';
+import Footer from '@/components/Footer.astro';
+import StickyBar from '@/components/StickyBar.astro';
+
+const title = `${site.name} | Barber shop, North Road, ${site.address.locality}`;
+// Section numerals only count sections that render.
+let n = 0;
+const next = () => String(++n).padStart(2, '0');
+const idx = { prices: next(), gallery: galleryImages.length ? next() : undefined, about: next(), findUs: next() };
+---
+<Base title={title} description={site.description}>
+  <Hero />
+  <TrustStrip />
+  <Ticker />
+  <main id="main">
+    <Prices index={idx.prices} />
+    <Gallery index={idx.gallery} />
+    <Reviews />
+    <About index={idx.about} />
+    <FindUs index={idx.findUs} />
+    <FinalCta />
+  </main>
+  <Footer />
+  <StickyBar />
+</Base>

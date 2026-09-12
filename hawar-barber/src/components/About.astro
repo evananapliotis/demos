@@ -1,0 +1,35 @@
+---
+interface Props { index?: string }
+const { index } = Astro.props;
+import { Image } from 'astro:assets';
+import { site, telHref } from '@/lib/site';
+import { shopfrontImage, altFor } from '@/lib/images';
+import Section from './Section.astro';
+import Icons from './Icons.astro';
+---
+<Section id="about" index={index} eyebrow="The shop" title="North Road, <span class='text-amber'>Darlington.</span>">
+  <div class={`grid gap-8 ${shopfrontImage ? 'md:grid-cols-2 md:gap-14' : 'md:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]'}`}>
+    <div class="space-y-5 text-lg leading-relaxed text-cream/90 md:text-xl" data-reveal>
+      {site.about.map((p) => <p>{p}</p>)}
+      <a href={telHref} class="btn btn-amber"><Icons name="phone" size={19} /> Call the shop</a>
+    </div>
+    {
+      shopfrontImage ? (
+        <figure class="overflow-hidden rounded-md bg-ink-3" data-reveal>
+          <Image src={shopfrontImage} alt={altFor(site.images.shopfront)} widths={[480, 768, 1080]} sizes="(min-width: 768px) 50vw, 100vw" format="webp" quality={72} loading="lazy" decoding="async" class="h-auto w-full object-cover" />
+        </figure>
+      ) : (
+        <ul class="grid grid-cols-1 gap-3 self-start sm:grid-cols-2 md:grid-cols-1" role="list" data-reveal>
+          {site.features.map((f) => (
+            <li class="flex items-center gap-3 rounded-md border border-line bg-ink-2 px-4 py-4 text-cream">
+              <Icons name="wheelchair" size={22} class="shrink-0 text-amber" /> {f}
+            </li>
+          ))}
+          <li class="flex items-center gap-3 rounded-md border border-line bg-ink-2 px-4 py-4 text-cream">
+            <Icons name="pin" size={22} class="shrink-0 text-amber" /> {site.address.street}, {site.address.postcode}
+          </li>
+        </ul>
+      )
+    }
+  </div>
+</Section>

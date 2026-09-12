@@ -1,0 +1,26 @@
+---
+/* Thin monochrome ticker of verified facts. Decorative: hidden from assistive tech, still under reduced motion. */
+import { site, fmtTime } from '@/lib/site';
+const items = [
+  `${site.google.rating.toFixed(1)} on Google`,
+  `${site.google.reviewCount} reviews`,
+  ...site.features,
+  `Closes ${fmtTime(site.hours.closes)}`,
+  `${site.address.street.replace(/ Rd$/, ' Road')}, ${site.address.locality}`,
+  `Call ${site.phone.display}`,
+];
+---
+<div class="ticker border-b border-line bg-ink" aria-hidden="true">
+  <div class="ticker-track py-3">
+    {[0, 1].map(() => (
+      <div class="flex shrink-0 items-center">
+        {items.map((w, i) => (
+          <span class="flex items-center">
+            <span class={`display px-5 text-[1.35rem] leading-none tracking-wide ${i % 2 ? 'text-outline' : 'text-amber'}`}>{w}</span>
+            <span class="inline-block h-4 w-[5px] rounded-sm stripe-amber" />
+          </span>
+        ))}
+      </div>
+    ))}
+  </div>
+</div>

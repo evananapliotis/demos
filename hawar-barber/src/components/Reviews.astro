@@ -1,0 +1,88 @@
+---
+import { site, listingUrl } from '@/lib/site';
+import Section from './Section.astro';
+import Stars from './Stars.astro';
+import GoogleG from './GoogleG.astro';
+import Icons from './Icons.astro';
+const hasReviews = site.reviews.length > 0;
+---
+{
+  hasReviews ? (
+    <Section id="reviews" eyebrow="Google reviews" title="Straight from <span class='text-amber'>Google.</span>">
+      <div class="grid gap-8 md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] md:gap-14">
+        <div class="md:sticky md:top-20 md:self-start">
+          <p class="display text-[6rem] leading-none text-cream">{site.google.rating.toFixed(1)}</p>
+          <Stars rating={site.google.rating} class="mt-1 text-amber" size={22} />
+          <p class="mt-3 flex items-center gap-2 text-cream-2"><GoogleG size={18} /> {site.google.reviewCount} Google reviews</p>
+          <a href={listingUrl} target="_blank" rel="noopener" class="btn btn-outline mt-6">Read them all <Icons name="external" size={16} /></a>
+        </div>
+        <ul class="grid gap-4" role="list">
+          {site.reviews.map((r) => (
+            <li class="rounded-md border border-line bg-ink-2 p-5">
+              <Stars rating={r.rating} class="text-amber" size={14} />
+              <blockquote class="mt-3 text-[1.05rem] leading-relaxed text-cream"><p>“{r.text}”</p></blockquote>
+              <footer class="mt-4 flex items-center justify-between gap-3 text-sm text-cream-2">
+                <cite class="not-italic font-bold text-cream">{r.author}</cite>
+                <span class="inline-flex items-center gap-1.5"><GoogleG size={14} /> Google{r.date ? ` · ${r.date}` : ''}</span>
+              </footer>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </Section>
+  ) : (
+    <section id="reviews" class="scroll-mt-14 border-y border-line bg-ink-2 px-5 py-16 sm:px-8 md:py-24 lg:px-12" aria-labelledby="reviews-title">
+      <div class="mx-auto max-w-5xl" data-reveal>
+        <p class="eyebrow flex items-center gap-3 before:block before:h-[2px] before:w-6 before:bg-amber">Google reviews</p>
+        <div class="mt-6 grid items-end gap-6 md:grid-cols-[auto_1fr] md:gap-14">
+          <div class="flex items-end gap-4">
+            <p class="display text-[7.5rem] leading-[0.8] text-cream md:text-[12rem]">{site.google.rating.toFixed(1)}</p>
+            <div class="pb-2">
+              <Stars rating={site.google.rating} class="stars-in text-amber" size={24} />
+              <p class="mt-2 text-sm text-cream-2">out of 5</p>
+            </div>
+          </div>
+          <div class="md:pb-4">
+            <h2 id="reviews-title" class="text-[clamp(2.5rem,10vw,5rem)] text-cream">
+              <span class="tabular-nums" data-count={site.google.reviewCount}>{site.google.reviewCount}</span> reviews.<br /><span class="text-amber">Read them yourself.</span>
+            </h2>
+            <p class="mt-4 max-w-md text-cream-2">Every one is on the shop’s Google listing, word for word, from the people who sat in the chair.</p>
+            <a href={listingUrl} target="_blank" rel="noopener" class="btn btn-amber mt-6"><GoogleG size={18} /> Open the Google reviews <Icons name="external" size={16} /></a>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+<script>
+  // On reveal: the review count ticks up and the stars light one by one. Static under reduced motion.
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const section = document.getElementById('reviews');
+  const counter = section?.querySelector<HTMLElement>('[data-count]');
+  const stars = section?.querySelector<HTMLElement>('.stars-in');
+  if (section && !reduced && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver(
+      ([e]) => {
+        if (!e.isIntersecting) return;
+        io.disconnect();
+        stars?.classList.add('is-in');
+        if (counter) {
+          const target = Number(counter.dataset.count);
+          const t0 = performance.now();
+          const step = (now: number) => {
+            const k = Math.min(1, (now - t0) / 1100);
+            const eased = 1 - Math.pow(1 - k, 3);
+            counter.textContent = String(Math.round(target * eased));
+            if (k < 1) requestAnimationFrame(step);
+          };
+          requestAnimationFrame(step);
+        }
+      },
+      { threshold: 0.4 },
+    );
+    io.observe(section);
+  } else {
+    stars?.classList.add('is-in');
+  }
+</script>

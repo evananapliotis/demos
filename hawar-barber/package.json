@@ -1,0 +1,40 @@
+{
+  "name": "hawar-barber",
+  "private": true,
+  "type": "module",
+  "version": "1.0.0",
+  "description": "HAWAR BARBER, 321 North Rd, Darlington. Static one-page site.",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "node scripts/og.mjs && astro build",
+    "preview": "astro preview",
+    "verify": "node scripts/verify.mjs",
+    "lighthouse": "node scripts/lighthouse.mjs",
+    "sizes": "node scripts/sizes.mjs",
+    "shots": "node scripts/shot.mjs",
+    "scrollshots": "node scripts/scrollshots.mjs",
+    "desktopshots": "node scripts/desktopshots.mjs",
+    "zip": "cd dist && rm -f ../hawar-barber.zip && zip -rq -X ../hawar-barber.zip . -x '.DS_Store' '*/.DS_Store'"
+  },
+  "dependencies": {
+    "@fontsource-variable/big-shoulders-display": "^5.3.0",
+    "@fontsource-variable/dm-sans": "^5.3.0",
+    "@react-three/fiber": "^9.7.0",
+    "@tailwindcss/vite": "^4.1.0",
+    "astro": "^5.18.2",
+    "react": "~19.2.0",
+    "react-dom": "~19.2.0",
+    "sharp": "^0.34.0",
+    "tailwindcss": "^4.1.0",
+    "three": "^0.186.0"
+  },
+  "devDependencies": {
+    "@types/react": "~19.2.0",
+    "@types/three": "^0.186.0",
+    "lighthouse": "^13.4.1",
+    "playwright-core": "^1.63.0"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
