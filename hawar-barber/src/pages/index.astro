@@ -1,0 +1,30 @@
+---
+import Base from '@/layouts/Base.astro';
+import { site } from '@/lib/site';
+import Hero from '@/components/Hero.astro';
+import TrustStrip from '@/components/TrustStrip.astro';
+import Prices from '@/components/Prices.astro';
+import Gallery from '@/components/Gallery.astro';
+import Reviews from '@/components/Reviews.astro';
+import About from '@/components/About.astro';
+import FindUs from '@/components/FindUs.astro';
+import FinalCta from '@/components/FinalCta.astro';
+import Footer from '@/components/Footer.astro';
+import StickyBar from '@/components/StickyBar.astro';
+
+const title = `${site.name} | Barber shop, North Road, ${site.address.locality}`;
+---
+<Base title={title} description={site.description}>
+  <Hero />
+  <TrustStrip />
+  <main id="main">
+    <Prices />
+    <Gallery />
+    <Reviews />
+    <About />
+    <FindUs />
+    <FinalCta />
+  </main>
+  <Footer />
+  <StickyBar />
+</Base>

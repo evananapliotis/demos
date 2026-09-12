@@ -1,0 +1,11 @@
+{
+  "extends": "astro/tsconfigs/strict",
+  "include": ["src/**/*", "site.config.ts", ".astro/types.d.ts"],
+  "exclude": ["dist", "node_modules"],
+  "compilerOptions": {
+    "resolveJsonModule": true,
+    "baseUrl": ".",
+    "paths": { "@/*": ["src/*"], "@config": ["site.config.ts"] },
+    "types": ["@types/three"]
+  }
+}

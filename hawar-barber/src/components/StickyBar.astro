@@ -1,0 +1,14 @@
+---
+import { site, telHref, directionsUrl } from '@/lib/site';
+import Icons from './Icons.astro';
+---
+<div
+  class="fixed inset-x-0 bottom-0 z-50 border-t border-line bg-ink/92 pb-[max(0.625rem,env(safe-area-inset-bottom))] pt-2.5 backdrop-blur"
+  role="region"
+  aria-label="Call or get directions"
+>
+  <div class="mx-auto grid max-w-md grid-cols-2 gap-2.5 px-4">
+    <a href={telHref} class="btn btn-amber min-h-12 text-base" aria-label={`Call ${site.phone.display}`}><Icons name="phone" size={19} /> Call</a>
+    <a href={directionsUrl} target="_blank" rel="noopener" class="btn btn-outline min-h-12 text-base"><Icons name="pin" size={19} /> Directions</a>
+  </div>
+</div>

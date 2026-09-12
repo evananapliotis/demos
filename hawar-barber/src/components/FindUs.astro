@@ -1,0 +1,94 @@
+---
+import { site, telHref, directionsUrl, listingUrl, embedUrl, fullAddress, fmtTime, weekRows } from '@/lib/site';
+import Section from './Section.astro';
+import Icons from './Icons.astro';
+const rows = weekRows();
+---
+<Section id="find-us" eyebrow="Find us" title="Come and <span class='text-amber'>see us.</span>" class="bg-ink-2">
+  <div class="grid gap-10 md:grid-cols-2 md:gap-14">
+    <div data-reveal>
+      <h3 class="eyebrow mb-3">Address</h3>
+      <address class="not-italic">
+        <a href={directionsUrl} target="_blank" rel="noopener" class="inline-block min-h-11 text-xl leading-snug text-cream hover:text-amber">
+          {site.name}<br />{site.address.street}<br />{site.address.locality} {site.address.postcode}
+        </a>
+      </address>
+      <p class="mt-3">
+        <a href={telHref} class="inline-flex min-h-11 items-center gap-2 text-xl font-bold text-amber hover:text-amber-2"><Icons name="phone" size={20} /> {site.phone.display}</a>
+      </p>
+
+      <h3 class="eyebrow mb-3 mt-8">Opening hours</h3>
+      {
+        rows ? (
+          <table class="w-full border-collapse text-lg" data-hours-table>
+            <caption class="sr-only">Opening hours for {site.name}. Today is listed first.</caption>
+            <tbody>
+              {rows.map((r) => (
+                <tr class="border-t border-line last:border-b data-[today]:bg-amber/10 data-[today]:text-amber" data-day={r.day}>
+                  <th scope="row" class="py-3 pl-2 pr-4 text-left font-medium">{r.label}<span class="ml-3 hidden text-xs font-bold uppercase tracking-[0.14em]" data-today-tag>Today</span></th>
+                  <td class={`py-3 pr-2 text-right tabular-nums ${r.closed ? 'text-cream-2' : 'text-cream'}`}>{r.closed ? 'Closed' : `${fmtTime(r.open!)} – ${fmtTime(r.close!)}`}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        ) : (
+          <div class="rounded-md border border-line bg-ink p-5">
+            <p class="flex items-center gap-3 text-xl text-cream"><Icons name="clock" size={22} class="text-amber" /> Closes {fmtTime(site.hours.closes)}</p>
+            <p class="mt-2 text-cream-2">Full weekly hours aren’t published online yet.</p>
+            <a href={telHref} class="mt-3 inline-flex min-h-11 items-center gap-2 font-bold text-amber hover:text-amber-2"><Icons name="phone" size={18} /> Call to check today’s hours</a>
+          </div>
+        )
+      }
+
+      <div class="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2">
+        <a href={directionsUrl} target="_blank" rel="noopener" class="btn btn-amber"><Icons name="pin" size={19} /> Directions</a>
+        <a href={listingUrl} target="_blank" rel="noopener" class="btn btn-outline">Google listing <Icons name="external" size={16} /></a>
+      </div>
+    </div>
+
+    <div class="relative min-h-[300px] overflow-hidden rounded-md border border-line bg-ink md:min-h-[480px]" data-map data-src={embedUrl} data-title={`${site.name} at ${fullAddress}`} data-reveal>
+      <div class="absolute inset-0 flex flex-col items-start justify-end gap-3 bg-[radial-gradient(70%_60%_at_70%_30%,rgb(242_169_59/0.14),transparent_70%)] p-5" data-map-cover>
+        <p class="display text-4xl text-cream">{site.address.street}</p>
+        <p class="text-cream-2">{site.address.locality} {site.address.postcode}</p>
+        <button type="button" class="btn btn-outline" data-map-load>Show map</button>
+        <p class="text-xs text-cream-2">Loads Google Maps on tap.</p>
+      </div>
+    </div>
+  </div>
+</Section>
+
+<script>
+  // Map facade: the Google Maps iframe (~1MB) only loads when asked for.
+  const box = document.querySelector<HTMLElement>('[data-map]');
+  const btn = box?.querySelector<HTMLButtonElement>('[data-map-load]');
+  btn?.addEventListener('click', () => {
+    const iframe = document.createElement('iframe');
+    iframe.title = `Map showing ${box!.dataset.title ?? 'the shop'}`;
+    iframe.src = box!.dataset.src!;
+    iframe.loading = 'lazy';
+    iframe.referrerPolicy = 'no-referrer-when-downgrade';
+    iframe.setAttribute('allowfullscreen', '');
+    iframe.className = 'absolute inset-0 h-full w-full border-0';
+    box!.querySelector('[data-map-cover]')?.remove();
+    box!.appendChild(iframe);
+  });
+
+  // Hours table: today first, highlighted (only when a weekly table is rendered).
+  const table = document.querySelector<HTMLTableElement>('[data-hours-table]');
+  if (table) {
+    const names = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+    const today = names[new Date().getDay()];
+    const tbody = table.tBodies[0];
+    const row = tbody.querySelector<HTMLTableRowElement>(`tr[data-day="${today}"]`);
+    if (row) {
+      row.dataset.today = '';
+      row.querySelector<HTMLElement>('[data-today-tag]')?.classList.remove('hidden');
+      // rotate so today is on top, keeping the week order after it
+      const rowsAfter: HTMLTableRowElement[] = [];
+      let r = row.nextElementSibling as HTMLTableRowElement | null;
+      while (r) { rowsAfter.push(r); r = r.nextElementSibling as HTMLTableRowElement | null; }
+      const before = [...tbody.querySelectorAll('tr')].filter((x) => x !== row && !rowsAfter.includes(x));
+      tbody.replaceChildren(row, ...rowsAfter, ...before);
+    }
+  }
+</script>

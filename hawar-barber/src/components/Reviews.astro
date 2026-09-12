@@ -1,0 +1,56 @@
+---
+import { site, listingUrl } from '@/lib/site';
+import Section from './Section.astro';
+import Stars from './Stars.astro';
+import GoogleG from './GoogleG.astro';
+import Icons from './Icons.astro';
+const hasReviews = site.reviews.length > 0;
+---
+{
+  hasReviews ? (
+    <Section id="reviews" eyebrow="Google reviews" title="Straight from <span class='text-amber'>Google.</span>">
+      <div class="grid gap-8 md:grid-cols-[minmax(0,1fr)_minmax(0,2fr)] md:gap-14">
+        <div class="md:sticky md:top-20 md:self-start">
+          <p class="display text-[6rem] leading-none text-cream">{site.google.rating.toFixed(1)}</p>
+          <Stars rating={site.google.rating} class="mt-1 text-amber" size={22} />
+          <p class="mt-3 flex items-center gap-2 text-cream-2"><GoogleG size={18} /> {site.google.reviewCount} Google reviews</p>
+          <a href={listingUrl} target="_blank" rel="noopener" class="btn btn-outline mt-6">Read them all <Icons name="external" size={16} /></a>
+        </div>
+        <ul class="grid gap-4" role="list">
+          {site.reviews.map((r) => (
+            <li class="rounded-md border border-line bg-ink-2 p-5">
+              <Stars rating={r.rating} class="text-amber" size={14} />
+              <blockquote class="mt-3 text-[1.05rem] leading-relaxed text-cream"><p>“{r.text}”</p></blockquote>
+              <footer class="mt-4 flex items-center justify-between gap-3 text-sm text-cream-2">
+                <cite class="not-italic font-bold text-cream">{r.author}</cite>
+                <span class="inline-flex items-center gap-1.5"><GoogleG size={14} /> Google{r.date ? ` · ${r.date}` : ''}</span>
+              </footer>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </Section>
+  ) : (
+    <section id="reviews" class="scroll-mt-14 border-y border-line bg-ink-2 px-5 py-16 sm:px-8 md:py-24 lg:px-12" aria-labelledby="reviews-title">
+      <div class="mx-auto max-w-5xl" data-reveal>
+        <p class="eyebrow flex items-center gap-3 before:block before:h-[2px] before:w-6 before:bg-amber">Google reviews</p>
+        <div class="mt-6 grid items-end gap-6 md:grid-cols-[auto_1fr] md:gap-14">
+          <div class="flex items-end gap-4">
+            <p class="display text-[7.5rem] leading-[0.8] text-cream md:text-[12rem]">{site.google.rating.toFixed(1)}</p>
+            <div class="pb-2">
+              <Stars rating={site.google.rating} class="text-amber" size={24} />
+              <p class="mt-2 text-sm text-cream-2">out of 5</p>
+            </div>
+          </div>
+          <div class="md:pb-4">
+            <h2 id="reviews-title" class="text-[clamp(2.5rem,10vw,5rem)] text-cream">
+              {site.google.reviewCount} reviews.<br /><span class="text-amber">Read them yourself.</span>
+            </h2>
+            <p class="mt-4 max-w-md text-cream-2">Every one is on the shop’s Google listing, word for word, from the people who sat in the chair.</p>
+            <a href={listingUrl} target="_blank" rel="noopener" class="btn btn-amber mt-6"><GoogleG size={18} /> Open the Google reviews <Icons name="external" size={16} /></a>
+          </div>
+        </div>
+      </div>
+    </section>
+  )
+}

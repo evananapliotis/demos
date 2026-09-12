@@ -1,0 +1,29 @@
+---
+import { Image } from 'astro:assets';
+import { galleryImages } from '@/lib/images';
+import Section from './Section.astro';
+---
+{
+  galleryImages.length > 0 && (
+    <Section id="gallery" eyebrow="The work" title="Fresh from the <span class='text-amber'>chair.</span>" class="bg-ink-2">
+      <ul class="gallery-track" role="list" aria-label="Photos from the shop">
+        {galleryImages.map((g) => (
+          <li class="overflow-hidden rounded-md bg-ink-3">
+            <Image
+              src={g.image}
+              alt={g.alt}
+              widths={[360, 640, 960]}
+              sizes="(min-width: 768px) 33vw, 82vw"
+              format="webp"
+              quality={72}
+              loading="lazy"
+              decoding="async"
+              class="aspect-[4/5] h-auto w-full object-cover"
+            />
+          </li>
+        ))}
+      </ul>
+      <p class="mt-4 text-sm text-cream-2 md:hidden">Swipe for more.</p>
+    </Section>
+  )
+}

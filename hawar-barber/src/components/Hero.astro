@@ -1,0 +1,117 @@
+---
+import { Image } from 'astro:assets';
+import { site, telHref, directionsUrl, listingUrl, fmtTime } from '@/lib/site';
+import { heroImage, altFor } from '@/lib/images';
+import Icons from './Icons.astro';
+import Stars from './Stars.astro';
+import GoogleG from './GoogleG.astro';
+import PoleStatic from './PoleStatic.astro';
+const [first, ...rest] = site.name.split(' ');
+---
+<header id="top" class="relative isolate flex min-h-[100svh] flex-col overflow-hidden bg-ink">
+  {
+    heroImage && (
+      <Image
+        src={heroImage}
+        alt={altFor(site.images.hero)}
+        widths={[480, 768, 1080, 1440]}
+        sizes="100vw"
+        layout="full-width"
+        format="webp"
+        quality={70}
+        loading="eager"
+        fetchpriority="high"
+        class="absolute inset-0 -z-20 h-full w-full object-cover object-center opacity-45"
+      />
+    )
+  }
+  <div class="absolute inset-0 -z-10 bg-[radial-gradient(90%_60%_at_100%_0%,rgb(242_169_59/0.16),transparent_60%),linear-gradient(to_bottom,rgb(14_12_10/0.2),rgb(14_12_10)_70%)]" aria-hidden="true"></div>
+
+  <nav class="flex items-center justify-between px-5 pt-4 sm:px-8 lg:px-12" aria-label="Primary">
+    <a href="#top" class="display inline-flex min-h-11 items-center gap-2 text-[1.35rem] tracking-wide text-cream" aria-label={`${site.name} home`}>
+      <span class="inline-block h-6 w-[7px] rounded-sm stripe-amber" aria-hidden="true"></span>
+      {site.name}
+    </a>
+    <ul class="flex items-center gap-2 text-sm font-bold" role="list">
+      <li class="hidden md:block"><a href="#prices" class="inline-flex min-h-11 items-center px-3 text-cream-2 hover:text-amber">Prices</a></li>
+      <li class="hidden md:block"><a href="#reviews" class="inline-flex min-h-11 items-center px-3 text-cream-2 hover:text-amber">Reviews</a></li>
+      <li class="hidden md:block"><a href="#find-us" class="inline-flex min-h-11 items-center px-3 text-cream-2 hover:text-amber">Find us</a></li>
+      <li>
+        <a href={telHref} class="inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-md px-3 text-amber hover:text-amber-2" aria-label={`Call ${site.phone.display}`}>
+          <Icons name="phone" size={20} /><span class="hidden sm:inline">{site.phone.display}</span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <div class="relative mx-auto grid w-full max-w-6xl flex-1 grid-cols-1 gap-4 px-5 pb-8 pt-2 sm:px-8 md:grid-cols-[minmax(0,1fr)_minmax(200px,30%)] md:items-center md:gap-12 md:pb-16 md:pt-10 lg:px-12">
+    <div class="flex justify-end md:order-2 md:justify-center">
+      <div class="pole-slot h-[clamp(10rem,25svh,19rem)] [@media(max-height:700px)]:h-32 md:h-[min(68vh,34rem)]" data-pole-slot aria-hidden="true">
+        <PoleStatic />
+      </div>
+    </div>
+
+    <div class="mt-auto md:order-1">
+      <p class="eyebrow rise">Barber shop · {site.address.locality}</p>
+      <h1 class="mt-3 text-[clamp(4rem,26vw,12.5rem)] text-cream">
+        {first}<br /><span class="text-amber">{rest.join(' ')}</span>
+      </h1>
+
+      <a
+        href={listingUrl}
+        target="_blank"
+        rel="noopener"
+        class="rise mt-5 inline-flex min-h-12 flex-wrap items-center gap-x-3 gap-y-1 rounded-md border border-cream/20 bg-ink-2/80 px-3.5 py-2 text-base font-bold text-cream hover:border-amber"
+        style="animation-delay:60ms"
+        aria-label={`Rated ${site.google.rating.toFixed(1)} from ${site.google.reviewCount} Google reviews. Open the Google listing.`}
+      >
+        <span class="inline-flex items-center gap-2.5"><span class="display text-2xl leading-none text-amber">{site.google.rating.toFixed(1)}</span><Stars rating={site.google.rating} class="text-amber" size={15} /></span>
+        <span class="inline-flex items-center gap-1.5 whitespace-nowrap">{site.google.reviewCount} Google reviews <GoogleG size={16} /></span>
+      </a>
+
+      <p class="rise mt-4 max-w-md text-lg leading-snug text-cream/85 md:text-2xl" style="animation-delay:120ms">{site.tagline}</p>
+
+      <div class="mt-6 grid grid-cols-1 gap-3 sm:flex">
+        <a href={telHref} class="btn btn-amber"><Icons name="phone" size={19} /> Call {site.phone.display}</a>
+        <a href={directionsUrl} target="_blank" rel="noopener" class="btn btn-outline"><Icons name="pin" size={19} /> Directions</a>
+      </div>
+
+      <p class="rise mt-6 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-cream-2" style="animation-delay:180ms">
+        <span class="inline-flex items-center gap-1.5"><Icons name="pin" size={14} class="text-amber" /> {site.address.street}, {site.address.postcode}</span>
+        <span class="inline-flex items-center gap-1.5"><Icons name="clock" size={14} class="text-amber" /> Closes {fmtTime(site.hours.closes)}</span>
+      </p>
+    </div>
+  </div>
+</header>
+
+<script>
+  // 3D pole: loaded late, as its own chunk, only on devices that can afford it.
+  // The name, rating and Call button are plain HTML and never wait on any of this.
+  const slot = document.querySelector<HTMLElement>('[data-pole-slot]');
+  const nav = navigator as Navigator & { deviceMemory?: number; connection?: { saveData?: boolean; effectiveType?: string } };
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
+  const webgl = () => {
+    try {
+      const c = document.createElement('canvas');
+      return !!(c.getContext('webgl2') || c.getContext('webgl'));
+    } catch {
+      return false;
+    }
+  };
+  const capable =
+    !!slot &&
+    !reduced.matches &&
+    (nav.hardwareConcurrency ?? 4) >= 4 &&
+    (nav.deviceMemory ?? 4) >= 4 &&
+    !nav.connection?.saveData &&
+    !/^(slow-)?2g$/.test(nav.connection?.effectiveType ?? '') &&
+    webgl();
+
+  if (capable) {
+    const start = () => import('../hero3d/pole').then((m) => m.mount(slot!)).catch(() => {});
+    const whenIdle = () => ('requestIdleCallback' in window ? requestIdleCallback(start, { timeout: 4000 }) : setTimeout(start, 1500));
+    const after = () => setTimeout(whenIdle, 1200);
+    if (document.readyState === 'complete') after();
+    else addEventListener('load', after, { once: true });
+  }
+</script>

@@ -1,0 +1,83 @@
+---
+import '@/styles/global.css';
+import displayWoff2 from '@fontsource-variable/big-shoulders-display/files/big-shoulders-display-latin-wght-normal.woff2?url';
+import { site, fullAddress, jsonLd } from '@/lib/site';
+
+interface Props {
+  title: string;
+  description: string;
+}
+const { title, description } = Astro.props;
+const pageUrl = new URL(Astro.url.pathname, Astro.site).href.replace(/\/$/, '');
+const ogImage = new URL('/og.png', Astro.site).href;
+const ld = jsonLd(pageUrl, ogImage);
+---
+
+<!doctype html>
+<html lang="en-GB" class="bg-ink">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={pageUrl} />
+    <meta name="theme-color" content="#0e0c0a" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
+    <meta name="robots" content="index,follow" />
+    <link rel="preload" as="font" type="font/woff2" href={displayWoff2} crossorigin />
+
+    <meta property="og:type" content="business.business" />
+    <meta property="og:site_name" content={site.name} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={pageUrl} />
+    <meta property="og:locale" content="en_GB" />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content={`${site.name}, ${fullAddress}. Rated ${site.google.rating.toFixed(1)} from ${site.google.reviewCount} Google reviews.`} />
+    <meta property="business:contact_data:street_address" content={site.address.street} />
+    <meta property="business:contact_data:locality" content={site.address.locality} />
+    <meta property="business:contact_data:postal_code" content={site.address.postcode} />
+    <meta property="business:contact_data:country_name" content="United Kingdom" />
+    <meta property="business:contact_data:phone_number" content={site.phone.tel} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
+    <meta name="geo.placename" content={fullAddress} />
+    <meta name="geo.region" content="GB-DAL" />
+    <meta name="geo.position" content={`${site.geo.lat};${site.geo.lng}`} />
+
+    <script type="application/ld+json" set:html={JSON.stringify(ld)} />
+    <script is:inline>document.documentElement.classList.add('js')</script>
+  </head>
+  <body class="bg-ink text-cream antialiased">
+    <a
+      href="#main"
+      class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:rounded-md focus:bg-amber focus:px-4 focus:py-3 focus:font-bold focus:text-ink"
+      >Skip to content</a
+    >
+    <slot />
+    <script>
+      const els = document.querySelectorAll('[data-reveal]');
+      if ('IntersectionObserver' in window) {
+        const io = new IntersectionObserver(
+          (entries) =>
+            entries.forEach((e) => {
+              if (e.isIntersecting) {
+                e.target.classList.add('is-in');
+                io.unobserve(e.target);
+              }
+            }),
+          { rootMargin: '0px 0px -6% 0px', threshold: 0.08 },
+        );
+        els.forEach((el) => io.observe(el));
+      } else {
+        els.forEach((el) => el.classList.add('is-in'));
+      }
+    </script>
+  </body>
+</html>

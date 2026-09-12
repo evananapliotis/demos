@@ -1,0 +1,50 @@
+# HAWAR BARBER — 321 North Rd, Darlington
+
+One-page, phone-first site. Astro 5 + Tailwind 4, static output, a lazy three.js barber pole in the hero.
+
+## Edit
+
+Everything editable is in **`site.config.ts`**: name, address, phone, hours, services, prices, reviews,
+booking URL, socials, about copy, image names and alt text. Empty values are not rendered, so the page only
+ever shows what is filled in.
+
+Photos go in **`public/images/`** and are picked up automatically:
+
+| file | where it shows |
+| --- | --- |
+| `hero.jpg` | behind the hero (optional) |
+| `shopfront.jpg` | About section |
+| `gallery-1.jpg`, `gallery-2.jpg` … | gallery (swipe on phones, grid on desktop) |
+
+Any size; the build resizes, converts to WebP and lazy-loads everything below the fold.
+
+## Run
+
+```sh
+npm install
+npm run dev              # http://localhost:4321
+npm run build            # renders public/og.png, then builds → dist/
+npm run preview          # serves dist/ on http://localhost:4321
+node scripts/verify.mjs http://localhost:4321/      # phone checks + screenshots → reports/
+node scripts/lighthouse.mjs http://localhost:4321/  # mobile Lighthouse → reports/
+node scripts/sizes.mjs                              # gzip size of every built asset
+```
+
+## Deploy (Cloudflare Pages)
+
+Upload the **`dist/`** folder. `public/_headers` sets long cache on `/_astro/*` and the usual security headers.
+Set `url` in `site.config.ts` to the final domain so the canonical, sitemap and Open Graph URLs are right.
+
+## What is on the page, and where it came from
+
+Everything shown was checked against a source. Nothing was made up to fill space.
+
+| shown | source |
+| --- | --- |
+| Name, address, phone, "Barber shop", wheelchair accessible, closes 6pm | the Google Maps listing |
+| 5.0 rating from 56 Google reviews | the Google Maps listing |
+| Facebook link | the page titled "Hawar Barbers \| Darlington" (facebook.com/61574727154851) |
+| Map pin coordinates in the structured data | centre of postcode DL1 3BL (approximate, not the shop's own pin) |
+
+Left blank until the shop confirms them (each has a slot in `site.config.ts` and its section appears once filled in):
+weekly opening hours, services and prices, review text, an online booking link, Instagram/TikTok, and photos.
