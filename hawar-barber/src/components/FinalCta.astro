@@ -14,11 +14,28 @@ import Icons from './Icons.astro';
       <button type="button" class="btn border-2 border-ink text-ink hover:bg-ink hover:text-cream" data-share data-share-title={site.name} data-share-text={`${site.name}, ${fullAddress}. Call ${site.phone.display}.`} hidden>
         <Icons name="share" size={19} /> <span data-share-label>Share</span>
       </button>
+      <button type="button" class="btn border-2 border-ink text-ink hover:bg-ink hover:text-cream" data-install hidden><Icons name="plus" size={19} /> Add to home screen</button>
     </div>
   </div>
 </section>
 
 <script>
+  // "Add to home screen" where the browser offers an install prompt (Android Chrome and Edge). Hidden everywhere else.
+  const install = document.querySelector<HTMLButtonElement>('[data-install]');
+  let deferredInstall: (Event & { prompt: () => Promise<void>; userChoice: Promise<unknown> }) | null = null;
+  addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredInstall = e as typeof deferredInstall;
+    if (install) install.hidden = false;
+  });
+  install?.addEventListener('click', async () => {
+    if (!deferredInstall) return;
+    await deferredInstall.prompt();
+    await deferredInstall.userChoice.catch(() => {});
+    deferredInstall = null;
+    install.hidden = true;
+  });
+
   // Share the site with the phone's share sheet (WhatsApp, Messages …); copies the link where there is no share sheet.
   const btn = document.querySelector<HTMLButtonElement>('[data-share]');
   if (btn) {

@@ -4,7 +4,7 @@ export const prerender = false;
 import '@/styles/global.css';
 import { site } from '@/lib/site';
 import { isAdmin } from '@/lib/session';
-import { bookingsOn, blocksOn, type BookingRow, type BlockRow } from '@/lib/db';
+import { bookingsOn, blocksOn, countsOn, type BookingRow, type BlockRow } from '@/lib/db';
 import { displayPhone, hoursFor, cfg } from '@/lib/booking';
 import { addDays, fmtDay, fmtDayLong, fmtTime, fromMin, isIsoDate, toMin, todayLondon } from '@/lib/time';
 
@@ -28,9 +28,14 @@ const days = [
 ];
 let bookings: BookingRow[] = [];
 let blocks: BlockRow[] = [];
+const week = Array.from({ length: 7 }, (_, i) => addDays(today, i));
+let counts: Record<string, number> = {};
 if (signedIn && env?.DB) {
-  [bookings, blocks] = await Promise.all([bookingsOn(env.DB, days.map((d) => d.date)), blocksOn(env.DB, days.map((d) => d.date))]);
+  [bookings, blocks, counts] = await Promise.all([bookingsOn(env.DB, days.map((d) => d.date)), blocksOn(env.DB, days.map((d) => d.date)), countsOn(env.DB, week)]);
 }
+const now = new Date();
+const nextUp = first === today ? bookings.find((b) => b.local_date === today && new Date(b.end_utc) > now) : undefined;
+const todayDone = first === today && !nextUp;
 const endOf = (b: BookingRow) => fromMin(toMin(b.local_time) + b.minutes);
 const blockDates = Array.from({ length: 8 }, (_, i) => addDays(today, i));
 const times: string[] = [];
@@ -74,6 +79,20 @@ for (let m = 8 * 60; m <= 19 * 60; m += 15) times.push(fromMin(m));
         <>
           <h1 class="mt-8 text-[clamp(2.5rem,12vw,4.5rem)] text-cream">The <span class="text-amber">list.</span></h1>
           <p class="mt-2 text-cream-2">{bookings.length} booked across {days[0].label.toLowerCase()} and {days[1].label.toLowerCase()}. Cancelling frees the time straight away; customers can also cancel through their own link.</p>
+          {first === today && (
+            <p class="mt-4 rounded-md border border-amber/40 bg-amber/10 px-4 py-3 text-cream">
+              <span class="font-bold text-amber">Next up:</span>{' '}
+              {nextUp ? `${fmtTime(nextUp.local_time)} ${nextUp.service_name}, ${nextUp.name}` : todayDone ? 'nothing more today.' : ''}
+            </p>
+          )}
+          <nav class="mt-6 flex gap-2 overflow-x-auto pb-1" aria-label="This week" style="scrollbar-width:none">
+            {week.map((d) => (
+              <a href={d === today ? '/admin' : `/admin?day=${d}`} class={`flex min-h-12 min-w-[4.2rem] shrink-0 flex-col items-center justify-center rounded-md border px-2 py-1 text-sm font-bold ${d === first ? 'border-amber bg-amber text-ink' : 'border-line bg-ink-2 text-cream'}`} aria-current={d === first ? 'date' : undefined}>
+                <span class="text-xs uppercase tracking-[0.1em] opacity-80">{fmtDay(d).split(' ')[0]}</span>
+                <span class="display text-2xl leading-none">{counts[d] ?? 0}</span>
+              </a>
+            ))}
+          </nav>
           <nav class="mt-4 flex flex-wrap gap-2" aria-label="Days">
             <a href={`/admin?day=${addDays(first, -2)}`} class="btn btn-outline min-h-12 px-4 text-sm">‹ Earlier</a>
             {first !== today && <a href="/admin" class="btn btn-outline min-h-12 px-4 text-sm">Today</a>}

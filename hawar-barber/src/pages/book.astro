@@ -25,6 +25,7 @@ const config = {
       <p class="eyebrow flex items-center gap-3 before:block before:h-[2px] before:w-6 before:bg-amber">Online booking</p>
       <h1 class="mt-3 text-[clamp(3rem,15vw,6rem)] text-cream">Book a <span class="text-amber">time.</span></h1>
       <p class="mt-3 text-lg text-cream/85">Pick what you're coming in for, then a day and a time. It's confirmed straight away.</p>
+      <div class="book-summary mt-4" data-summary-chips hidden aria-live="polite" aria-label="Your choices"></div>
 
       <noscript>
         <p class="mt-6 rounded-md border border-amber/50 bg-amber/10 p-4 text-cream">Online booking needs JavaScript. To book, call <a href={telHref} class="font-bold text-amber">{site.phone.display}</a>.</p>
@@ -56,7 +57,7 @@ const config = {
 
         <fieldset data-step="time" hidden>
           <legend class="eyebrow mb-3">3 · What time?</legend>
-          <div class="grid grid-cols-3 gap-2 min-[400px]:grid-cols-4" data-slots></div>
+          <div class="grid gap-5" data-slots></div>
           <p class="mt-3 text-sm text-cream-2" data-slot-hint aria-live="polite"></p>
         </fieldset>
 
@@ -86,6 +87,7 @@ const config = {
       </form>
 
       <section class="mt-8 hidden rounded-md border border-amber/40 bg-ink-2 p-6" data-done aria-live="polite">
+        <svg class="tick mb-4" viewBox="0 0 52 52" width="56" height="56" aria-hidden="true"><circle class="tick-ring" cx="26" cy="26" r="24" /><path class="tick-mark" d="M15 27l7 7 15-16" /></svg>
         <p class="eyebrow">Booked</p>
         <h2 class="mt-2 text-4xl text-cream" tabindex="-1">See you <span class="text-amber">soon.</span></h2>
         <p class="mt-4 text-lg text-cream" data-done-when></p>
@@ -104,7 +106,7 @@ const config = {
 </Base>
 
 <script>
-  import { fmtTime, fmtDayLong } from '@/lib/time';
+  import { fmtTime, fmtDayLong, toMin, addDays } from '@/lib/time';
 
   type Svc = { id: string; name: string; minutes: number };
   type Day = { date: string; label: string; closed: boolean; hours: { open: string; close: string } | null; slots: string[] };
@@ -122,6 +124,15 @@ const config = {
     const submit = form.querySelector<HTMLButtonElement>('[data-submit]')!;
     const submitLabel = submit.querySelector<HTMLElement>('[data-submit-label]')!;
     const done = document.querySelector<HTMLElement>('[data-done]')!;
+    const summaryChips = document.querySelector<HTMLElement>('[data-summary-chips]')!;
+    // Haptic tick on Android, only once the visitor has really touched the page (a deep link opens steps on its own).
+    const buzz = () => {
+      try {
+        const ua = (navigator as Navigator & { userActivation?: { hasBeenActive: boolean } }).userActivation;
+        if (ua && !ua.hasBeenActive) return;
+        navigator.vibrate?.(8);
+      } catch { /* not supported */ }
+    };
 
     let days: Day[] = [];
     let today = '';
@@ -129,11 +140,18 @@ const config = {
     let date = '';
     let time = '';
     let busy = false;
+    const wantedDate = new URLSearchParams(location.search).get('date') ?? '';
 
-    const reveal = (el: HTMLElement) => {
+    const reveal = (el: HTMLElement, scroll = true) => {
       if (!el.hidden) return;
       el.hidden = false;
-      requestAnimationFrame(() => el.scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }));
+      if (scroll) requestAnimationFrame(() => el.scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }));
+    };
+    const dayWord = (d: Day) => (d.date === today ? 'Today' : d.date === addDays(today, 1) ? 'Tomorrow' : d.label);
+    const paintSummary = () => {
+      const parts = [service?.name, date ? dayWord(days.find((x) => x.date === date) ?? { date, label: date, closed: false, hours: null, slots: [] }) : '', time ? fmtTime(time) : ''].filter(Boolean);
+      summaryChips.innerHTML = parts.map((p) => `<span>${p}</span>`).join('');
+      summaryChips.hidden = parts.length === 0;
     };
     const chip = (name: string, value: string, label: string, sub = '', disabled = false, checked = false) =>
       `<label class="chip"><input type="radio" name="${name}" value="${value}"${disabled ? ' disabled' : ''}${checked ? ' checked' : ''}><span class="chip-body">${label}${sub ? `<small>${sub}</small>` : ''}</span></label>`;
@@ -149,7 +167,11 @@ const config = {
     const renderSlots = () => {
       const d = days.find((x) => x.date === date);
       if (!d) return;
-      slotsBox.innerHTML = d.slots.map((t) => chip('time', t, fmtTime(t), '', false, t === time)).join('');
+      const groups: [string, string[]][] = [['Morning', d.slots.filter((t) => toMin(t) < 12 * 60)], ['Afternoon', d.slots.filter((t) => toMin(t) >= 12 * 60)]];
+      slotsBox.innerHTML = groups
+        .filter(([, s]) => s.length)
+        .map(([name, s]) => `<div><p class="slot-group-name">${name}</p><div class="grid grid-cols-3 gap-2 min-[400px]:grid-cols-4">${s.map((t) => chip('time', t, fmtTime(t), '', false, t === time)).join('')}</div></div>`)
+        .join('');
       slotHint.textContent = d.hours ? `${fmtDayLong(d.date)}: open ${fmtTime(d.hours.open)} to ${fmtTime(d.hours.close)}.` : '';
       if (!d.slots.length) slotHint.textContent = 'That day has filled up. Pick another.';
     };
@@ -166,8 +188,16 @@ const config = {
         today = data.today;
         if (date && !days.some((d) => d.date === date && d.slots.length)) date = '';
         if (date && time && !days.find((d) => d.date === date)?.slots.includes(time)) time = '';
+        if (!date) {
+          const first = days.find((d) => d.date === wantedDate && d.slots.length) ?? days.find((d) => !d.closed && d.slots.length);
+          if (first) date = first.date;
+        }
         renderDays();
-        if (date) renderSlots();
+        if (date) {
+          renderSlots();
+          reveal(step('time'), false);
+        }
+        paintSummary();
       } catch {
         dayHint.innerHTML = `Couldn't load the times. Try again in a moment, or call <a href="tel:${cfg.tel}" class="font-bold text-amber">${cfg.phone}</a>.`;
       }
@@ -175,6 +205,7 @@ const config = {
 
     form.addEventListener('change', (e) => {
       const t = e.target as HTMLInputElement;
+      buzz();
       if (t.name === 'service') {
         service = cfg.services.find((s) => s.id === t.value) ?? null;
         reveal(step('day'));
@@ -183,12 +214,13 @@ const config = {
         date = t.value;
         time = '';
         renderSlots();
-        reveal(step('time'));
+        reveal(step('time'), false);
       } else if (t.name === 'time') {
         time = t.value;
         reveal(step('details'));
         form.querySelector<HTMLInputElement>('#name')?.focus({ preventScroll: true });
       }
+      paintSummary();
     });
 
     // Deep link: /book?service=skin-fade
@@ -243,6 +275,7 @@ const config = {
           done.querySelector<HTMLAnchorElement>('[data-calendar]')!.href = gcal(b);
           done.querySelector<HTMLAnchorElement>('[data-ics]')!.href = `/api/ics/${b.token}`;
           form.hidden = true;
+          summaryChips.hidden = true;
           done.classList.remove('hidden');
           done.querySelector<HTMLElement>('h2')?.focus();
           done.scrollIntoView({ block: 'start' });

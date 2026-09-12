@@ -31,7 +31,7 @@ const photos = galleryImages.map((g, i) => ({ src: full[i].src, w: Number(full[i
           </li>
         ))}
       </ul>
-      <p class="mt-4 text-sm text-cream-2">Tap a photo to see it full size.<span class="md:hidden"> Swipe for more.</span></p>
+      <p class="mt-4 flex items-center justify-between gap-4 text-sm text-cream-2"><span>Tap a photo to see it full size.<span class="md:hidden"> Swipe for more.</span></span><span class="tabular-nums font-bold text-cream md:hidden" data-gallery-pos aria-live="polite">1 / {galleryImages.length}</span></p>
 
       <dialog class="lightbox" data-lightbox data-photos={JSON.stringify(photos)} aria-label="Photo viewer">
         <div class="lb-bar">
@@ -48,6 +48,25 @@ const photos = galleryImages.map((g, i) => ({ src: full[i].src, w: Number(full[i
 }
 
 <script>
+  // "3 / 8" under the swipe track on phones.
+  {
+    const track = document.querySelector<HTMLElement>('.gallery-track');
+    const pos = document.querySelector<HTMLElement>('[data-gallery-pos]');
+    if (track && pos) {
+      const total = track.children.length;
+      let raf = 0;
+      track.addEventListener('scroll', () => {
+        if (raf) return;
+        raf = requestAnimationFrame(() => {
+          raf = 0;
+          const item = track.children[0] as HTMLElement;
+          const stride = item.offsetWidth + parseFloat(getComputedStyle(track).columnGap || getComputedStyle(track).gap || '12');
+          pos.textContent = `${Math.min(total, Math.round(track.scrollLeft / stride) + 1)} / ${total}`;
+        });
+      }, { passive: true });
+    }
+  }
+
   // Lightbox: tap a gallery photo to see it full size; swipe (or arrow keys / buttons) between photos.
   // Slides are created on first open, and only the current photo and its neighbours are fetched.
   // Android's back button closes it (a history entry is pushed on open).

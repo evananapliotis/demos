@@ -87,6 +87,16 @@ export async function bookingsOn(db: D1Database, dates: string[]): Promise<Booki
   return r.results ?? [];
 }
 
+/** Confirmed bookings per date, for the week strip in /admin. */
+export async function countsOn(db: D1Database, dates: string[]): Promise<Record<string, number>> {
+  if (!dates.length) return {};
+  const r = await db
+    .prepare(`SELECT local_date AS d, COUNT(*) AS n FROM bookings WHERE status = 'confirmed' AND local_date IN (${dates.map(() => '?').join(',')}) GROUP BY local_date`)
+    .bind(...dates)
+    .all<{ d: string; n: number }>();
+  return Object.fromEntries((r.results ?? []).map((x) => [x.d, x.n]));
+}
+
 export async function activeBookingsForPhone(db: D1Database, phone: string): Promise<number> {
   const r = await db.prepare(`SELECT COUNT(*) AS n FROM bookings WHERE phone = ? AND status = 'confirmed' AND end_utc > ?`).bind(phone, nowIso()).first<{ n: number }>();
   return r?.n ?? 0;

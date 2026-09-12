@@ -58,9 +58,10 @@ const letters = (word: string, offset: number) => [...word].map((ch, i) => ({ ch
     <div class="flex justify-end md:order-2 md:justify-center">
       <div class="relative" data-pole-wrap>
         <div class="pole-glow pointer-events-none absolute -inset-x-[60%] -inset-y-[18%] -z-10" aria-hidden="true"></div>
-        <div class="pole-slot h-[clamp(10rem,25svh,19rem)] [@media(max-height:700px)_and_(max-width:767px)]:h-32 md:h-[clamp(20rem,70vh,40rem)]" data-pole-slot aria-hidden="true">
+        <div class="pole-slot h-[clamp(11rem,30svh,19rem)] [@media(max-height:700px)_and_(max-width:767px)]:h-32 md:h-[clamp(20rem,70vh,40rem)]" data-pole-slot aria-hidden="true">
           <PoleStatic />
         </div>
+        <button type="button" class="tilt-btn" data-tilt hidden>Tilt to spin</button>
         <script is:inline>
           // Runs during parse, before first paint: when WebGL exists the flat SVG never shows and
           // the 3D pole takes the slot. The SVG only stays for no-JS, no-WebGL, or a failed 3D load.
@@ -102,6 +103,9 @@ const letters = (word: string, offset: number) => [...word].map((ch, i) => ({ ch
       <p class="rise mt-6 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-cream-2" style="animation-delay:180ms">
         <span class="inline-flex items-center gap-1.5"><Icons name="pin" size={14} class="text-amber" /> {site.address.street}, {site.address.postcode}</span>
         <span class="inline-flex items-center gap-1.5"><span class="status-dot" data-status-dot aria-hidden="true"></span> <span data-open-status data-week={JSON.stringify(site.hours.week)}>{openDaysLabel()}</span></span>
+        {site.booking.enabled && site.services[0] && (
+          <span class="inline-flex items-center gap-1.5" data-next-free data-service={site.services[0].id} hidden><Icons name="calendar" size={14} class="text-amber" /> <span>Next free: <a href="/book" class="-my-3 inline-flex min-h-12 items-center font-bold text-amber underline decoration-amber/50 underline-offset-2" data-next-free-link><span data-next-free-when></span></a></span></span>
+        )}
       </p>
     </div>
   </div>
@@ -113,6 +117,29 @@ const letters = (word: string, offset: number) => [...word].map((ch, i) => ({ ch
 
 <script>
   import { paintOpenStatus } from '@/lib/open-status';
+  import { addDays, fmtTime } from '@/lib/time';
+
+  // Live "Next free: Sun 9am" from the booking system, for the first service in the config. Stays hidden on any failure.
+  const nextFree = document.querySelector<HTMLElement>('[data-next-free]');
+  if (nextFree) {
+    const svc = nextFree.dataset.service!;
+    const show = async () => {
+      try {
+        const res = await fetch(`/api/availability?service=${encodeURIComponent(svc)}`, { headers: { Accept: 'application/json' } });
+        if (!res.ok) return;
+        const data = (await res.json()) as { today: string; days: { date: string; label: string; slots: string[] }[] };
+        const d = data.days.find((x) => x.slots.length);
+        if (!d) return;
+        const label = d.date === data.today ? 'today' : d.date === addDays(data.today, 1) ? 'tomorrow' : d.label;
+        nextFree.querySelector('[data-next-free-when]')!.textContent = `${label} ${fmtTime(d.slots[0])}`;
+        nextFree.querySelector<HTMLAnchorElement>('[data-next-free-link]')!.href = `/book?service=${encodeURIComponent(svc)}`;
+        nextFree.hidden = false;
+      } catch {
+        /* no line */
+      }
+    };
+    'requestIdleCallback' in window ? requestIdleCallback(show, { timeout: 3000 }) : setTimeout(show, 800);
+  }
 
   // "Open now · closes 6:15pm" / "Closed · opens 8:30am tomorrow" on the shop's clock, plus the status dots.
   paintOpenStatus();

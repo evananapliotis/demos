@@ -15,6 +15,7 @@ const anyPrice = site.services.some((s) => s.price);
             <div class="min-w-0">
               <h3 class="text-[1.9rem] leading-none text-cream md:text-4xl">{s.name}</h3>
               <p class="mt-2 text-cream-2">{s.minutes} min{s.price ? ` · ${s.price}` : ''}{s.note ? ` · ${s.note}` : ''}</p>
+              {site.booking.enabled && <p class="mt-1 text-sm font-bold text-amber" data-next-for={s.id} hidden></p>}
             </div>
             {bookHref && <a href={`${bookHref}?service=${s.id}`} class="btn btn-outline min-h-12 shrink-0 px-4 text-base" aria-label={`Book ${s.name}`}>Book</a>}
           </li>
@@ -33,3 +34,31 @@ const anyPrice = site.services.some((s) => s.price);
     )}
   </div>
 </Section>
+
+<script>
+  import { addDays, fmtTime } from '@/lib/time';
+  // When the list scrolls into view, ask the booking system for the next free time of every service.
+  const rows = document.querySelectorAll<HTMLElement>('[data-next-for]');
+  const section = document.getElementById('services');
+  if (rows.length && section && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver(async ([e]) => {
+      if (!e.isIntersecting) return;
+      io.disconnect();
+      try {
+        const res = await fetch('/api/availability?service=all', { headers: { Accept: 'application/json' } });
+        if (!res.ok) return;
+        const data = (await res.json()) as { today: string; next: Record<string, { date: string; time: string; label: string } | null> };
+        for (const row of rows) {
+          const n = data.next[row.dataset.nextFor!];
+          if (!n) continue;
+          const day = n.date === data.today ? 'today' : n.date === addDays(data.today, 1) ? 'tomorrow' : n.label;
+          row.textContent = `Next free: ${day} ${fmtTime(n.time)}`;
+          row.hidden = false;
+        }
+      } catch {
+        /* the list is still useful without it */
+      }
+    }, { rootMargin: '200px 0px' });
+    io.observe(section);
+  }
+</script>

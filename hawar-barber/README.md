@@ -58,6 +58,8 @@ times still free. Slot maths runs in Europe/London (`src/lib/time.ts`), so the c
 | route | what |
 | --- | --- |
 | `GET /api/availability?service=<id>` | every day in the window with the start times still free |
+| `GET /api/availability?service=all` | the next free start for every service (the "Next free" lines on the home page) |
+| `/book?service=<id>&date=YYYY-MM-DD` | deep link that preselects the service and the day (the services list, the hero line and the hours table use it) |
 | `POST /api/book` | JSON `{service, date, time, name, phone, email?}` → 201, or 409 with free times |
 | `POST /api/cancel` | `{token}` from the customer's link |
 | `/admin`, `POST /api/admin/{login,logout,cancel,block,unblock}` | session cookie, same-origin only |

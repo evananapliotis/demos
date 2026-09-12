@@ -3,7 +3,8 @@
  *
  *  - scroll-driven: spins, tilts and speeds its stripes up with scroll progress and velocity
  *    (Hero.astro writes data-p / data-v on the slot; this module only reads them)
- *  - touch: horizontal drag spins it with inertia, vertical scrolling passes straight through
+ *  - touch: a horizontal drag anywhere in the hero spins it with inertia; a tap gives it a flick; vertical scrolling passes through
+ *  - iOS: a "Tilt to spin" button asks for motion permission (required there), then the pole follows the phone
  *  - pointer (desktop) and device tilt (Android) nudge the pole and drift the amber light
  *  - 30fps cap, pauses off-screen or when the tab is hidden
  *  - reduced motion keeps the 3D pole but stills its idle motion; scroll and drag still move it
@@ -197,14 +198,25 @@ export function mount(slot: HTMLElement) {
   let tiltB = 0;
   const rot = { y: 0, z: -0.13, x: 0.06 };
 
-  slot.style.touchAction = 'pan-y';
+  // Haptic tick on Android; only once the visitor has really touched the page (Chrome logs a warning otherwise).
+  const buzz = (ms: number) => {
+    try {
+      const ua = (navigator as Navigator & { userActivation?: { hasBeenActive: boolean } }).userActivation;
+      if (ua && !ua.hasBeenActive) return;
+      navigator.vibrate?.(ms);
+    } catch { /* unsupported */ }
+  };
+  let downAt = 0;
+  let downX = 0;
+  slot.style.touchAction = 'pan-y pinch-zoom';
   slot.style.cursor = 'grab';
   slot.addEventListener('pointerdown', (e) => {
     dragging = true;
-    lastX = e.clientX;
+    lastX = downX = e.clientX;
+    downAt = performance.now();
     dragVel = 0;
     slot.style.cursor = 'grabbing';
-    slot.setPointerCapture?.(e.pointerId);
+    try { slot.setPointerCapture?.(e.pointerId); } catch { /* pointer already gone */ }
   });
   slot.addEventListener('pointermove', (e) => {
     if (!dragging) return;
@@ -213,13 +225,42 @@ export function mount(slot: HTMLElement) {
     dragAngle += dx * 0.012;
     dragVel = dx * 0.012;
   });
-  const endDrag = () => {
+  const endDrag = (e?: PointerEvent) => {
+    // A tap (no real movement, quick) flicks the pole.
+    if (dragging && e && Math.abs(e.clientX - downX) < 8 && performance.now() - downAt < 350) {
+      dragVel += 0.55;
+      buzz(12);
+    }
     dragging = false;
     slot.style.cursor = 'grab';
   };
   slot.addEventListener('pointerup', endDrag);
-  slot.addEventListener('pointercancel', endDrag);
-  slot.addEventListener('lostpointercapture', endDrag);
+  slot.addEventListener('pointercancel', () => endDrag());
+  slot.addEventListener('lostpointercapture', () => endDrag());
+
+  // A horizontal swipe anywhere in the hero spins the pole too (taps on buttons and links still work; vertical scrolling passes through).
+  // touch-action keeps vertical pans and pinch-zoom with the browser and leaves horizontal moves to us, so the browser
+  // does not cancel the pointer stream a few pixels in. Mouse drags are left alone so selecting text does not spin it.
+  const hero = slot.closest<HTMLElement>('header');
+  if (hero) {
+    hero.style.touchAction = 'pan-y pinch-zoom';
+    let heroX: number | null = null;
+    hero.addEventListener('pointerdown', (e) => {
+      if (e.pointerType === 'mouse' || slot.contains(e.target as Node)) return;
+      heroX = e.clientX;
+    }, { passive: true });
+    hero.addEventListener('pointermove', (e) => {
+      if (heroX === null) return;
+      const dx = e.clientX - heroX;
+      heroX = e.clientX;
+      dragAngle += dx * 0.007;
+      dragVel = dx * 0.007;
+    }, { passive: true });
+    const stop = () => { heroX = null; };
+    hero.addEventListener('pointerup', stop, { passive: true });
+    hero.addEventListener('pointercancel', stop, { passive: true });
+    hero.addEventListener('pointerleave', stop, { passive: true });
+  }
 
   if (matchMedia('(hover: hover) and (pointer: fine)').matches) {
     window.addEventListener('pointermove', (e) => {
@@ -227,13 +268,29 @@ export function mount(slot: HTMLElement) {
       pointerY = (e.clientY / innerHeight) * 2 - 1;
     }, { passive: true });
   }
-  // Device tilt where no permission prompt is needed (Android). iOS keeps the pole scroll-driven only.
-  const DOE = (window as Window & { DeviceOrientationEvent?: { requestPermission?: unknown } }).DeviceOrientationEvent;
-  if (DOE && typeof DOE.requestPermission !== 'function') {
+  // Device tilt. Android: no prompt needed. iOS: needs permission from a tap, so a "Tilt to spin" button asks for it.
+  const DOE = (window as Window & { DeviceOrientationEvent?: { requestPermission?: () => Promise<string> } }).DeviceOrientationEvent;
+  const listenTilt = () =>
     window.addEventListener('deviceorientation', (e) => {
       tiltG = MathUtils.clamp((e.gamma ?? 0) / 45, -1, 1);
       tiltB = MathUtils.clamp(((e.beta ?? 45) - 45) / 45, -1, 1);
     }, { passive: true });
+  const tiltBtn = slot.parentElement?.querySelector<HTMLButtonElement>('[data-tilt]') ?? null;
+  if (DOE && typeof DOE.requestPermission === 'function') {
+    if (tiltBtn && matchMedia('(pointer: coarse)').matches) {
+      tiltBtn.hidden = false;
+      tiltBtn.addEventListener('click', async () => {
+        try {
+          if ((await DOE.requestPermission!()) === 'granted') {
+            listenTilt();
+            buzz(10);
+          }
+        } catch { /* declined */ }
+        tiltBtn.hidden = true;
+      });
+    }
+  } else if (DOE) {
+    listenTilt();
   }
 
   // ---- loop: 30fps, paused when hidden or off-screen ----
@@ -268,7 +325,8 @@ export function mount(slot: HTMLElement) {
       dragVel *= 0.94;
     }
 
-    const targetY = dragAngle + p * Math.PI * 1.35 + pointerX * 0.28 + Math.sin(t * 0.45) * 0.09;
+    // Slow constant turn so it is never still on a phone, plus scroll, drag, pointer and a gentle sway.
+    const targetY = dragAngle + t * 0.12 + p * Math.PI * 1.35 + pointerX * 0.28 + Math.sin(t * 0.45) * 0.09;
     const targetZ = -0.13 + p * 0.55 + tiltG * 0.14 - pointerX * 0.06;
     const targetX = 0.06 + pointerY * 0.16 + tiltB * 0.12 + p * 0.1;
     rot.y = lerp(rot.y, targetY, 0.14);

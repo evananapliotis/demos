@@ -1,9 +1,9 @@
 ---
 import { site, listingUrl, openDaysCount } from '@/lib/site';
-const cells = [
-  { big: site.google.rating.toFixed(1), small: 'Google rating', href: listingUrl },
-  { big: String(site.google.reviewCount), small: 'Google reviews', href: listingUrl },
-  { big: String(openDaysCount()), small: 'Days a week' },
+const cells: { big: string; small: string; href?: string; count?: number; decimals?: number }[] = [
+  { big: site.google.rating.toFixed(1), small: 'Google rating', href: listingUrl, count: site.google.rating, decimals: 1 },
+  { big: String(site.google.reviewCount), small: 'Google reviews', href: listingUrl, count: site.google.reviewCount, decimals: 0 },
+  { big: String(openDaysCount()), small: 'Days a week', count: openDaysCount(), decimals: 0 },
   ...site.features.map((f) => ({ big: '✓', small: f })),
 ];
 ---
@@ -13,12 +13,12 @@ const cells = [
       <li class="flex flex-col items-start justify-center px-5 py-4 sm:px-8 md:py-5">
         {c.href ? (
           <a href={c.href} target="_blank" rel="noopener" class="inline-flex min-h-11 flex-col items-start justify-center rounded-sm hover:underline">
-            <span class="display text-[2.4rem] leading-none">{c.big}</span>
+            <span class="display text-[2.4rem] leading-none tabular-nums" data-count={c.count} data-decimals={c.decimals}>{c.big}</span>
             <span class="mt-1 text-sm font-bold uppercase tracking-[0.14em]">{c.small}</span>
           </a>
         ) : (
           <>
-            <span class="display text-[2.4rem] leading-none">{c.big}</span>
+            <span class="display text-[2.4rem] leading-none tabular-nums" data-count={c.count} data-decimals={c.decimals}>{c.big}</span>
             <span class="mt-1 text-sm font-bold uppercase tracking-[0.14em]">{c.small}</span>
           </>
         )}
@@ -26,3 +26,24 @@ const cells = [
     ))}
   </ul>
 </section>
+
+<script>
+  // The numbers tick up when the strip scrolls into view. Static under reduced motion.
+  const strip = document.querySelector<HTMLElement>('[aria-label="At a glance"]');
+  const nums = strip ? [...strip.querySelectorAll<HTMLElement>('[data-count]')].filter((n) => n.dataset.count) : [];
+  if (strip && nums.length && !matchMedia('(prefers-reduced-motion: reduce)').matches && 'IntersectionObserver' in window) {
+    const io = new IntersectionObserver(([e]) => {
+      if (!e.isIntersecting) return;
+      io.disconnect();
+      const t0 = performance.now();
+      const step = (now: number) => {
+        const k = Math.min(1, (now - t0) / 900);
+        const eased = 1 - Math.pow(1 - k, 3);
+        for (const n of nums) n.textContent = (Number(n.dataset.count) * eased).toFixed(Number(n.dataset.decimals ?? 0));
+        if (k < 1) requestAnimationFrame(step);
+      };
+      requestAnimationFrame(step);
+    }, { threshold: 0.5 });
+    io.observe(strip);
+  }
+</script>

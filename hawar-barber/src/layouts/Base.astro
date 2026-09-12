@@ -72,6 +72,8 @@ const ld = jsonLd(homeUrl, ogImage);
     <div class="progress" data-progress aria-hidden="true"></div>
     <slot />
     <script>
+      // A light tap on Android when a big button is pressed.
+      document.addEventListener('click', (e) => { if ((e.target as Element | null)?.closest?.('.btn')) { try { navigator.vibrate?.(6); } catch { /* unsupported */ } } }, { passive: true });
       const bar = document.querySelector<HTMLElement>('[data-progress]');
       if (bar && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
         let raf = 0;

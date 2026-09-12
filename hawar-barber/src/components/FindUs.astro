@@ -31,17 +31,19 @@ const rows = weekRows();
       )}
       {
         rows ? (
+          <>
           <table class="w-full border-collapse text-lg" data-hours-table>
-            <caption class="sr-only">Opening hours for {site.name}. Today is listed first.</caption>
+            <caption class="sr-only">Opening hours for {site.name}. Today is listed first.{site.booking.enabled ? ' Choose a day to book it.' : ''}</caption>
             <tbody>
               {rows.map((r) => (
                 <tr class="border-t border-line last:border-b data-[today]:bg-amber/10 data-[today]:text-amber" data-day={r.day}>
-                  <th scope="row" class="py-3 pl-2 pr-4 text-left font-medium">{r.label}<span class="ml-3 hidden text-xs font-bold uppercase tracking-[0.14em]" data-today-tag>Today</span></th>
+                  <th scope="row" class="py-3 pl-2 pr-4 text-left font-medium">{site.booking.enabled && !r.closed ? <a href="/book" class="-my-3 inline-flex min-h-12 items-center underline decoration-dotted decoration-amber/60 underline-offset-4 hover:text-amber" data-book-day={r.day}>{r.label}</a> : r.label}<span class="ml-3 hidden text-xs font-bold uppercase tracking-[0.14em]" data-today-tag>Today</span></th>
                   <td class={`py-3 pr-2 text-right tabular-nums ${r.closed ? 'text-cream-2' : 'text-cream'}`}>{r.closed ? 'Closed' : `${fmtTime(r.open!)} – ${fmtTime(r.close!)}`}</td>
                 </tr>
               ))}
             </tbody>
           </table>
+          </>
         ) : (
           <div class="rounded-md border border-line bg-ink p-5">
             <p class="text-cream-2">Opening hours aren’t published online yet.</p>
@@ -50,6 +52,7 @@ const rows = weekRows();
         )
       }
 
+      {rows && site.booking.enabled && <p class="mt-2 text-sm text-cream-2">Tap a day to book a time on it.</p>}
       <div class="mt-8 grid grid-cols-1 gap-3 sm:grid-cols-2">
         <a href={directionsUrl} target="_blank" rel="noopener" class="btn btn-amber"><Icons name="pin" size={19} /> Directions</a>
         <a href={listingUrl} target="_blank" rel="noopener" class="btn btn-outline">Google listing <Icons name="external" size={16} /></a>
@@ -70,6 +73,20 @@ const rows = weekRows();
 
 <script>
   import { shopClock } from '@/lib/clock';
+  import { addDays, todayLondon } from '@/lib/time';
+
+  // Each day in the hours table links to the booking page for its next occurrence.
+  {
+    const names = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+    const today = todayLondon();
+    const wd = shopClock().day;
+    document.querySelectorAll<HTMLAnchorElement>('[data-book-day]').forEach((a) => {
+      const target = names.indexOf(a.dataset.bookDay!);
+      if (target < 0) return;
+      a.href = `/book?date=${addDays(today, (target - wd + 7) % 7)}`;
+      a.title = 'Book a time on this day';
+    });
+  }
 
   // Map facade: the Google Maps iframe (~1MB) only loads when asked for.
   const box = document.querySelector<HTMLElement>('[data-map]');
