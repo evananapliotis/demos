@@ -4,3 +4,4 @@ dist/
 .candidates/
 .env
 .DS_Store
+.wrangler/
