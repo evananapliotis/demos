@@ -62,7 +62,16 @@ times still free. Slot maths runs in Europe/London (`src/lib/time.ts`), so the c
 | `POST /api/cancel` | `{token}` from the customer's link |
 | `/admin`, `POST /api/admin/{login,logout,cancel,block,unblock}` | session cookie, same-origin only |
 
-## Deploy (Cloudflare Workers)
+## Deploy from GitHub (no terminal)
+
+Cloudflare can build and deploy this folder itself on every push to `hawar-barber-static`:
+Workers & Pages → Create → Import a repository → `evananapliotis/demos`, then Worker name `hawar-barber`,
+branch `hawar-barber-static`, root directory `hawar-barber`, build command `npm run build`, deploy command
+`npx wrangler d1 migrations apply hawar-barber-bookings --remote && npx wrangler deploy`. The D1 database
+is created in the dashboard (Storage & Databases → D1) and its id goes in `wrangler.toml`; the five secrets
+are added under the Worker's Settings → Variables and Secrets. `.node-version` pins the builder to Node 22.
+
+## Deploy from a terminal (Cloudflare Workers)
 
 The site, the booking API, `/admin` and the cron run as one Worker with static assets, at
 `https://hawarbarbers.co.uk`. Deploys go through wrangler from a terminal; the dashboard's drag-and-drop
