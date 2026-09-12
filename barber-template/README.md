@@ -96,7 +96,20 @@ One page with anchor sections (`/`), plus `/book` (front-end only booking flow, 
 
 ## Deploy
 
-Cloudflare Pages, no adapter. Root directory `barber-template`, build command `npm run build`, output directory `dist`. Node version comes from `.node-version`.
+Static output, no adapter. Two routes, pick one:
+
+**Cloudflare Workers (static assets), from this repo.** `wrangler.jsonc` points a Worker at `dist/`.
+
+```sh
+npx wrangler login      # once, opens the browser
+npm run deploy          # builds, then wrangler deploy -> https://halden-crane.<account>.workers.dev
+```
+
+Or connect the repo in the dashboard (Workers & Pages, Create, Import a repository) with root directory `barber-template`, build command `npm run build`, deploy command `npx wrangler deploy`.
+
+**Cloudflare Pages, zip upload.** Build, zip the contents of `dist/` (files at the zip root, not a `dist/` folder), then Workers & Pages, Create, **Pages** tab, Upload assets. The result is `<name>.pages.dev`. A zip dropped into the **Workers** tab creates a Worker with no assets and every URL returns 404.
+
+Node version comes from `.node-version`. Asset paths are root-absolute (`/img/...`), so `dist/index.html` opened straight from disk shows no images; serve it (`npm run preview`) or deploy it.
 
 ## Layout
 

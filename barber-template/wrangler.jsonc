@@ -1,0 +1,13 @@
+{
+  // Cloudflare Workers config: serve dist/ as static assets, no Worker code.
+  // Deploy with `npm run deploy` (or `npx wrangler deploy` after `npm run build`).
+  // A zip upload without this config creates a Worker with no assets, which 404s.
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "halden-crane",
+  "compatibility_date": "2026-09-01",
+  "assets": {
+    "directory": "./dist",
+    "html_handling": "auto-trailing-slash",
+    "not_found_handling": "404-page"
+  }
+}

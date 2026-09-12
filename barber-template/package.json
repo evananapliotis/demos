@@ -8,6 +8,7 @@
     "prebuild": "tsx scripts/check-assets.ts",
     "build": "astro check && astro build",
     "preview": "astro preview",
+    "deploy": "npm run build && wrangler deploy",
     "check": "tsx scripts/check-assets.ts",
     "images:fetch": "tsx scripts/fetch-images.ts",
     "images:grade": "tsx scripts/grade-images.ts",
@@ -22,6 +23,7 @@
     "@types/node": "^22.19.0",
     "sharp": "^0.35.4",
     "tsx": "^4.23.13",
-    "typescript": "^5.9.0"
+    "typescript": "^5.9.0",
+    "wrangler": "^4.131.1"
   }
 }
