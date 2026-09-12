@@ -61,6 +61,14 @@ const letters = (word: string, offset: number) => [...word].map((ch, i) => ({ ch
         <div class="pole-slot h-[clamp(10rem,25svh,19rem)] [@media(max-height:700px)_and_(max-width:767px)]:h-32 md:h-[clamp(20rem,70vh,40rem)]" data-pole-slot aria-hidden="true">
           <PoleStatic />
         </div>
+        <script is:inline>
+          // Runs during parse, before first paint: when WebGL exists the flat SVG never shows and
+          // the 3D pole takes the slot. The SVG only stays for no-JS, no-WebGL, or a failed 3D load.
+          try {
+            var c = document.createElement('canvas');
+            if (c.getContext('webgl2') || c.getContext('webgl')) document.querySelector('[data-pole-slot]').classList.add('wants-3d');
+          } catch (e) {}
+        </script>
       </div>
     </div>
 
@@ -174,31 +182,21 @@ const letters = (word: string, offset: number) => [...word].map((ch, i) => ({ ch
     tick();
   }
 
-  // 3D pole: loaded late, as its own chunk, only on devices that can afford it.
+  // 3D pole: always, as soon as the page script runs, wherever WebGL exists (the inline check above
+  // marked the slot `wants-3d`). Reduced motion keeps the 3D pole but stills its idle motion (pole.ts).
+  // The flat SVG comes back only if the chunk fails to load or the renderer cannot start.
   // The name, rating and Call button are plain HTML and never wait on any of this.
-  const nav = navigator as Navigator & { deviceMemory?: number; connection?: { saveData?: boolean; effectiveType?: string } };
-  const webgl = () => {
-    try {
-      const c = document.createElement('canvas');
-      return !!(c.getContext('webgl2') || c.getContext('webgl'));
-    } catch {
-      return false;
-    }
-  };
-  const capable =
-    !!slot &&
-    !reduced.matches &&
-    (nav.hardwareConcurrency ?? 4) >= 4 &&
-    (nav.deviceMemory ?? 4) >= 4 &&
-    !nav.connection?.saveData &&
-    !/^(slow-)?2g$/.test(nav.connection?.effectiveType ?? '') &&
-    webgl();
-
-  if (capable) {
-    const start = () => import('../hero3d/pole').then((m) => m.mount(slot!)).catch(() => {});
-    const whenIdle = () => ('requestIdleCallback' in window ? requestIdleCallback(start, { timeout: 4000 }) : setTimeout(start, 1500));
-    const after = () => setTimeout(whenIdle, 1200);
-    if (document.readyState === 'complete') after();
-    else addEventListener('load', after, { once: true });
+  if (slot?.classList.contains('wants-3d')) {
+    const fallback = () => slot.classList.remove('wants-3d');
+    import('../hero3d/pole')
+      .then((m) => m.mount(slot))
+      .catch(fallback);
+    // Safety net: if no frame has rendered after a while (very slow network), show the SVG until it does.
+    const guard = () => {
+      if (slot.classList.contains('has-3d')) return;
+      if (document.hidden) return void setTimeout(guard, 2000);
+      fallback();
+    };
+    setTimeout(guard, 8000);
   }
 </script>

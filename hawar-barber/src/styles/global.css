@@ -314,6 +314,7 @@ html.js [data-reveal].is-in {
 }
 .pole-slot > svg { transition: opacity 600ms ease; }
 .pole-slot > canvas { opacity: 0; transition: opacity 600ms ease; }
+.pole-slot.wants-3d > svg,
 .pole-slot.has-3d > svg { opacity: 0; }
 .pole-slot.has-3d > canvas { opacity: 1; }
 

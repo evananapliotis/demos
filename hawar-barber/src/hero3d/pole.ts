@@ -5,8 +5,9 @@
  *    (Hero.astro writes data-p / data-v on the slot; this module only reads them)
  *  - touch: horizontal drag spins it with inertia, vertical scrolling passes straight through
  *  - pointer (desktop) and device tilt (Android) nudge the pole and drift the amber light
- *  - 30fps cap, pauses off-screen or when the tab is hidden, stops on reduced motion
- *  - the static SVG stays underneath until the first frame has rendered
+ *  - 30fps cap, pauses off-screen or when the tab is hidden
+ *  - reduced motion keeps the 3D pole but stills its idle motion; scroll and drag still move it
+ *  - the static SVG underneath is hidden before first paint and only returns if 3D cannot start
  */
 import {
   WebGLRenderer,
@@ -111,7 +112,7 @@ export function mount(slot: HTMLElement) {
   slot.appendChild(canvas);
 
   const renderer = new WebGLRenderer({ canvas, alpha: true, antialias: true, powerPreference: 'low-power' });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, (navigator.hardwareConcurrency ?? 4) < 4 ? 1.5 : 2));
   renderer.setClearColor(0x000000, 0);
 
   const scene = new Scene();
@@ -244,13 +245,17 @@ export function mount(slot: HTMLElement) {
   let t0 = performance.now();
   let ready = false;
   let velSmooth = 0;
+  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
 
   const frame = (now: number) => {
     raf = requestAnimationFrame(frame);
     if (now - last < frameMs) return;
     const dt = Math.min(0.1, (now - last) / 1000) || frameMs / 1000;
     last = now - ((now - last) % frameMs);
-    const t = (now - t0) / 1000;
+    // Idle motion (bob, sway, stripe crawl, light drift) is off under reduced motion; user-driven
+    // motion (scroll, drag, pointer) still applies.
+    const idle = reduced.matches ? 0 : 1;
+    const t = ((now - t0) / 1000) * idle;
 
     // Scroll state from Hero.astro: progress through the hero (0..1) and velocity (px/ms).
     const p = Math.min(1, Math.max(0, Number(slot.dataset.p) || 0));
@@ -275,7 +280,7 @@ export function mount(slot: HTMLElement) {
     shadow.material.opacity = 1 - p * 0.6;
 
     // Stripes: idle crawl, faster with scroll velocity and drag.
-    const speed = 0.22 + velSmooth + Math.min(1.5, Math.abs(dragVel) * 6);
+    const speed = 0.22 * idle + velSmooth + Math.min(1.5, Math.abs(dragVel) * 6);
     stripes.offset.y -= speed * dt;
 
     // Light drifts with time, scroll and the pointer; glow breathes and flares with motion.
@@ -314,11 +319,6 @@ export function mount(slot: HTMLElement) {
   document.addEventListener('visibilitychange', () => {
     hidden = document.hidden;
     hidden ? pause() : play();
-  });
-  const reduced = matchMedia('(prefers-reduced-motion: reduce)');
-  reduced.addEventListener?.('change', () => {
-    if (reduced.matches) pause();
-    else play();
   });
   play();
 
