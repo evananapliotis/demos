@@ -21,7 +21,9 @@
     "shots": "node scripts/shot.mjs",
     "scrollshots": "node scripts/scrollshots.mjs",
     "desktopshots": "node scripts/desktopshots.mjs",
-    "poster": "node scripts/poster.mjs"
+    "poster": "node scripts/poster.mjs",
+    "test:time": "node --experimental-strip-types scripts/time-test.mjs",
+    "test": "npm run test:time"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^12.6.13",

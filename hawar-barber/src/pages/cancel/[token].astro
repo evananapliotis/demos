@@ -58,7 +58,8 @@ const endTime = b ? fromMin(toMin(b.local_time) + b.minutes) : '';
             <p class="mt-2 text-cream">{b.service_name} · {b.minutes} min</p>
             <p class="mt-1 text-cream-2">{site.name}, {fullAddress}</p>
           </div>
-          <form method="post" action="/api/cancel" class="mt-8 grid grid-cols-1 gap-3 sm:flex" data-confirm="Cancel this booking? The time will be offered to someone else.">
+          <p class="mt-4 text-sm text-cream-2">Add it to your calendar: <a href={`/api/ics/${b.token}`} class="inline-flex min-h-11 items-center font-bold text-amber">Apple / Outlook</a></p>
+          <form method="post" action="/api/cancel" class="mt-6 grid grid-cols-1 gap-3 sm:flex" data-confirm="Cancel this booking? The time will be offered to someone else.">
             <input type="hidden" name="token" value={b.token} />
             <button type="submit" class="btn btn-amber">Cancel this booking</button>
             <a href="/" class="btn btn-outline">Keep it</a>

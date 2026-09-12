@@ -92,7 +92,8 @@ const config = {
         <p class="mt-1 text-cream-2">{site.name}, {fullAddress}.</p>
         <p class="mt-3 text-cream-2" data-done-email hidden>A confirmation is on its way to <span class="text-cream" data-done-email-addr></span>.</p>
         <div class="mt-6 grid grid-cols-1 gap-3 sm:flex sm:flex-wrap">
-          <a href="#" class="btn btn-outline" data-calendar target="_blank" rel="noopener"><Icons name="calendar" size={19} /> Add to calendar</a>
+          <a href="#" class="btn btn-outline" data-calendar target="_blank" rel="noopener"><Icons name="calendar" size={19} /> Google Calendar</a>
+          <a href="#" class="btn btn-outline" data-ics><Icons name="calendar" size={19} /> Apple / Outlook (.ics)</a>
           <a href="/" class="btn btn-outline">Back to the shop</a>
         </div>
         <p class="mt-6 text-sm text-cream-2">Can't make it? <a href="#" class="inline-flex min-h-11 items-center font-bold text-amber" data-cancel-link>Cancel this booking</a>. Keep that link: it's the only way to cancel without calling.</p>
@@ -140,7 +141,7 @@ const config = {
 
     const renderDays = () => {
       daysBox.innerHTML = days
-        .map((d) => chip('date', d.date, dayLabel(d), d.closed ? 'Closed' : d.slots.length ? `${d.slots.length} time${d.slots.length === 1 ? '' : 's'}` : 'Full', d.closed || !d.slots.length, d.date === date))
+        .map((d) => chip('date', d.date, dayLabel(d), d.closed ? 'Closed' : d.slots.length ? `${d.slots.length} time${d.slots.length === 1 ? '' : 's'}` : d.date === today ? 'None left' : 'Full', d.closed || !d.slots.length, d.date === date))
         .join('');
       const open = days.filter((d) => !d.closed && d.slots.length);
       dayHint.textContent = open.length ? 'Days shown are the next three weeks.' : 'Nothing free in the next three weeks. Call the shop.';
@@ -229,7 +230,7 @@ const config = {
       const body = { service: service.id, date, time, name: fd.get('name'), phone: fd.get('phone'), email: fd.get('email'), website: fd.get('website') };
       try {
         const res = await fetch('/api/book', { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(body) });
-        const data = (await res.json().catch(() => ({}))) as { error?: string; errors?: Record<string, string>; message?: string; booking?: { service: string; minutes: number; date: string; time: string; email: string | null; cancelUrl: string; startUtc: string; endUtc: string } };
+        const data = (await res.json().catch(() => ({}))) as { error?: string; errors?: Record<string, string>; message?: string; booking?: { token: string; service: string; minutes: number; date: string; time: string; email: string | null; cancelUrl: string; startUtc: string; endUtc: string } };
         if (res.status === 201 && data.booking) {
           const b = data.booking;
           done.querySelector('[data-done-when]')!.textContent = `${b.service} (${b.minutes} min), ${fmtDayLong(b.date)} at ${fmtTime(b.time)}.`;
@@ -240,6 +241,7 @@ const config = {
           }
           done.querySelector<HTMLAnchorElement>('[data-cancel-link]')!.href = b.cancelUrl;
           done.querySelector<HTMLAnchorElement>('[data-calendar]')!.href = gcal(b);
+          done.querySelector<HTMLAnchorElement>('[data-ics]')!.href = `/api/ics/${b.token}`;
           form.hidden = true;
           done.classList.remove('hidden');
           done.querySelector<HTMLElement>('h2')?.focus();

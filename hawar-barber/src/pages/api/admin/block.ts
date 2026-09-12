@@ -2,7 +2,7 @@ export const prerender = false;
 /** POST /api/admin/block — form { date, from, to, note }. Blocks every chair for that time; refuses if a booking sits inside it. */
 import type { APIRoute } from 'astro';
 import { readInput, seeOther, json, isFormPost } from '@/lib/api';
-import { cellsFor, cfg, clean } from '@/lib/booking';
+import { cellsFor, cfg, clean, hoursFor } from '@/lib/booking';
 import { bookingsOverlapping, insertBlock } from '@/lib/db';
 import { isIsoDate, toMin, zonedToUtc, fmtTime } from '@/lib/time';
 
@@ -12,8 +12,10 @@ export const POST: APIRoute = async ({ request, locals }) => {
   const form = isFormPost(request);
   const input = await readInput(request);
   const date = clean(input?.date, 10);
-  const from = clean(input?.from, 5);
-  const to = clean(input?.to, 5);
+  const whole = clean(input?.whole, 3) === 'on' || input?.whole === true;
+  const hours = isIsoDate(date) ? hoursFor(date) : null;
+  const from = whole ? (hours?.open ?? '') : clean(input?.from, 5);
+  const to = whole ? (hours?.close ?? '') : clean(input?.to, 5);
   const note = clean(input?.note, 80);
   const hhmm = /^([01]\d|2[0-3]):[0-5]\d$/;
   if (!isIsoDate(date) || !hhmm.test(from) || !hhmm.test(to) || toMin(to) <= toMin(from) || toMin(from) % cfg.cellMinutes || toMin(to) % cfg.cellMinutes) {

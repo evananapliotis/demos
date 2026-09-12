@@ -60,6 +60,16 @@ export async function notifyNewBooking(env: Env, b: BookingRow): Promise<void> {
   }
 }
 
+/** To the customer (when they gave an email) after the shop cancels from /admin. */
+export async function notifyCancelledByShop(env: Env, b: BookingRow): Promise<void> {
+  if (!b.email) return;
+  await send(env, b.email, `Cancelled: your ${b.service_name} at ${site.name}, ${when(b)}`, [
+    `Hi ${b.name}, sorry: the shop has had to cancel your ${b.service_name} on ${when(b)}.`,
+    `Book another time: ${site.url}/book`,
+    `Or call ${site.phone.display}.`,
+  ]);
+}
+
 /** To the shop when a customer cancels through their link. */
 export async function notifyCancelled(env: Env, b: BookingRow): Promise<void> {
   const shop = env.SHOP_EMAIL?.trim();

@@ -69,10 +69,10 @@ export async function bookingById(db: D1Database, id: string): Promise<BookingRo
   return (await db.prepare('SELECT * FROM bookings WHERE id = ?').bind(id).first<BookingRow>()) ?? null;
 }
 
-/** Marks a confirmed booking cancelled and frees its cells. False when it was not confirmed (already cancelled or unknown). */
+/** Marks a confirmed booking cancelled, frees its cells and drops the phone and email (nothing needs them after this). False when it was not confirmed. */
 export async function cancelBooking(db: D1Database, id: string, by: 'customer' | 'admin'): Promise<boolean> {
   const r = await db.batch([
-    db.prepare(`UPDATE bookings SET status = 'cancelled', cancelled_at = ?, cancelled_by = ? WHERE id = ? AND status = 'confirmed'`).bind(nowIso(), by, id),
+    db.prepare(`UPDATE bookings SET status = 'cancelled', cancelled_at = ?, cancelled_by = ?, phone = '', email = NULL WHERE id = ? AND status = 'confirmed'`).bind(nowIso(), by, id),
     db.prepare('DELETE FROM cells WHERE booking_id = ?').bind(id),
   ]);
   return (r[0]?.meta?.changes ?? 0) > 0;

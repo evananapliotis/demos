@@ -6,7 +6,7 @@ import { site } from '@/lib/site';
 import { isAdmin } from '@/lib/session';
 import { bookingsOn, blocksOn, type BookingRow, type BlockRow } from '@/lib/db';
 import { displayPhone, hoursFor, cfg } from '@/lib/booking';
-import { addDays, fmtDay, fmtDayLong, fmtTime, fromMin, toMin, todayLondon } from '@/lib/time';
+import { addDays, fmtDay, fmtDayLong, fmtTime, fromMin, isIsoDate, toMin, todayLondon } from '@/lib/time';
 
 const env = Astro.locals.runtime?.env;
 const setup = !env?.DB ? 'No D1 database is bound as DB.' : !env.ADMIN_PASSWORD || !env.SESSION_SECRET ? 'The ADMIN_PASSWORD and SESSION_SECRET secrets are not set.' : '';
@@ -18,9 +18,13 @@ const error =
   { wrong: 'Wrong password.', locked: 'Too many attempts. Try again in 15 minutes.', setup: 'The server is missing its secrets.', bad: 'That request was not understood.', gone: 'That booking had already gone.', badblock: 'Check the block-out times: the end must be after the start.', clash: `Can't block that time: there are bookings inside it (${who}). Cancel them first.` }[q.get('err') ?? ''] ?? '';
 
 const today = todayLondon();
+// ?day=YYYY-MM-DD shows that day and the next; default is today and tomorrow. Limited to two months either way.
+const wanted = q.get('day') ?? '';
+const first = isIsoDate(wanted) && wanted >= addDays(today, -60) && wanted <= addDays(today, 60) ? wanted : today;
+const labelFor = (d: string) => (d === today ? 'Today' : d === addDays(today, 1) ? 'Tomorrow' : d === addDays(today, -1) ? 'Yesterday' : fmtDay(d));
 const days = [
-  { date: today, label: 'Today' },
-  { date: addDays(today, 1), label: 'Tomorrow' },
+  { date: first, label: labelFor(first) },
+  { date: addDays(first, 1), label: labelFor(addDays(first, 1)) },
 ];
 let bookings: BookingRow[] = [];
 let blocks: BlockRow[] = [];
@@ -69,7 +73,12 @@ for (let m = 8 * 60; m <= 19 * 60; m += 15) times.push(fromMin(m));
       ) : (
         <>
           <h1 class="mt-8 text-[clamp(2.5rem,12vw,4.5rem)] text-cream">The <span class="text-amber">list.</span></h1>
-          <p class="mt-2 text-cream-2">{bookings.length} booked across today and tomorrow. Cancelling frees the time straight away; customers can also cancel through their own link.</p>
+          <p class="mt-2 text-cream-2">{bookings.length} booked across {days[0].label.toLowerCase()} and {days[1].label.toLowerCase()}. Cancelling frees the time straight away; customers can also cancel through their own link.</p>
+          <nav class="mt-4 flex flex-wrap gap-2" aria-label="Days">
+            <a href={`/admin?day=${addDays(first, -2)}`} class="btn btn-outline min-h-12 px-4 text-sm">‹ Earlier</a>
+            {first !== today && <a href="/admin" class="btn btn-outline min-h-12 px-4 text-sm">Today</a>}
+            <a href={`/admin?day=${addDays(first, 2)}`} class="btn btn-outline min-h-12 px-4 text-sm">Later ›</a>
+          </nav>
 
           {days.map((d) => {
             const list = bookings.filter((b) => b.local_date === d.date);
@@ -133,6 +142,7 @@ for (let m = 8 * 60; m <= 19 * 60; m += 15) times.push(fromMin(m));
                   <select id="block-to" name="to" class="input">{times.map((t) => <option value={t} selected={t === '13:00'}>{fmtTime(t)}</option>)}</select>
                 </div>
               </div>
+              <label class="flex min-h-12 items-center gap-3 font-bold"><input type="checkbox" name="whole" class="h-6 w-6 accent-amber" /> The whole day (opening to closing)</label>
               <div>
                 <label for="block-note" class="mb-2 block font-bold">Note <span class="font-normal text-cream-2">(optional)</span></label>
                 <input id="block-note" name="note" type="text" maxlength="80" class="input" placeholder="Lunch" />
