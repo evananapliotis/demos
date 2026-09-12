@@ -1,0 +1,26 @@
+{
+  "name": "barber-template",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "astro dev",
+    "prebuild": "tsx scripts/check-assets.ts",
+    "build": "astro check && astro build",
+    "preview": "astro preview",
+    "check": "tsx scripts/check-assets.ts",
+    "images:fetch": "tsx scripts/fetch-images.ts",
+    "images:grade": "tsx scripts/grade-images.ts"
+  },
+  "dependencies": {
+    "astro": "^7.3.2",
+    "zod": "^4.6.2"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "@types/node": "^22.19.0",
+    "sharp": "^0.35.4",
+    "tsx": "^4.23.13",
+    "typescript": "^5.9.0"
+  }
+}
