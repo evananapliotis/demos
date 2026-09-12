@@ -77,10 +77,24 @@ export const site = {
     hero: 'hero.jpg',
     shopfront: 'shopfront.jpg',
     galleryPrefix: 'gallery-',
-    /** Alt text per file. Name the service and the town. */
+    /**
+     * Alt text per file. Every photo is a real photo of the shop, named to match this list.
+     * Gallery order: back-of-head fades first, then barbers at work, then face-on and profile cuts and beards.
+     */
     alt: {
-      'hero.jpg': 'Fresh haircut at HAWAR BARBER, Darlington',
-      'shopfront.jpg': 'The front of HAWAR BARBER on North Road, Darlington',
+      'hero.jpg': 'Inside HAWAR BARBER in Darlington: a row of black and gold barber chairs under hexagon ceiling lights',
+      'shopfront.jpg': 'The front of HAWAR BARBER on North Road, Darlington, with the HAWAR BARBERS sign above the glass',
+      'gallery-1.jpg': 'Drop fade with a textured top, seen from behind, cut at HAWAR BARBER in Darlington',
+      'gallery-2.jpg': 'Skin fade blended into the neckline, seen from the side and behind, at HAWAR BARBER in Darlington',
+      'gallery-3.jpg': 'A barber at HAWAR BARBER in Darlington cutting a client’s hair at a black and gold station',
+      'gallery-4.jpg': 'A barber at work under the hexagon ceiling lights at HAWAR BARBER in Darlington',
+      'gallery-5.jpg': 'Close-up of a barber trimming a client in a striped cape at HAWAR BARBER in Darlington',
+      'gallery-6.jpg': 'Skin fade with a hard parting, side profile, outside HAWAR BARBER in Darlington',
+      'gallery-7.jpg': 'Low taper fade with a scissor-cut top, side profile, outside HAWAR BARBER in Darlington',
+      'gallery-8.jpg': 'Mid fade with a lined-up beard, side profile in the chair at HAWAR BARBER in Darlington',
+      'gallery-9.jpg': 'Beard shaped and tinted dark, client reclined in the chair at HAWAR BARBER in Darlington',
+      'gallery-10.jpg': 'Beard shape-up with dark tint, seen from the side, at HAWAR BARBER in Darlington',
+      'gallery-11.jpg': 'Freshly shaped and tinted beard, client reclined, at HAWAR BARBER in Darlington',
     } as Record<string, string>,
     galleryAlt: 'Haircut from the chair at HAWAR BARBER, Darlington',
   },
