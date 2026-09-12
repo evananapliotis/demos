@@ -87,6 +87,7 @@ export const site = {
     alt: {
       'hero.jpg': 'Inside HAWAR BARBER in Darlington: a row of black and gold barber chairs under hexagon ceiling lights',
       'shopfront.jpg': 'The front of HAWAR BARBER on North Road, Darlington, with the HAWAR BARBERS sign above the glass',
+      'gallery-0.jpg': 'Blonde skin fade with a slicked-back top, seen from behind, cut at HAWAR BARBER in Darlington',
       'gallery-1.jpg': 'Drop fade with a textured top, seen from behind, cut at HAWAR BARBER in Darlington',
       'gallery-2.jpg': 'Skin fade blended into the neckline, seen from the side and behind, at HAWAR BARBER in Darlington',
       'gallery-3.jpg': 'A barber at HAWAR BARBER in Darlington cutting a client in a striped cape at a black and gold station',
