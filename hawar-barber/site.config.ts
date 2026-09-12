@@ -24,7 +24,7 @@ export const site = {
   tagline: 'Five-star barbering on North Road, Darlington.',
   /** Meta description (~150 chars). */
   description:
-    'HAWAR BARBER, 321 North Rd, Darlington DL1 3BL. Barber shop rated 5.0 from 56 Google reviews. Wheelchair accessible, closes 6pm. Call 07918 899141.',
+    'HAWAR BARBER, 321 North Rd, Darlington DL1 3BL. Barber shop rated 5.0 from 56 Google reviews. Open 7 days, wheelchair accessible. Call 07918 899141.',
   /** Public URL. Cloudflare Pages gives <project>.pages.dev; change when a domain is attached. */
   url: 'https://hawar-barber.pages.dev',
 
@@ -43,15 +43,18 @@ export const site = {
   features: ['Wheelchair accessible'],
 
   hours: {
-    /** Google shows "Closes 6 pm". */
-    closes: '18:00',
-    /**
-     * Full week, once confirmed with the shop. `null` for the whole week hides the table and
-     * shows the closing time with a "call to check" line. `null` on a day = closed that day.
-     * Example: { monday: { open: '09:00', close: '18:00' }, …, sunday: null }
-     */
-    week: null as Record<Day, HoursRange | null> | null,
+    /** Weekly hours, confirmed from the Google listing. 24h "HH:MM". `null` on a day = closed. */
+    week: {
+      monday: { open: '09:00', close: '18:00' },
+      tuesday: { open: '09:00', close: '18:00' },
+      wednesday: { open: '09:00', close: '18:00' },
+      thursday: { open: '09:00', close: '18:15' },
+      friday: { open: '08:30', close: '18:30' },
+      saturday: { open: '08:30', close: '18:00' },
+      sunday: { open: '09:00', close: '16:00' },
+    } as Record<Day, HoursRange | null> | null,
   },
+
 
   /** No services or prices are published anywhere we could read. Add them and the list renders. */
   services: [] as Service[],
@@ -64,7 +67,7 @@ export const site = {
   about: [
     'HAWAR BARBER is a barber shop at 321 North Road, Darlington, DL1 3BL.',
     'Fifty-six people have reviewed the shop on Google, and the rating stands at 5.0 out of 5.',
-    'The shop is wheelchair accessible and closes at 6pm. Call 07918 899141 to check today’s hours before you set off.',
+    'Open seven days a week, with the full hours below, and wheelchair accessible. Call 07918 899141 if you want to check before you set off.',
   ],
 
   /** Online booking link (Fresha, Booksy …). None found yet. When set, "Book" buttons appear and open it. */

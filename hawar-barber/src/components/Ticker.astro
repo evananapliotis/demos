@@ -1,11 +1,11 @@
 ---
 /* Thin monochrome ticker of verified facts. Decorative: hidden from assistive tech, still under reduced motion. */
-import { site, fmtTime } from '@/lib/site';
+import { site, openDaysLabel } from '@/lib/site';
 const items = [
   `${site.google.rating.toFixed(1)} on Google`,
   `${site.google.reviewCount} reviews`,
   ...site.features,
-  `Closes ${fmtTime(site.hours.closes)}`,
+  openDaysLabel(),
   `${site.address.street.replace(/ Rd$/, ' Road')}, ${site.address.locality}`,
   `Call ${site.phone.display}`,
 ];

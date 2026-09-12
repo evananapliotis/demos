@@ -1,9 +1,9 @@
 ---
-import { site, fmtTime, listingUrl } from '@/lib/site';
+import { site, listingUrl, openDaysCount } from '@/lib/site';
 const cells = [
   { big: site.google.rating.toFixed(1), small: 'Google rating', href: listingUrl },
   { big: String(site.google.reviewCount), small: 'Google reviews', href: listingUrl },
-  { big: fmtTime(site.hours.closes), small: 'Closes' },
+  { big: String(openDaysCount()), small: 'Days a week' },
   ...site.features.map((f) => ({ big: '✓', small: f })),
 ];
 ---

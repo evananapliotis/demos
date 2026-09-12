@@ -29,6 +29,17 @@ export function fmtTime(t: string) {
   return mm ? `${h}:${String(mm).padStart(2, '0')}${suffix}` : `${h}${suffix}`;
 }
 
+/** How many days a week the shop opens. */
+export function openDaysCount() {
+  const week = site.hours.week;
+  return week ? DAYS.filter((d) => week[d]).length : 0;
+}
+/** "Open 7 days" / "Open 6 days a week". */
+export function openDaysLabel() {
+  const n = openDaysCount();
+  return n === 7 ? 'Open 7 days' : n ? `Open ${n} days a week` : '';
+}
+
 /** Rows for the hours table, Monday first (the browser moves today to the top). */
 export function weekRows() {
   const week = site.hours.week;
