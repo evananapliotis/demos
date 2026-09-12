@@ -1,8 +1,235 @@
 {
-  "generatedAt": "2026-09-12T18:44:51.198Z",
+  "generatedAt": "2026-09-12T20:04:46.413Z",
   "licence": {
     "name": "Pexels License",
     "url": "https://www.pexels.com/license/"
   },
-  "photos": []
+  "photos": [
+    {
+      "id": 3037244,
+      "photographer": "mostafa meraji",
+      "photographerUrl": "https://www.pexels.com/@mostafameraji",
+      "photoUrl": "https://www.pexels.com/photo/man-holds-black-hair-shaver-3037244/",
+      "slots": [
+        "hero",
+        "og"
+      ]
+    },
+    {
+      "id": 23349892,
+      "photographer": "Oleskandra Biliak",
+      "photographerUrl": "https://www.pexels.com/@oleksandra",
+      "photoUrl": "https://www.pexels.com/photo/woman-trimming-man-hair-23349892/",
+      "slots": [
+        "hero-portrait"
+      ]
+    },
+    {
+      "id": 20785318,
+      "photographer": "František Čaník",
+      "photographerUrl": "https://www.pexels.com/@canik",
+      "photoUrl": "https://www.pexels.com/photo/interior-design-of-hairdresser-studio-20785318/",
+      "slots": [
+        "about-shop"
+      ]
+    },
+    {
+      "id": 37533244,
+      "photographer": "Gizem toprak",
+      "photographerUrl": "https://www.pexels.com/@gizem-toprak-2156632703",
+      "photoUrl": "https://www.pexels.com/photo/professional-haircut-at-barbershop-close-up-37533244/",
+      "slots": [
+        "service-classic-cut"
+      ]
+    },
+    {
+      "id": 18503633,
+      "photographer": "Rahib Hamidov",
+      "photographerUrl": "https://www.pexels.com/@hamidoffstudio",
+      "photoUrl": "https://www.pexels.com/photo/a-person-using-clippers-18503633/",
+      "slots": [
+        "service-skin-fade"
+      ]
+    },
+    {
+      "id": 9153970,
+      "photographer": "Лена Gromakova",
+      "photographerUrl": "https://www.pexels.com/@gromakova-92378617",
+      "photoUrl": "https://www.pexels.com/photo/a-man-getting-a-moustache-grooming-9153970/",
+      "slots": [
+        "service-beard"
+      ]
+    },
+    {
+      "id": 36150782,
+      "photographer": "Uriel Lu",
+      "photographerUrl": "https://www.pexels.com/@urielluphoto",
+      "photoUrl": "https://www.pexels.com/photo/classic-barber-shop-shave-in-buenos-aires-36150782/",
+      "slots": [
+        "service-hot-towel-shave"
+      ]
+    },
+    {
+      "id": 9690289,
+      "photographer": "Kevin Bidwell",
+      "photographerUrl": "https://www.pexels.com/@kevinbidwell",
+      "photoUrl": "https://www.pexels.com/photo/photo-of-man-having-a-haircut-9690289/",
+      "slots": [
+        "service-cut-and-beard"
+      ]
+    },
+    {
+      "id": 7697363,
+      "photographer": "RDNE Stock project",
+      "photographerUrl": "https://www.pexels.com/@rdne",
+      "photoUrl": "https://www.pexels.com/photo/boy-inside-the-barbershop-7697363/",
+      "slots": [
+        "service-kids"
+      ]
+    },
+    {
+      "id": 7919442,
+      "photographer": "Moisés Delgado",
+      "photographerUrl": "https://www.pexels.com/@moisesenlinea",
+      "photoUrl": "https://www.pexels.com/photo/a-barber-wearing-an-apron-with-pocket-7919442/",
+      "slots": [
+        "team-1"
+      ]
+    },
+    {
+      "id": 3993458,
+      "photographer": "cottonbro studio",
+      "photographerUrl": "https://www.pexels.com/@cottonbro",
+      "photoUrl": "https://www.pexels.com/photo/woman-in-brown-jacket-holding-silver-scissors-3993458/",
+      "slots": [
+        "team-2"
+      ]
+    },
+    {
+      "id": 7518766,
+      "photographer": "Pavel Danilyuk",
+      "photographerUrl": "https://www.pexels.com/@pavel-danilyuk",
+      "photoUrl": "https://www.pexels.com/photo/a-man-wearing-white-loong-sleeve-shirt-7518766/",
+      "slots": [
+        "team-3"
+      ]
+    },
+    {
+      "id": 19915587,
+      "photographer": "KEVAL PADHIYAR",
+      "photographerUrl": "https://www.pexels.com/@keval-padhiyar-245700856",
+      "photoUrl": "https://www.pexels.com/photo/model-in-a-gray-polo-sweater-posing-in-a-glade-19915587/",
+      "slots": [
+        "gallery-1"
+      ]
+    },
+    {
+      "id": 15086590,
+      "photographer": "amirhossein fattahi",
+      "photographerUrl": "https://www.pexels.com/@amirhossein-fattahi-2588041",
+      "photoUrl": "https://www.pexels.com/photo/man-with-a-beard-and-a-flat-cap-in-a-pub-15086590/",
+      "slots": [
+        "gallery-2"
+      ]
+    },
+    {
+      "id": 13809242,
+      "photographer": "Ulises León",
+      "photographerUrl": "https://www.pexels.com/@ulises-leon-155336674",
+      "photoUrl": "https://www.pexels.com/photo/table-of-a-barber-with-hair-clippers-13809242/",
+      "slots": [
+        "gallery-3"
+      ]
+    },
+    {
+      "id": 13809247,
+      "photographer": "Ulises León",
+      "photographerUrl": "https://www.pexels.com/@ulises-leon-155336674",
+      "photoUrl": "https://www.pexels.com/photo/close-up-of-hair-scissors-13809247/",
+      "slots": [
+        "gallery-4"
+      ]
+    },
+    {
+      "id": 19915585,
+      "photographer": "KEVAL PADHIYAR",
+      "photographerUrl": "https://www.pexels.com/@keval-padhiyar-245700856",
+      "photoUrl": "https://www.pexels.com/photo/model-in-a-gray-zipper-sweater-sitting-in-the-tall-grass-19915585/",
+      "slots": [
+        "gallery-5"
+      ]
+    },
+    {
+      "id": 18665831,
+      "photographer": "Yiğit  KARAALİOĞLU",
+      "photographerUrl": "https://www.pexels.com/@ygtphoto",
+      "photoUrl": "https://www.pexels.com/photo/display-of-merchandise-in-corridor-18665831/",
+      "slots": [
+        "gallery-6"
+      ]
+    },
+    {
+      "id": 18361095,
+      "photographer": "Ali Ahmed",
+      "photographerUrl": "https://www.pexels.com/@ali-ahmed-83499412",
+      "photoUrl": "https://www.pexels.com/photo/photo-of-a-young-man-with-long-hair-and-mustache-standing-outside-in-sunlight-18361095/",
+      "slots": [
+        "before-after-1-before"
+      ]
+    },
+    {
+      "id": 27467943,
+      "photographer": "Clark Enzzo",
+      "photographerUrl": "https://www.pexels.com/@clark07",
+      "photoUrl": "https://www.pexels.com/photo/barber-shop-27467943/",
+      "slots": [
+        "before-after-1-after"
+      ]
+    },
+    {
+      "id": 10935029,
+      "photographer": "R. Fera",
+      "photographerUrl": "https://www.pexels.com/@rfera",
+      "photoUrl": "https://www.pexels.com/photo/grayscale-photo-of-a-bearded-man-10935029/",
+      "slots": [
+        "before-after-2-before"
+      ]
+    },
+    {
+      "id": 9410145,
+      "photographer": "Erik Mclean",
+      "photographerUrl": "https://www.pexels.com/@introspectivedsgn",
+      "photoUrl": "https://www.pexels.com/photo/close-up-photo-of-man-s-beard-9410145/",
+      "slots": [
+        "before-after-2-after"
+      ]
+    },
+    {
+      "id": 9992819,
+      "photographer": "Alex Urezkov",
+      "photographerUrl": "https://www.pexels.com/@instasky",
+      "photoUrl": "https://www.pexels.com/photo/bearded-man-in-a-barber-shop-9992819/",
+      "slots": [
+        "before-after-3-before"
+      ]
+    },
+    {
+      "id": 16098668,
+      "photographer": "TONI&GUY PONDICHERRY",
+      "photographerUrl": "https://www.pexels.com/@toni-guy-pondicherry-404397363",
+      "photoUrl": "https://www.pexels.com/photo/man-dressed-in-a-shirt-at-the-barbershop-16098668/",
+      "slots": [
+        "before-after-3-after"
+      ]
+    },
+    {
+      "id": 4092771,
+      "photographer": "Caner Cankisi",
+      "photographerUrl": "https://www.pexels.com/@accankisi",
+      "photoUrl": "https://www.pexels.com/photo/a-man-walking-near-a-barber-shop-4092771/",
+      "slots": [
+        "contact-exterior"
+      ]
+    }
+  ]
 }
