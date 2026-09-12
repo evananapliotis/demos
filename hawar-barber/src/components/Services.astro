@@ -1,0 +1,35 @@
+---
+import { site, telHref, bookHref } from '@/lib/site';
+import Section from './Section.astro';
+interface Props { index?: string }
+const { index } = Astro.props;
+const hasServices = site.services.length > 0;
+const anyPrice = site.services.some((s) => s.price);
+---
+<Section id="services" index={index} eyebrow="Services" title={hasServices ? 'What we <span class="text-amber">do.</span>' : 'Ask for <span class="text-amber">prices.</span>'}>
+  {
+    hasServices && (
+      <ul class="border-t border-line" role="list">
+        {site.services.map((s) => (
+          <li class="flex items-center justify-between gap-4 border-b border-line py-4" data-reveal>
+            <div class="min-w-0">
+              <h3 class="text-[1.9rem] leading-none text-cream md:text-4xl">{s.name}</h3>
+              <p class="mt-2 text-cream-2">{s.minutes} min{s.price ? ` · ${s.price}` : ''}{s.note ? ` · ${s.note}` : ''}</p>
+            </div>
+            {bookHref && <a href={`${bookHref}?service=${s.id}`} class="btn btn-outline min-h-12 shrink-0 px-4 text-base" aria-label={`Book ${s.name}`}>Book</a>}
+          </li>
+        ))}
+      </ul>
+    )
+  }
+  <div class={hasServices ? 'mt-8' : ''} data-reveal>
+    <p class="max-w-md text-lg text-cream-2">{site.pricesNote}</p>
+    {!anyPrice && (
+      <a href={telHref} class="group mt-6 inline-flex flex-col rounded-md py-2" aria-label={`Call ${site.phone.display} for prices`}>
+        <span class="eyebrow">Call for prices</span>
+        <span class="display mt-1 text-[clamp(2.6rem,12.5vw,7rem)] leading-[0.95] text-amber transition-colors group-hover:text-amber-2">{site.phone.display}</span>
+        <span class="mt-2 block h-[3px] w-16 bg-amber transition-[width] duration-300 group-hover:w-full" aria-hidden="true"></span>
+      </a>
+    )}
+  </div>
+</Section>

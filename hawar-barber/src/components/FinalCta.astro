@@ -8,8 +8,8 @@ import Icons from './Icons.astro';
     <p class="text-sm font-bold uppercase tracking-[0.18em]">{openDaysLabel()} · {site.address.street}</p>
     <h2 id="cta-title" class="mt-3 text-[clamp(3rem,13vw,7.5rem)]">Ready when<br />you are.</h2>
     <div class="mt-8 grid grid-cols-1 gap-3 sm:flex sm:flex-wrap">
-      <a href={telHref} class="btn btn-ink"><Icons name="phone" size={19} /> Call {site.phone.display}</a>
-      {bookHref && <a href={bookHref} class="btn border-2 border-ink text-ink hover:bg-ink hover:text-cream" target={bookExternal ? '_blank' : undefined} rel={bookExternal ? 'noopener' : undefined}><Icons name="calendar" size={19} /> Book a time{bookExternal && <><Icons name="external" size={14} /><span class="sr-only">(opens in a new tab)</span></>}</a>}
+      {bookHref && <a href={bookHref} class="btn btn-ink" target={bookExternal ? '_blank' : undefined} rel={bookExternal ? 'noopener' : undefined}><Icons name="calendar" size={19} /> Book a time{bookExternal && <><Icons name="external" size={14} /><span class="sr-only">(opens in a new tab)</span></>}</a>}
+      <a href={telHref} class={bookHref ? 'btn border-2 border-ink text-ink hover:bg-ink hover:text-cream' : 'btn btn-ink'}><Icons name="phone" size={19} /> Call {site.phone.display}</a>
       <a href={directionsUrl} target="_blank" rel="noopener" class={`btn border-2 border-ink text-ink hover:bg-ink hover:text-cream ${bookHref ? 'hidden sm:inline-flex' : ''}`}><Icons name="pin" size={19} /> Directions</a>
       <button type="button" class="btn border-2 border-ink text-ink hover:bg-ink hover:text-cream" data-share data-share-title={site.name} data-share-text={`${site.name}, ${fullAddress}. Call ${site.phone.display}.`} hidden>
         <Icons name="share" size={19} /> <span data-share-label>Share</span>

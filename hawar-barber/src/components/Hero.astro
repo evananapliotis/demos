@@ -42,7 +42,7 @@ const letters = (word: string, offset: number) => [...word].map((ch, i) => ({ ch
       {site.name}
     </a>
     <ul class="flex items-center gap-2 text-sm font-bold" role="list">
-      <li class="hidden md:block"><a href="#prices" class="inline-flex min-h-11 items-center px-3 text-cream-2 hover:text-amber">Prices</a></li>
+      <li class="hidden md:block"><a href="#services" class="inline-flex min-h-11 items-center px-3 text-cream-2 hover:text-amber">Services</a></li>
       <li class="hidden md:block"><a href="#reviews" class="inline-flex min-h-11 items-center px-3 text-cream-2 hover:text-amber">Reviews</a></li>
       <li class="hidden md:block"><a href="#find-us" class="inline-flex min-h-11 items-center px-3 text-cream-2 hover:text-amber">Find us</a></li>
       {bookHref && <li class="hidden md:block"><a href={bookHref} class="inline-flex min-h-11 items-center px-3 text-cream-2 hover:text-amber" target={bookExternal ? '_blank' : undefined} rel={bookExternal ? 'noopener' : undefined}>Book{bookExternal && <span class="sr-only"> (opens in a new tab)</span>}</a></li>}
@@ -94,8 +94,8 @@ const letters = (word: string, offset: number) => [...word].map((ch, i) => ({ ch
       <p class="rise mt-4 max-w-md text-lg leading-snug text-cream/85 md:text-2xl" style="animation-delay:120ms">{site.tagline}</p>
 
       <div class="mt-6 grid grid-cols-1 gap-3 sm:flex sm:flex-wrap">
-        <a href={telHref} class="btn btn-amber"><Icons name="phone" size={19} /> Call {site.phone.display}</a>
-        {bookHref && <a href={bookHref} class="btn btn-outline" target={bookExternal ? '_blank' : undefined} rel={bookExternal ? 'noopener' : undefined}><Icons name="calendar" size={19} /> Book a time{bookExternal && <><Icons name="external" size={14} /><span class="sr-only">(opens in a new tab)</span></>}</a>}
+        {bookHref && <a href={bookHref} class="btn btn-amber" target={bookExternal ? '_blank' : undefined} rel={bookExternal ? 'noopener' : undefined}><Icons name="calendar" size={19} /> Book a time{bookExternal && <><Icons name="external" size={14} /><span class="sr-only">(opens in a new tab)</span></>}</a>}
+        <a href={telHref} class={`btn ${bookHref ? 'btn-outline' : 'btn-amber'}`}><Icons name="phone" size={19} /> Call {site.phone.display}</a>
         <a href={directionsUrl} target="_blank" rel="noopener" class={`btn btn-outline ${bookHref ? 'hidden sm:inline-flex' : ''}`}><Icons name="pin" size={19} /> Directions</a>
       </div>
 
@@ -106,7 +106,7 @@ const letters = (word: string, offset: number) => [...word].map((ch, i) => ({ ch
     </div>
   </div>
 
-  <a href="#prices" class="scroll-cue absolute bottom-6 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 text-[0.7rem] font-bold uppercase tracking-[0.2em] text-cream-2 hover:text-amber md:flex" aria-label="Scroll to prices">
+  <a href="#services" class="scroll-cue absolute bottom-6 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 text-[0.7rem] font-bold uppercase tracking-[0.2em] text-cream-2 hover:text-amber md:flex" aria-label="Scroll to services">
     Scroll <span class="block h-10 w-px overflow-hidden bg-cream/20"><span class="scroll-line block h-full w-full bg-amber"></span></span>
   </a>
 </header>

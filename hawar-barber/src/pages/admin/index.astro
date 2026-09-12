@@ -1,0 +1,150 @@
+---
+export const prerender = false;
+/** /admin: today's and tomorrow's bookings, cancel, block out time. Password + signed cookie; never cached or indexed. */
+import '@/styles/global.css';
+import { site } from '@/lib/site';
+import { isAdmin } from '@/lib/session';
+import { bookingsOn, blocksOn, type BookingRow, type BlockRow } from '@/lib/db';
+import { displayPhone, hoursFor, cfg } from '@/lib/booking';
+import { addDays, fmtDay, fmtDayLong, fmtTime, fromMin, toMin, todayLondon } from '@/lib/time';
+
+const env = Astro.locals.runtime?.env;
+const setup = !env?.DB ? 'No D1 database is bound as DB.' : !env.ADMIN_PASSWORD || !env.SESSION_SECRET ? 'The ADMIN_PASSWORD and SESSION_SECRET secrets are not set.' : '';
+const signedIn = env && !setup ? await isAdmin(Astro.request, env) : false;
+const q = Astro.url.searchParams;
+const flash = { cancelled: 'Booking cancelled. The time is free again.', blocked: 'Time blocked out.', unblocked: 'Block removed.' }[q.get('msg') ?? ''] ?? '';
+const who = q.get('who') ?? '';
+const error =
+  { wrong: 'Wrong password.', locked: 'Too many attempts. Try again in 15 minutes.', setup: 'The server is missing its secrets.', bad: 'That request was not understood.', gone: 'That booking had already gone.', badblock: 'Check the block-out times: the end must be after the start.', clash: `Can't block that time: there are bookings inside it (${who}). Cancel them first.` }[q.get('err') ?? ''] ?? '';
+
+const today = todayLondon();
+const days = [
+  { date: today, label: 'Today' },
+  { date: addDays(today, 1), label: 'Tomorrow' },
+];
+let bookings: BookingRow[] = [];
+let blocks: BlockRow[] = [];
+if (signedIn && env?.DB) {
+  [bookings, blocks] = await Promise.all([bookingsOn(env.DB, days.map((d) => d.date)), blocksOn(env.DB, days.map((d) => d.date))]);
+}
+const endOf = (b: BookingRow) => fromMin(toMin(b.local_time) + b.minutes);
+const blockDates = Array.from({ length: 8 }, (_, i) => addDays(today, i));
+const times: string[] = [];
+for (let m = 8 * 60; m <= 19 * 60; m += 15) times.push(fromMin(m));
+---
+<!doctype html>
+<html lang="en-GB" class="bg-ink">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="robots" content="noindex,nofollow" />
+    <meta name="theme-color" content="#0e0c0a" />
+    <title>Bookings | {site.name}</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body class="bg-ink text-cream antialiased">
+    <main class="mx-auto max-w-2xl px-5 pb-16 pt-6 sm:px-8">
+      <header class="flex items-center justify-between gap-4">
+        <p class="display inline-flex items-center gap-2 text-[1.35rem] tracking-wide text-cream"><span class="inline-block h-6 w-[7px] rounded-sm stripe-amber" aria-hidden="true"></span>{site.name}</p>
+        {signedIn && (
+          <form method="post" action="/api/admin/logout"><button type="submit" class="inline-flex min-h-11 items-center px-2 text-sm font-bold text-cream-2 hover:text-amber">Sign out</button></form>
+        )}
+      </header>
+
+      {error && <p class="mt-6 rounded-md border border-amber/60 bg-amber/10 px-4 py-3 text-cream" role="alert">{error}</p>}
+      {flash && <p class="mt-6 rounded-md border border-line bg-ink-2 px-4 py-3 text-cream" role="status">{flash}</p>}
+      {setup && <p class="mt-6 rounded-md border border-amber/60 bg-amber/10 px-4 py-3 text-cream" role="alert">{setup}</p>}
+
+      {!signedIn ? (
+        <section class="mt-10">
+          <h1 class="text-[clamp(2.5rem,12vw,4.5rem)] text-cream">Bookings <span class="text-amber">sign-in.</span></h1>
+          <form method="post" action="/api/admin/login" class="mt-6 grid gap-4">
+            <div>
+              <label for="password" class="mb-2 block font-bold">Password</label>
+              <input id="password" name="password" type="password" required autocomplete="current-password" class="input" autofocus />
+            </div>
+            <button type="submit" class="btn btn-amber w-full">Sign in</button>
+          </form>
+        </section>
+      ) : (
+        <>
+          <h1 class="mt-8 text-[clamp(2.5rem,12vw,4.5rem)] text-cream">The <span class="text-amber">list.</span></h1>
+          <p class="mt-2 text-cream-2">{bookings.length} booked across today and tomorrow. Cancelling frees the time straight away; customers can also cancel through their own link.</p>
+
+          {days.map((d) => {
+            const list = bookings.filter((b) => b.local_date === d.date);
+            const dayBlocks = blocks.filter((x) => x.local_date === d.date);
+            const h = hoursFor(d.date);
+            return (
+              <section class="mt-10" aria-labelledby={`day-${d.date}`}>
+                <h2 id={`day-${d.date}`} class="text-3xl text-cream">{d.label} <span class="text-cream-2">· {fmtDayLong(d.date)}</span></h2>
+                <p class="mt-1 text-sm text-cream-2">{h ? `Open ${fmtTime(h.open)} to ${fmtTime(h.close)}` : 'Closed'}</p>
+                {list.length === 0 && dayBlocks.length === 0 && <p class="mt-4 text-cream-2">Nothing booked.</p>}
+                <ul class="mt-4 grid gap-3" role="list">
+                  {list.map((b) => (
+                    <li class="rounded-md border border-line bg-ink-2 p-4">
+                      <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+                        <p class="display text-3xl text-cream">{fmtTime(b.local_time)}<span class="text-cream-2"> – {fmtTime(endOf(b))}</span></p>
+                        <p class="text-sm font-bold uppercase tracking-[0.12em] text-amber">{b.service_name} · {b.minutes} min</p>
+                      </div>
+                      <p class="mt-2 text-xl font-bold text-cream">{b.name}</p>
+                      <div class="mt-2 flex flex-wrap items-center justify-between gap-3">
+                        <a href={`tel:${b.phone}`} class="inline-flex min-h-11 items-center font-bold text-amber">{displayPhone(b.phone)}</a>
+                        <form method="post" action="/api/admin/cancel" data-confirm={`Cancel ${b.name}'s ${b.service_name} at ${fmtTime(b.local_time)}?`}>
+                          <input type="hidden" name="id" value={b.id} />
+                          <button type="submit" class="btn btn-outline min-h-11 px-4 text-sm">Cancel booking</button>
+                        </form>
+                      </div>
+                    </li>
+                  ))}
+                  {dayBlocks.map((x) => (
+                    <li class="rounded-md border border-dashed border-line p-4">
+                      <div class="flex flex-wrap items-center justify-between gap-3">
+                        <p class="text-cream"><span class="font-bold">Blocked</span> {fmtTime(x.local_from)} – {fmtTime(x.local_to)}{x.note ? ` · ${x.note}` : ''}</p>
+                        <form method="post" action="/api/admin/unblock">
+                          <input type="hidden" name="id" value={x.id} />
+                          <button type="submit" class="inline-flex min-h-11 items-center px-2 text-sm font-bold text-cream-2 hover:text-amber">Remove</button>
+                        </form>
+                      </div>
+                    </li>
+                  ))}
+                </ul>
+              </section>
+            );
+          })}
+
+          <section class="mt-12 rounded-md border border-line bg-ink-2 p-5" aria-labelledby="block-title">
+            <h2 id="block-title" class="text-3xl text-cream">Block out <span class="text-amber">time.</span></h2>
+            <p class="mt-1 text-sm text-cream-2">Lunch, an appointment, a closed afternoon. Nobody can book inside it{cfg.chairs > 1 ? ' on any chair' : ''}.</p>
+            <form method="post" action="/api/admin/block" class="mt-4 grid gap-4">
+              <div>
+                <label for="block-date" class="mb-2 block font-bold">Day</label>
+                <select id="block-date" name="date" class="input">
+                  {blockDates.map((d) => <option value={d}>{d === today ? 'Today, ' : d === addDays(today, 1) ? 'Tomorrow, ' : ''}{fmtDay(d)}</option>)}
+                </select>
+              </div>
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label for="block-from" class="mb-2 block font-bold">From</label>
+                  <select id="block-from" name="from" class="input">{times.map((t) => <option value={t} selected={t === '12:00'}>{fmtTime(t)}</option>)}</select>
+                </div>
+                <div>
+                  <label for="block-to" class="mb-2 block font-bold">To</label>
+                  <select id="block-to" name="to" class="input">{times.map((t) => <option value={t} selected={t === '13:00'}>{fmtTime(t)}</option>)}</select>
+                </div>
+              </div>
+              <div>
+                <label for="block-note" class="mb-2 block font-bold">Note <span class="font-normal text-cream-2">(optional)</span></label>
+                <input id="block-note" name="note" type="text" maxlength="80" class="input" placeholder="Lunch" />
+              </div>
+              <button type="submit" class="btn btn-amber">Block this time</button>
+            </form>
+          </section>
+        </>
+      )}
+    </main>
+    <script>
+      document.querySelectorAll<HTMLFormElement>('form[data-confirm]').forEach((f) => f.addEventListener('submit', (e) => { if (!confirm(f.dataset.confirm)) e.preventDefault(); }));
+    </script>
+  </body>
+</html>

@@ -7,17 +7,24 @@
   "scripts": {
     "dev": "astro dev",
     "build": "node scripts/og.mjs && astro build",
-    "preview": "astro preview",
+    "preview": "npm run build && wrangler dev",
+    "start": "wrangler dev",
+    "check": "astro check",
     "verify": "node scripts/verify.mjs",
     "lighthouse": "node scripts/lighthouse.mjs",
+    "test:booking": "node scripts/booking-test.mjs",
+    "db:migrate": "wrangler d1 migrations apply hawar-barber-bookings --local",
+    "db:migrate:remote": "wrangler d1 migrations apply hawar-barber-bookings --remote",
+    "deploy": "node scripts/preflight.mjs && npm run build && wrangler deploy",
+    "types": "wrangler types",
     "sizes": "node scripts/sizes.mjs",
     "shots": "node scripts/shot.mjs",
     "scrollshots": "node scripts/scrollshots.mjs",
     "desktopshots": "node scripts/desktopshots.mjs",
-    "poster": "node scripts/poster.mjs",
-    "zip": "cd dist && rm -f ../hawar-barber.zip && zip -rq -X ../hawar-barber.zip . -x '.DS_Store' '*/.DS_Store' 'images/*'"
+    "poster": "node scripts/poster.mjs"
   },
   "dependencies": {
+    "@astrojs/cloudflare": "^12.6.13",
     "@fontsource-variable/big-shoulders-display": "^5.3.0",
     "@fontsource-variable/dm-sans": "^5.3.0",
     "@tailwindcss/vite": "^4.1.0",
@@ -28,11 +35,13 @@
   },
   "devDependencies": {
     "@astrojs/check": "^0.9.10",
+    "@cloudflare/workers-types": "^5.20260911.1",
     "@types/three": "^0.186.0",
     "lighthouse": "^13.4.1",
     "playwright-core": "^1.63.0",
     "qrcode": "^1.5.4",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "wrangler": "^4.131.1"
   },
   "engines": {
     "node": ">=20"

@@ -1,6 +1,7 @@
 // @ts-check
 import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
+import cloudflare from '@astrojs/cloudflare';
 import { site } from './site.config.ts';
 
 /** Keep the 3D hero and its three.js imports in one clearly named lazy chunk (client build only). */
@@ -23,6 +24,14 @@ const poleChunk = {
 
 export default defineConfig({
   output: 'static',
+  // Cloudflare Workers: the marketing pages stay prerendered; /api/*, /admin and /cancel/* render on request.
+  adapter: cloudflare({
+    platformProxy: { enabled: true },
+    // Images are only on prerendered pages, so sharp runs at build time, never on the Worker.
+    imageService: 'compile',
+    // src/worker.ts adds the cron handler for the nightly clean-up.
+    workerEntryPoint: { path: 'src/worker.ts' },
+  }),
   integrations: [poleChunk],
   site: site.url,
   trailingSlash: 'never',

@@ -1,0 +1,6 @@
+# Copy to .dev.vars for local runs (wrangler dev / astro dev). In production set each with: npx wrangler secret put NAME
+ADMIN_PASSWORD=change-me
+SESSION_SECRET=change-me-to-a-long-random-string
+RESEND_API_KEY=
+SHOP_EMAIL=
+MAIL_FROM=

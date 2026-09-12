@@ -1,0 +1,75 @@
+---
+export const prerender = false;
+import Base from '@/layouts/Base.astro';
+import PageHeader from '@/components/PageHeader.astro';
+import StickyBar from '@/components/StickyBar.astro';
+import Icons from '@/components/Icons.astro';
+import { site, telHref, fullAddress } from '@/lib/site';
+import { bookingByToken } from '@/lib/db';
+import { fmtDayLong, fmtTime, fromMin, toMin } from '@/lib/time';
+
+const token = Astro.params.token ?? '';
+const env = Astro.locals.runtime?.env;
+const b = /^[A-Za-z0-9_-]{20,64}$/.test(token) && env?.DB ? await bookingByToken(env.DB, token) : null;
+const justDone = Astro.url.searchParams.get('done') === '1';
+const past = b ? new Date(b.end_utc) < new Date() : false;
+const state = !b ? 'missing' : b.status === 'cancelled' ? 'cancelled' : past ? 'past' : 'active';
+if (state === 'missing') Astro.response.status = 404;
+const endTime = b ? fromMin(toMin(b.local_time) + b.minutes) : '';
+---
+<Base title={`Your booking | ${site.name}`} description={`Manage your booking at ${site.name}.`} noindex>
+  <PageHeader />
+  <main id="main" class="px-5 pb-28 pt-6 sm:px-8 lg:px-12">
+    <div class="mx-auto max-w-lg">
+      {state === 'missing' && (
+        <>
+          <p class="eyebrow">Booking</p>
+          <h1 class="mt-3 text-[clamp(3rem,15vw,6rem)] text-cream">Not <span class="text-amber">found.</span></h1>
+          <p class="mt-4 text-lg text-cream/85">That link doesn't match a booking. If you need to change something, call the shop.</p>
+          <a href={telHref} class="btn btn-amber mt-8"><Icons name="phone" size={19} /> Call {site.phone.display}</a>
+        </>
+      )}
+      {state === 'cancelled' && b && (
+        <>
+          <p class="eyebrow">{justDone ? 'Done' : 'Booking'}</p>
+          <h1 class="mt-3 text-[clamp(3rem,15vw,6rem)] text-cream">{justDone ? 'Cancelled.' : 'Already'} <span class="text-amber">{justDone ? '' : 'cancelled.'}</span></h1>
+          <p class="mt-4 text-lg text-cream/85">{b.service_name} on {fmtDayLong(b.local_date)} at {fmtTime(b.local_time)} is cancelled{justDone ? ' and the time is free again' : ''}.</p>
+          <div class="mt-8 grid grid-cols-1 gap-3 sm:flex">
+            <a href="/book" class="btn btn-amber"><Icons name="calendar" size={19} /> Book another time</a>
+            <a href="/" class="btn btn-outline">Back to the shop</a>
+          </div>
+        </>
+      )}
+      {state === 'past' && b && (
+        <>
+          <p class="eyebrow">Booking</p>
+          <h1 class="mt-3 text-[clamp(3rem,15vw,6rem)] text-cream">Already <span class="text-amber">been.</span></h1>
+          <p class="mt-4 text-lg text-cream/85">{b.service_name} on {fmtDayLong(b.local_date)} at {fmtTime(b.local_time)} has already happened, so there's nothing to cancel.</p>
+          <a href="/book" class="btn btn-amber mt-8"><Icons name="calendar" size={19} /> Book again</a>
+        </>
+      )}
+      {state === 'active' && b && (
+        <>
+          <p class="eyebrow">Your booking</p>
+          <h1 class="mt-3 text-[clamp(3rem,15vw,6rem)] text-cream">{b.name.split(' ')[0]}, you're <span class="text-amber">in.</span></h1>
+          <div class="mt-6 rounded-md border border-line bg-ink-2 p-5">
+            <p class="display text-3xl text-cream">{fmtDayLong(b.local_date)}</p>
+            <p class="mt-1 text-xl text-amber">{fmtTime(b.local_time)} – {fmtTime(endTime)}</p>
+            <p class="mt-2 text-cream">{b.service_name} · {b.minutes} min</p>
+            <p class="mt-1 text-cream-2">{site.name}, {fullAddress}</p>
+          </div>
+          <form method="post" action="/api/cancel" class="mt-8 grid grid-cols-1 gap-3 sm:flex" data-confirm="Cancel this booking? The time will be offered to someone else.">
+            <input type="hidden" name="token" value={b.token} />
+            <button type="submit" class="btn btn-amber">Cancel this booking</button>
+            <a href="/" class="btn btn-outline">Keep it</a>
+          </form>
+          <p class="mt-6 text-sm text-cream-2">Need a different time? Cancel here, then <a href="/book" class="font-bold text-amber">book again</a>, or call <a href={telHref} class="font-bold text-amber">{site.phone.display}</a>.</p>
+        </>
+      )}
+    </div>
+  </main>
+  <StickyBar />
+</Base>
+<script>
+  document.querySelectorAll<HTMLFormElement>('form[data-confirm]').forEach((f) => f.addEventListener('submit', (e) => { if (!confirm(f.dataset.confirm)) e.preventDefault(); }));
+</script>

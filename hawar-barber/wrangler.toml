@@ -1,0 +1,41 @@
+# HAWAR BARBER on Cloudflare Workers: the static site plus the booking API, /admin and the nightly clean-up.
+# Deploy: npm run deploy   (see README → Deploy)
+name = "hawar-barber"
+main = "./dist/_worker.js/index.js"
+compatibility_date = "2026-08-01"
+compatibility_flags = ["nodejs_compat"]
+
+[assets]
+directory = "./dist"
+binding = "ASSETS"
+not_found_handling = "404-page"
+# Browser navigations to these paths must reach the Worker (otherwise the assets layer answers with the 404 page).
+run_worker_first = ["/api/*", "/admin", "/admin/*", "/cancel/*"]
+
+[observability]
+enabled = true
+
+# Bookings live in D1. Create it once:  npx wrangler d1 create hawar-barber-bookings
+# then paste the database_id it prints here. Migrations: npm run db:migrate:remote
+[[d1_databases]]
+binding = "DB"
+database_name = "hawar-barber-bookings"
+database_id = "REPLACE-WITH-THE-ID-FROM-wrangler-d1-create"
+migrations_dir = "migrations"
+
+# Nightly at 03:30 UTC: delete bookings older than site.config.ts → booking.retentionDays.
+[triggers]
+crons = ["30 3 * * *"]
+
+# The live domain. Wrangler attaches it on deploy (moving it here if another Worker holds it, after asking).
+[[routes]]
+pattern = "hawarbarbers.co.uk"
+custom_domain = true
+
+# Secrets (never in this file):  npx wrangler secret put <NAME>
+#   ADMIN_PASSWORD   password for /admin
+#   SESSION_SECRET   long random string that signs the admin cookie
+#   RESEND_API_KEY   from resend.com
+#   SHOP_EMAIL       where new-booking emails go
+#   MAIL_FROM        sender, e.g. "HAWAR BARBER <bookings@hawarbarbers.co.uk>" (domain verified in Resend)
+# Locally these come from .dev.vars (copy .dev.vars.example).

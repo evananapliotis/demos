@@ -14,7 +14,16 @@
 
 export type Day = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday';
 export interface HoursRange { open: string; close: string } // 24h "09:00"
-export interface Service { name: string; price?: string; note?: string }
+export interface Service {
+  /** Short id used in URLs and the database, e.g. 'haircut'. */
+  id: string;
+  name: string;
+  /** How long it takes: sets the slots offered and the time it blocks out. */
+  minutes: number;
+  /** Optional. Prices are not shown until the shop confirms them. */
+  price?: string;
+  note?: string;
+}
 export interface Review { author: string; rating: number; text: string; date?: string }
 export interface Social { label: string; url: string }
 
@@ -56,8 +65,15 @@ export const site = {
   },
 
 
-  /** No services or prices are published anywhere we could read. Add them and the list renders. */
-  services: [] as Service[],
+  /** Services and how long each takes (confirmed by the owner). No prices until he confirms them. */
+  services: [
+    { id: 'haircut', name: 'Haircut', minutes: 30 },
+    { id: 'skin-fade', name: 'Skin fade', minutes: 45 },
+    { id: 'beard-trim', name: 'Beard trim', minutes: 20 },
+    { id: 'haircut-beard', name: 'Haircut & beard', minutes: 50 },
+    { id: 'kids-cut', name: 'Kids cut', minutes: 20 },
+    { id: 'hot-towel-shave', name: 'Hot towel shave', minutes: 30 },
+  ] as Service[],
   pricesNote: 'Prices are not published online. Call and ask before you come in.',
 
   /** Paste real Google reviews here (author first name, rating, exact text). Empty = rating band only. */
@@ -72,6 +88,26 @@ export const site = {
 
   /** Online booking link (Fresha, Booksy …). None found yet. When set, "Book" buttons appear and open it. */
   bookingUrl: null as string | null,
+
+  /** Online booking (the built-in system at /book). Every number here is safe to change. */
+  booking: {
+    /** Switch the whole booking system on or off. Off = the Book buttons disappear. */
+    enabled: true,
+    /** Barbers working at once. One for now; raise it once the owner confirms. */
+    chairs: 1,
+    /** Start times are offered every this many minutes. */
+    slotMinutes: 15,
+    /** Occupied time is stored in cells this long; every service length must be a multiple of it. */
+    cellMinutes: 5,
+    /** Nothing can be booked closer than this to now. */
+    minNoticeMinutes: 60,
+    /** How far ahead customers can book. */
+    horizonDays: 21,
+    /** Bookings older than this are deleted by the nightly job. */
+    retentionDays: 90,
+    /** A phone number can hold at most this many upcoming bookings. */
+    maxActivePerPhone: 2,
+  },
 
   /** Social profiles. Only the Facebook page could be confirmed as this shop. */
   socials: [{ label: 'Facebook', url: 'https://www.facebook.com/61574727154851' }] as Social[],

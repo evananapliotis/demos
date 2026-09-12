@@ -8,18 +8,18 @@ const year = new Date().getFullYear();
   <div class="mx-auto flex max-w-5xl flex-col gap-8 md:flex-row md:items-end md:justify-between">
     <div>
       <p class="display text-3xl text-cream">{site.name}</p>
-      <p class="mt-2 text-cream-2"><a href={directionsUrl} target="_blank" rel="noopener" class="inline-flex min-h-11 items-center hover:text-amber">{fullAddress}</a></p>
-      <p><a href={telHref} class="inline-flex min-h-11 items-center font-bold text-cream hover:text-amber">{site.phone.display}</a></p>
+      <p class="mt-2 text-cream-2"><a href={directionsUrl} target="_blank" rel="noopener" class="inline-flex min-h-12 items-center hover:text-amber">{fullAddress}</a></p>
+      <p><a href={telHref} class="inline-flex min-h-12 items-center font-bold text-cream hover:text-amber">{site.phone.display}</a></p>
     </div>
     <nav aria-label="Footer">
       <ul class="flex flex-wrap gap-x-5 gap-y-1 text-sm font-bold text-cream-2" role="list">
-        <li><a href="#prices" class="inline-flex min-h-11 items-center hover:text-amber">Prices</a></li>
-        <li><a href="#reviews" class="inline-flex min-h-11 items-center hover:text-amber">Reviews</a></li>
-        <li><a href="#find-us" class="inline-flex min-h-11 items-center hover:text-amber">Find us</a></li>
-        {bookHref && <li><a href={bookHref} class="inline-flex min-h-11 items-center hover:text-amber" target={bookExternal ? '_blank' : undefined} rel={bookExternal ? 'noopener' : undefined}>Book{bookExternal && <span class="sr-only"> (opens in a new tab)</span>}</a></li>}
-        <li><a href={listingUrl} target="_blank" rel="noopener" class="inline-flex min-h-11 items-center gap-1.5 hover:text-amber">Google <Icons name="external" size={13} /></a></li>
+        <li><a href="#services" class="inline-flex min-h-12 min-w-12 items-center hover:text-amber">Services</a></li>
+        <li><a href="#reviews" class="inline-flex min-h-12 min-w-12 items-center hover:text-amber">Reviews</a></li>
+        <li><a href="#find-us" class="inline-flex min-h-12 min-w-12 items-center hover:text-amber">Find us</a></li>
+        {bookHref && <li><a href={bookHref} class="inline-flex min-h-12 min-w-12 items-center hover:text-amber" target={bookExternal ? '_blank' : undefined} rel={bookExternal ? 'noopener' : undefined}>Book{bookExternal && <span class="sr-only"> (opens in a new tab)</span>}</a></li>}
+        <li><a href={listingUrl} target="_blank" rel="noopener" class="inline-flex min-h-12 items-center gap-1.5 hover:text-amber">Google <Icons name="external" size={13} /></a></li>
         {site.socials.map((s) => (
-          <li><a href={s.url} target="_blank" rel="noopener" class="inline-flex min-h-11 items-center gap-1.5 hover:text-amber">{s.label === 'Facebook' && <Icons name="facebook" size={15} />}{s.label}</a></li>
+          <li><a href={s.url} target="_blank" rel="noopener" class="inline-flex min-h-12 items-center gap-1.5 hover:text-amber">{s.label === 'Facebook' && <Icons name="facebook" size={15} />}{s.label}</a></li>
         ))}
       </ul>
     </nav>

@@ -1,6 +1,9 @@
 node_modules/
-# dist/ is committed on purpose: it is the folder to upload to Cloudflare Pages.
+dist/
 .astro/
+.wrangler/
+.dev.vars
+hawar-barber.zip
 reports/*.html
 reports/*.json
 public/og.jpg

@@ -1,0 +1,272 @@
+---
+export const prerender = true;
+import Base from '@/layouts/Base.astro';
+import PageHeader from '@/components/PageHeader.astro';
+import StickyBar from '@/components/StickyBar.astro';
+import Icons from '@/components/Icons.astro';
+import { site, telHref, fullAddress } from '@/lib/site';
+import { EXAMPLE_PHONE } from '@/lib/booking';
+
+const title = `Book a time | ${site.name}, ${site.address.locality}`;
+const description = `Book a haircut, fade, beard trim or shave at ${site.name}, ${site.address.street}, ${site.address.locality}. Pick a service, a day and a time.`;
+const config = {
+  services: site.services.map((s) => ({ id: s.id, name: s.name, minutes: s.minutes })),
+  phone: site.phone.display,
+  tel: site.phone.tel,
+  name: site.name,
+  address: fullAddress,
+  minNotice: site.booking.minNoticeMinutes,
+};
+---
+<Base title={title} description={description} noindex={!site.booking.enabled}>
+  <PageHeader />
+  <main id="main" class="px-5 pb-28 pt-6 sm:px-8 lg:px-12">
+    <div class="mx-auto max-w-lg">
+      <p class="eyebrow flex items-center gap-3 before:block before:h-[2px] before:w-6 before:bg-amber">Online booking</p>
+      <h1 class="mt-3 text-[clamp(3rem,15vw,6rem)] text-cream">Book a <span class="text-amber">time.</span></h1>
+      <p class="mt-3 text-lg text-cream/85">Pick what you're coming in for, then a day and a time. It's confirmed straight away.</p>
+
+      <noscript>
+        <p class="mt-6 rounded-md border border-amber/50 bg-amber/10 p-4 text-cream">Online booking needs JavaScript. To book, call <a href={telHref} class="font-bold text-amber">{site.phone.display}</a>.</p>
+      </noscript>
+
+      <form data-book data-config={JSON.stringify(config)} class="mt-8 grid gap-8" novalidate>
+        <p class="hidden" aria-hidden="true"><label>Website <input name="website" type="text" tabindex="-1" autocomplete="off" /></label></p>
+
+        <fieldset data-step="service">
+          <legend class="eyebrow mb-3">1 · What are you in for?</legend>
+          <div class="grid gap-2">
+            {site.services.map((s) => (
+              <label class="choice">
+                <input type="radio" name="service" value={s.id} />
+                <span class="choice-body">
+                  <span class="text-lg font-bold text-cream">{s.name}</span>
+                  <span class="shrink-0 text-sm font-bold uppercase tracking-[0.12em] text-amber">{s.minutes} min</span>
+                </span>
+              </label>
+            ))}
+          </div>
+        </fieldset>
+
+        <fieldset data-step="day" hidden>
+          <legend class="eyebrow mb-3">2 · Which day?</legend>
+          <div class="days" data-days></div>
+          <p class="mt-3 text-sm text-cream-2" data-day-hint aria-live="polite">Loading times…</p>
+        </fieldset>
+
+        <fieldset data-step="time" hidden>
+          <legend class="eyebrow mb-3">3 · What time?</legend>
+          <div class="grid grid-cols-3 gap-2 min-[400px]:grid-cols-4" data-slots></div>
+          <p class="mt-3 text-sm text-cream-2" data-slot-hint aria-live="polite"></p>
+        </fieldset>
+
+        <fieldset data-step="details" hidden class="grid gap-5">
+          <legend class="eyebrow mb-3">4 · Your details</legend>
+          <div role="alert" tabindex="-1" class="rounded-md text-cream [&:not(:empty)]:border [&:not(:empty)]:border-amber/50 [&:not(:empty)]:bg-amber/10 [&:not(:empty)]:px-4 [&:not(:empty)]:py-3" data-summary></div>
+          <div>
+            <label for="name" class="mb-2 block font-bold text-cream">Your name</label>
+            <input id="name" name="name" type="text" required minlength="2" maxlength="80" autocomplete="name" class="input" aria-describedby="name-err" />
+            <p id="name-err" class="mt-2 hidden text-sm font-bold text-amber" data-err="name"></p>
+          </div>
+          <div>
+            <label for="phone" class="mb-2 block font-bold text-cream">Mobile number</label>
+            <input id="phone" name="phone" type="tel" required inputmode="tel" autocomplete="tel" placeholder={EXAMPLE_PHONE} class="input" aria-describedby="phone-hint phone-err" />
+            <p id="phone-hint" class="mt-1 text-sm text-cream-2">So the shop can reach you if anything changes.</p>
+            <p id="phone-err" class="mt-2 hidden text-sm font-bold text-amber" data-err="phone"></p>
+          </div>
+          <div>
+            <label for="email" class="mb-2 block font-bold text-cream">Email <span class="font-normal text-cream-2">(optional, for a confirmation)</span></label>
+            <input id="email" name="email" type="email" maxlength="120" autocomplete="email" inputmode="email" class="input" aria-describedby="email-err" />
+            <p id="email-err" class="mt-2 hidden text-sm font-bold text-amber" data-err="email"></p>
+          </div>
+          <p class="text-sm text-cream-2">Your details are used only for this booking.</p>
+          <button type="submit" class="btn btn-amber w-full" data-submit><Icons name="calendar" size={19} /> <span data-submit-label>Confirm booking</span></button>
+          <p class="text-center text-sm text-cream-2">Prefer to talk? <a href={telHref} class="inline-flex min-h-11 items-center font-bold text-amber">Call {site.phone.display}</a></p>
+        </fieldset>
+      </form>
+
+      <section class="mt-8 hidden rounded-md border border-amber/40 bg-ink-2 p-6" data-done aria-live="polite">
+        <p class="eyebrow">Booked</p>
+        <h2 class="mt-2 text-4xl text-cream" tabindex="-1">See you <span class="text-amber">soon.</span></h2>
+        <p class="mt-4 text-lg text-cream" data-done-when></p>
+        <p class="mt-1 text-cream-2">{site.name}, {fullAddress}.</p>
+        <p class="mt-3 text-cream-2" data-done-email hidden>A confirmation is on its way to <span class="text-cream" data-done-email-addr></span>.</p>
+        <div class="mt-6 grid grid-cols-1 gap-3 sm:flex sm:flex-wrap">
+          <a href="#" class="btn btn-outline" data-calendar target="_blank" rel="noopener"><Icons name="calendar" size={19} /> Add to calendar</a>
+          <a href="/" class="btn btn-outline">Back to the shop</a>
+        </div>
+        <p class="mt-6 text-sm text-cream-2">Can't make it? <a href="#" class="inline-flex min-h-11 items-center font-bold text-amber" data-cancel-link>Cancel this booking</a>. Keep that link: it's the only way to cancel without calling.</p>
+      </section>
+    </div>
+  </main>
+  <StickyBar book={false} />
+</Base>
+
+<script>
+  import { fmtTime, fmtDayLong } from '@/lib/time';
+
+  type Svc = { id: string; name: string; minutes: number };
+  type Day = { date: string; label: string; closed: boolean; hours: { open: string; close: string } | null; slots: string[] };
+  type Cfg = { services: Svc[]; phone: string; tel: string; name: string; address: string; minNotice: number };
+
+  const form = document.querySelector<HTMLFormElement>('[data-book]');
+  if (form) {
+    const cfg = JSON.parse(form.dataset.config!) as Cfg;
+    const step = (n: string) => form.querySelector<HTMLFieldSetElement>(`[data-step="${n}"]`)!;
+    const daysBox = form.querySelector<HTMLElement>('[data-days]')!;
+    const slotsBox = form.querySelector<HTMLElement>('[data-slots]')!;
+    const dayHint = form.querySelector<HTMLElement>('[data-day-hint]')!;
+    const slotHint = form.querySelector<HTMLElement>('[data-slot-hint]')!;
+    const summary = form.querySelector<HTMLElement>('[data-summary]')!;
+    const submit = form.querySelector<HTMLButtonElement>('[data-submit]')!;
+    const submitLabel = submit.querySelector<HTMLElement>('[data-submit-label]')!;
+    const done = document.querySelector<HTMLElement>('[data-done]')!;
+
+    let days: Day[] = [];
+    let today = '';
+    let service: Svc | null = null;
+    let date = '';
+    let time = '';
+    let busy = false;
+
+    const reveal = (el: HTMLElement) => {
+      if (!el.hidden) return;
+      el.hidden = false;
+      requestAnimationFrame(() => el.scrollIntoView({ block: 'start', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' }));
+    };
+    const chip = (name: string, value: string, label: string, sub = '', disabled = false, checked = false) =>
+      `<label class="chip"><input type="radio" name="${name}" value="${value}"${disabled ? ' disabled' : ''}${checked ? ' checked' : ''}><span class="chip-body">${label}${sub ? `<small>${sub}</small>` : ''}</span></label>`;
+    const dayLabel = (d: Day) => (d.date === today ? 'Today' : d.label);
+
+    const renderDays = () => {
+      daysBox.innerHTML = days
+        .map((d) => chip('date', d.date, dayLabel(d), d.closed ? 'Closed' : d.slots.length ? `${d.slots.length} time${d.slots.length === 1 ? '' : 's'}` : 'Full', d.closed || !d.slots.length, d.date === date))
+        .join('');
+      const open = days.filter((d) => !d.closed && d.slots.length);
+      dayHint.textContent = open.length ? 'Days shown are the next three weeks.' : 'Nothing free in the next three weeks. Call the shop.';
+    };
+    const renderSlots = () => {
+      const d = days.find((x) => x.date === date);
+      if (!d) return;
+      slotsBox.innerHTML = d.slots.map((t) => chip('time', t, fmtTime(t), '', false, t === time)).join('');
+      slotHint.textContent = d.hours ? `${fmtDayLong(d.date)}: open ${fmtTime(d.hours.open)} to ${fmtTime(d.hours.close)}.` : '';
+      if (!d.slots.length) slotHint.textContent = 'That day has filled up. Pick another.';
+    };
+
+    const load = async () => {
+      if (!service) return;
+      dayHint.textContent = 'Loading times…';
+      daysBox.innerHTML = '';
+      try {
+        const res = await fetch(`/api/availability?service=${encodeURIComponent(service.id)}`, { headers: { Accept: 'application/json' } });
+        if (!res.ok) throw new Error(String(res.status));
+        const data = (await res.json()) as { today: string; days: Day[] };
+        days = data.days;
+        today = data.today;
+        if (date && !days.some((d) => d.date === date && d.slots.length)) date = '';
+        if (date && time && !days.find((d) => d.date === date)?.slots.includes(time)) time = '';
+        renderDays();
+        if (date) renderSlots();
+      } catch {
+        dayHint.innerHTML = `Couldn't load the times. Try again in a moment, or call <a href="tel:${cfg.tel}" class="font-bold text-amber">${cfg.phone}</a>.`;
+      }
+    };
+
+    form.addEventListener('change', (e) => {
+      const t = e.target as HTMLInputElement;
+      if (t.name === 'service') {
+        service = cfg.services.find((s) => s.id === t.value) ?? null;
+        reveal(step('day'));
+        load();
+      } else if (t.name === 'date') {
+        date = t.value;
+        time = '';
+        renderSlots();
+        reveal(step('time'));
+      } else if (t.name === 'time') {
+        time = t.value;
+        reveal(step('details'));
+        form.querySelector<HTMLInputElement>('#name')?.focus({ preventScroll: true });
+      }
+    });
+
+    // Deep link: /book?service=skin-fade
+    const pre = new URLSearchParams(location.search).get('service');
+    const preInput = pre ? form.querySelector<HTMLInputElement>(`input[name="service"][value="${CSS.escape(pre)}"]`) : null;
+    if (preInput) {
+      preInput.checked = true;
+      preInput.dispatchEvent(new Event('change', { bubbles: true }));
+    }
+
+    const showErrors = (errors: Record<string, string>) => {
+      form.querySelectorAll<HTMLElement>('[data-err]').forEach((el) => {
+        const msg = errors[el.dataset.err!];
+        el.textContent = msg ?? '';
+        el.classList.toggle('hidden', !msg);
+        form.querySelector(`#${el.dataset.err}`)?.setAttribute('aria-invalid', msg ? 'true' : 'false');
+      });
+      const general = Object.entries(errors).filter(([k]) => !form.querySelector(`[data-err="${k}"]`)).map(([, v]) => v);
+      summary.textContent = general.length ? general.join(' ') : Object.keys(errors).length ? 'Please check the highlighted fields.' : '';
+      const first = form.querySelector<HTMLElement>('[aria-invalid="true"]');
+      if (first) first.focus();
+      else if (summary.textContent) summary.focus();
+    };
+
+    const gcal = (b: { service: string; startUtc: string; endUtc: string; cancelUrl: string }) => {
+      const basic = (iso: string) => iso.replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+      const p = new URLSearchParams({ action: 'TEMPLATE', text: `${b.service} at ${cfg.name}`, dates: `${basic(b.startUtc)}/${basic(b.endUtc)}`, location: `${cfg.name}, ${cfg.address}`, details: `Cancel: ${location.origin}${b.cancelUrl}` });
+      return `https://calendar.google.com/calendar/render?${p}`;
+    };
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      if (busy) return;
+      if (!service || !date || !time) return showErrors({ pick: 'Pick a service, a day and a time first.' });
+      busy = true;
+      submit.setAttribute('aria-busy', 'true');
+      submitLabel.textContent = 'Booking…';
+      const fd = new FormData(form);
+      const body = { service: service.id, date, time, name: fd.get('name'), phone: fd.get('phone'), email: fd.get('email'), website: fd.get('website') };
+      try {
+        const res = await fetch('/api/book', { method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(body) });
+        const data = (await res.json().catch(() => ({}))) as { error?: string; errors?: Record<string, string>; message?: string; booking?: { service: string; minutes: number; date: string; time: string; email: string | null; cancelUrl: string; startUtc: string; endUtc: string } };
+        if (res.status === 201 && data.booking) {
+          const b = data.booking;
+          done.querySelector('[data-done-when]')!.textContent = `${b.service} (${b.minutes} min), ${fmtDayLong(b.date)} at ${fmtTime(b.time)}.`;
+          const em = done.querySelector<HTMLElement>('[data-done-email]')!;
+          if (b.email) {
+            em.hidden = false;
+            em.querySelector('[data-done-email-addr]')!.textContent = b.email;
+          }
+          done.querySelector<HTMLAnchorElement>('[data-cancel-link]')!.href = b.cancelUrl;
+          done.querySelector<HTMLAnchorElement>('[data-calendar]')!.href = gcal(b);
+          form.hidden = true;
+          done.classList.remove('hidden');
+          done.querySelector<HTMLElement>('h2')?.focus();
+          done.scrollIntoView({ block: 'start' });
+        } else if (res.status === 409 && data.error === 'taken') {
+          time = '';
+          await load();
+          renderSlots();
+          showErrors({ taken: data.message ?? 'That time has just gone. Pick another.' });
+          reveal(step('time'));
+          step('time').scrollIntoView({ block: 'start' });
+        } else if (res.status === 409) {
+          showErrors({ limit: data.message ?? 'That number already has bookings. Call the shop.' });
+        } else if (res.status === 400 && data.errors) {
+          showErrors(data.errors);
+        } else if (res.status === 429) {
+          showErrors({ rate: `Too many attempts from this connection. Call ${cfg.phone} instead.` });
+        } else {
+          showErrors({ server: `Something went wrong. Try again, or call ${cfg.phone}.` });
+        }
+      } catch {
+        showErrors({ network: `That didn't send. Check your connection and try again, or call ${cfg.phone}.` });
+      } finally {
+        busy = false;
+        submit.removeAttribute('aria-busy');
+        submitLabel.textContent = 'Confirm booking';
+      }
+    });
+  }
+</script>

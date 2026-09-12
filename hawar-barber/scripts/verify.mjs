@@ -35,7 +35,7 @@ async function run(width, height, tag) {
   check(fs >= 16, `body font-size ${fs}px`);
   // above the fold without scrolling
   const fold = await page.evaluate(() => {
-    const barTop = document.querySelector('[aria-label="Call or get directions"]')?.getBoundingClientRect().top ?? innerHeight;
+    const barTop = document.querySelector('[role="region"][aria-label$="directions"]')?.getBoundingClientRect().top ?? innerHeight;
     const vis = (el) => { if (!el) return null; const r = el.getBoundingClientRect(); return { top: r.top, bottom: r.bottom, h: r.height, w: r.width, visible: r.top >= 0 && r.bottom <= barTop && r.width > 0 }; };
     const call = [...document.querySelectorAll('a[href^="tel:"]')].map((a) => { const fixed = getComputedStyle(a.closest('[class*="fixed"]') || a).position === 'fixed'; const r = a.getBoundingClientRect(); return { text: a.textContent.trim(), top: r.top, bottom: r.bottom, h: r.height, w: r.width, fixed, visible: fixed ? r.bottom <= innerHeight : r.top >= 0 && r.bottom <= barTop }; });
     return { h1: vis(document.querySelector('h1')), rating: vis(document.querySelector('header a[href*="google.com/maps"]')), calls: call };
@@ -45,13 +45,22 @@ async function run(width, height, tag) {
   const visibleCalls = fold.calls.filter((c) => c.visible && c.h >= 48);
   check(visibleCalls.length > 0, `Call button ≥48px visible above the fold (hero button must clear the sticky bar): ${visibleCalls.map((c) => `"${c.text}" ${Math.round(c.h)}px${c.fixed ? ' (sticky)' : ''}`).join(', ')}`);
   const sticky = await page.evaluate(() => {
-    const bar = document.querySelector('[aria-label="Call or get directions"]');
+    const bar = document.querySelector('[role="region"][aria-label$="directions"]');
     if (!bar) return null; const r = bar.getBoundingClientRect();
     const btns = [...bar.querySelectorAll('a')].map((a) => ({ h: a.getBoundingClientRect().height, w: a.getBoundingClientRect().width, href: a.getAttribute('href') }));
     return { position: getComputedStyle(bar).position, bottom: r.bottom, inner: innerHeight, btns };
   });
   check(sticky && sticky.position === 'fixed' && Math.abs(sticky.bottom - sticky.inner) < 1 && sticky.btns.every((b) => b.h >= 48 && b.w >= 48), `sticky bar fixed at bottom with ≥48px targets: ${JSON.stringify(sticky?.btns.map((b) => Math.round(b.h)))}`);
   check(sticky?.btns.some((b) => b.href.startsWith('tel:')) && sticky?.btns.some((b) => b.href.includes('maps/dir')), 'sticky bar has tel: and directions links');
+  // booking entry points: hero (above the fold), sticky bar, final band
+  const book = await page.evaluate(() => {
+    const links = [...document.querySelectorAll('a[href^="/book"]')].filter((a) => a.getBoundingClientRect().width > 0);
+    const barTop = document.querySelector('[role="region"][aria-label*="Book"]')?.getBoundingClientRect().top ?? innerHeight;
+    return links.map((a) => { const r = a.getBoundingClientRect(); const fixed = getComputedStyle(a.closest('[class*="fixed"]') || a).position === 'fixed'; return { in: a.closest('header') ? 'hero' : fixed ? 'sticky' : a.closest('section[aria-labelledby="cta-title"]') ? 'cta' : 'other', h: r.height, w: r.width, aboveFold: fixed ? r.bottom <= innerHeight : r.top >= 0 && r.bottom <= barTop }; });
+  });
+  const where = new Set(book.map((b) => b.in));
+  check(['hero', 'sticky', 'cta'].every((w) => where.has(w)) && book.every((b) => b.h >= 48 && b.w >= 48), `Book links in hero, sticky bar and final band, all ≥48px: ${JSON.stringify(book.map((b) => `${b.in} ${Math.round(b.h)}px`))}`);
+  check(book.some((b) => (b.in === 'hero' && b.aboveFold) || (b.in === 'sticky' && b.aboveFold)), 'a Book button is reachable without scrolling (hero above the fold, or the sticky bar)');
   // headings never overflow
   const overflow = await page.$$eval('h1,h2,h3', (els) => els.filter((e) => e.scrollWidth > e.clientWidth + 1).map((e) => e.textContent.trim().slice(0, 30)));
   check(overflow.length === 0, `no heading overflow ${overflow.length ? JSON.stringify(overflow) : ''}`);
