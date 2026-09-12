@@ -11,7 +11,7 @@ import { ensureSchema, listBookings, type BookingRow } from '@/lib/db';
 import { displayPhone, fmtDay, fmtTime, type Status } from '@/lib/booking';
 
 const env = Astro.locals.runtime?.env ?? {};
-const denied = requireAdmin(Astro.request, env);
+const denied = await requireAdmin(Astro.request, env);
 if (denied) return denied;
 for (const [k, v] of Object.entries(noStoreHeaders)) Astro.response.headers.set(k, v);
 
@@ -60,8 +60,8 @@ const actions: { status: Status; label: string; cls: string }[] = [
           <h2 id={`g-${g.status}`} class="text-3xl">{g.label} <span class="text-cream-2">({g.rows.length})</span></h2>
           <ul class="mt-4 grid gap-4" role="list">
             {g.rows.map((r) => (
-              <li class={`rounded-md border p-5 ${r.status === 'pending' ? 'border-amber/50 bg-ink-2' : 'border-line bg-ink-2/60'}`}>
-                <p class="display text-3xl">{fmtDay(r.day)} · {fmtTime(r.time)}</p>
+              <li id={`r-${r.id}`} class={`scroll-mt-4 rounded-md border p-5 ${r.status === 'pending' ? 'border-amber/50 bg-ink-2' : 'border-line bg-ink-2/60'}`}>
+                <h3 class="display text-3xl">{fmtDay(r.day)} · {fmtTime(r.time)}</h3>
                 <p class="mt-2 text-xl font-bold">{r.name}</p>
                 <p class="mt-1"><a href={`tel:${r.phone}`} class="inline-flex min-h-11 items-center font-bold text-amber">{displayPhone(r.phone)}</a> <a href={`sms:${r.phone}`} class="ml-3 inline-flex min-h-11 items-center text-cream-2 underline">Text</a></p>
                 {r.service && <p class="mt-1 text-cream/90">For: {r.service}</p>}
@@ -72,7 +72,7 @@ const actions: { status: Status; label: string; cls: string }[] = [
                     <form method="post" action="/api/admin/status">
                       <input type="hidden" name="id" value={r.id} />
                       <input type="hidden" name="status" value={a.status} />
-                      <button type="submit" class={`btn ${a.cls} min-h-12 px-4 text-base`}>{a.label}</button>
+                      <button type="submit" class={`btn ${a.cls} min-h-12 px-4 text-base`} aria-label={`${a.label}: ${r.name}, ${fmtDay(r.day)} ${fmtTime(r.time)}`}>{a.label}</button>
                     </form>
                   ))}
                 </div>
@@ -81,7 +81,7 @@ const actions: { status: Status; label: string; cls: string }[] = [
           </ul>
         </section>
       ))}
-      {!dbError && rows.length === 0 && <p class="mt-10 text-lg text-cream-2">No requests yet. They’ll appear here the moment someone sends one from /book.</p>}
+      {!dbError && rows.length === 0 && <p class="mt-10 text-lg text-cream-2">No requests yet. Refresh this page to see new ones; they come in from /book.</p>}
     </main>
   </body>
 </html>

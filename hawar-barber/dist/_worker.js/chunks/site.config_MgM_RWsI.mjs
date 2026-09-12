@@ -45,7 +45,7 @@ const site = {
     /** Latest request must be at least this many minutes before closing. */
     lastSlotBeforeClose: 30,
     /** Shown on the form and on the confirmation. */
-    confirmNote: "Nothing is booked until the shop confirms. They will text or call you back."
+    confirmNote: "Nothing is booked until the shop confirms by text or call. If you don’t hear back, ring 07918 899141."
   },
   /** Social profiles. Only the Facebook page could be confirmed as this shop. */
   socials: [{ label: "Facebook", url: "https://www.facebook.com/61574727154851" }],

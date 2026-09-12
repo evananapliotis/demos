@@ -9,9 +9,11 @@ interface Props {
   noindex?: boolean;
 }
 const { title, description, noindex = false } = Astro.props;
-const pageUrl = new URL(Astro.url.pathname, Astro.site).href.replace(/\/$/, '');
+// build.format 'file' makes pathname '/book.html'; the live URL is '/book'.
+const pageUrl = new URL(Astro.url.pathname.replace(/\.html$/, ''), Astro.site).href.replace(/\/$/, '');
+const homeUrl = String(Astro.site).replace(/\/$/, '');
 const ogImage = new URL('/og.png', Astro.site).href;
-const ld = jsonLd(pageUrl, ogImage);
+const ld = jsonLd(homeUrl, ogImage);
 ---
 
 <!doctype html>

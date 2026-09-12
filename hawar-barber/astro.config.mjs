@@ -29,8 +29,6 @@ export default defineConfig({
     platformProxy: { enabled: true },
     // Images are only used on prerendered pages, so sharp runs at build time, never on the Worker.
     imageService: 'compile',
-    // Prerendered pages are served by the CDN; only /api/* and /admin reach the worker.
-    routes: { extend: { exclude: [{ pattern: '/book' }] } },
   }),
   integrations: [poleChunk],
   site: site.url,

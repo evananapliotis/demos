@@ -1,7 +1,7 @@
 globalThis.process ??= {}; globalThis.process.env ??= {};
 import { j as joinPaths, i as isRemotePath } from './path_CH3auf61.mjs';
 import { i as isRemoteAllowed } from './remote_CVXTZJrr.mjs';
-import { A as AstroError, E as ExpectedImage, L as LocalImageUsedWrongly, M as MissingImageDimension, U as UnsupportedImageFormat, I as IncompatibleDescriptorOptions, h as UnsupportedImageConversion, t as toStyleString, N as NoImageMetadata, i as FailedToFetchRemoteImageDimensions, R as RemoteImageNotAllowed, j as ExpectedImageOptions, k as ExpectedNotESMImage, l as InvalidImageService, c as createAstro, a as createComponent, n as ImageMissingAlt, m as maybeRenderHead, d as addAttribute, s as spreadAttributes, b as renderTemplate, e as renderComponent, o as ExperimentalFontsNotEnabled, p as FontFamilyNotFound, u as unescapeHTML } from './astro/server_B7m6tOq4.mjs';
+import { A as AstroError, E as ExpectedImage, L as LocalImageUsedWrongly, M as MissingImageDimension, U as UnsupportedImageFormat, I as IncompatibleDescriptorOptions, h as UnsupportedImageConversion, t as toStyleString, N as NoImageMetadata, i as FailedToFetchRemoteImageDimensions, R as RemoteImageNotAllowed, j as ExpectedImageOptions, k as ExpectedNotESMImage, l as InvalidImageService, d as createAstro, c as createComponent, n as ImageMissingAlt, m as maybeRenderHead, b as addAttribute, s as spreadAttributes, a as renderTemplate, r as renderComponent, o as ExperimentalFontsNotEnabled, p as FontFamilyNotFound, u as unescapeHTML } from './astro/server_BPPHHGCN.mjs';
 /* empty css                                  */
 
 const VALID_SUPPORTED_FORMATS = [
@@ -1461,7 +1461,7 @@ async function getConfiguredImageService() {
   if (!globalThis?.astroAsset?.imageService) {
     const { default: service } = await import(
       // @ts-expect-error
-      './sharp_DrUSveyT.mjs'
+      './sharp_tIgtTyTt.mjs'
     ).catch((e) => {
       const error = new AstroError(InvalidImageService);
       error.cause = e;

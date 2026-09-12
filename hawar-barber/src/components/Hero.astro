@@ -45,7 +45,7 @@ const letters = (word: string, offset: number) => [...word].map((ch, i) => ({ ch
       <li class="hidden md:block"><a href="#prices" class="inline-flex min-h-11 items-center px-3 text-cream-2 hover:text-amber">Prices</a></li>
       <li class="hidden md:block"><a href="#reviews" class="inline-flex min-h-11 items-center px-3 text-cream-2 hover:text-amber">Reviews</a></li>
       <li class="hidden md:block"><a href="#find-us" class="inline-flex min-h-11 items-center px-3 text-cream-2 hover:text-amber">Find us</a></li>
-      {bookHref && <li class="hidden md:block"><a href={bookHref} class="inline-flex min-h-11 items-center px-3 text-cream-2 hover:text-amber" target={bookExternal ? '_blank' : undefined} rel={bookExternal ? 'noopener' : undefined}>Book</a></li>}
+      {bookHref && <li class="hidden md:block"><a href={bookHref} class="inline-flex min-h-11 items-center px-3 text-cream-2 hover:text-amber" target={bookExternal ? '_blank' : undefined} rel={bookExternal ? 'noopener' : undefined}>Book{bookExternal && <span class="sr-only"> (opens in a new tab)</span>}</a></li>}
       <li>
         <a href={telHref} class="inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-md px-3 text-amber hover:text-amber-2" aria-label={`Call ${site.phone.display}`}>
           <Icons name="phone" size={20} /><span class="hidden sm:inline">{site.phone.display}</span>
@@ -87,7 +87,7 @@ const letters = (word: string, offset: number) => [...word].map((ch, i) => ({ ch
 
       <div class="mt-6 grid grid-cols-1 gap-3 sm:flex sm:flex-wrap">
         <a href={telHref} class="btn btn-amber"><Icons name="phone" size={19} /> Call {site.phone.display}</a>
-        {bookHref && <a href={bookHref} class="btn btn-outline" target={bookExternal ? '_blank' : undefined} rel={bookExternal ? 'noopener' : undefined}><Icons name="calendar" size={19} /> Book a time</a>}
+        {bookHref && <a href={bookHref} class="btn btn-outline" target={bookExternal ? '_blank' : undefined} rel={bookExternal ? 'noopener' : undefined}><Icons name="calendar" size={19} /> Book a time{bookExternal && <><Icons name="external" size={14} /><span class="sr-only">(opens in a new tab)</span></>}</a>}
         <a href={directionsUrl} target="_blank" rel="noopener" class={`btn btn-outline ${bookHref ? 'hidden sm:inline-flex' : ''}`}><Icons name="pin" size={19} /> Directions</a>
       </div>
 

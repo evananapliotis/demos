@@ -1,34 +1,39 @@
 globalThis.process ??= {}; globalThis.process.env ??= {};
-import { f as fmtDay, a as fmtTime, d as displayPhone, v as validateBooking, l as londonToday } from '../../chunks/booking_xUeeAd_i.mjs';
-import { e as ensureSchema, c as countRecent, i as insertBooking } from '../../chunks/db_BVh1G7o9.mjs';
-import { s as site } from '../../chunks/site.config_BFMOv_wd.mjs';
+import { f as fmtDay, a as fmtTime, d as displayPhone, v as validateBooking, l as londonNowMinutes, b as londonToday } from '../../chunks/booking_iEIU8MmW.mjs';
+import { i as ipKey, e as ensureSchema, a as insertBookingLimited } from '../../chunks/db_VqQ1ezT4.mjs';
+import { s as site } from '../../chunks/site.config_MgM_RWsI.mjs';
 export { renderers } from '../../renderers.mjs';
 
 const esc$1 = (s) => s.replace(/[&<>"]/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
 async function notify(env, b) {
-  if (!env.RESEND_API_KEY || !env.BOOKINGS_EMAIL) return false;
+  const key = env.RESEND_API_KEY?.trim();
+  const to = env.BOOKINGS_EMAIL?.trim();
+  if (!key || !to) return false;
   const when = `${fmtDay(b.day)} at ${fmtTime(b.time)}`;
   const phone = displayPhone(b.phone);
+  const quoted = (t) => t.split("\n").map((l) => `> ${l}`).join("\n");
   const lines = [
     `Name: ${b.name}`,
     `Phone: ${phone}`,
     `When: ${when}`,
     b.service ? `For: ${b.service}` : "",
-    b.notes ? `Notes: ${b.notes}` : "",
+    b.notes ? `Notes:
+${quoted(b.notes)}` : "",
     "",
     `Confirm or decline: ${site.url}/admin`
   ].filter(Boolean);
   const res = await fetch("https://api.resend.com/emails", {
     method: "POST",
-    headers: { Authorization: `Bearer ${env.RESEND_API_KEY}`, "Content-Type": "application/json" },
+    headers: { Authorization: `Bearer ${key}`, "Content-Type": "application/json" },
     body: JSON.stringify({
-      from: env.BOOKINGS_FROM ?? `${site.name} <onboarding@resend.dev>`,
-      to: [env.BOOKINGS_EMAIL],
+      from: env.BOOKINGS_FROM?.trim() || `${site.name} <onboarding@resend.dev>`,
+      to: [to],
       subject: `Booking request: ${b.name}, ${when}`,
       text: lines.join("\n"),
-      html: `<p>${lines.map(esc$1).join("<br>")}</p>`
+      html: `<p>${lines.map((l) => esc$1(l).replace(/\n/g, "<br>")).join("<br>")}</p>`
     })
   });
+  if (!res.ok) console.error("notify failed", res.status, await res.text().catch(() => ""));
   return res.ok;
 }
 
@@ -54,16 +59,16 @@ const POST = async ({ request, locals, redirect }) => {
   }
   if (!input || typeof input !== "object") return json(400, { error: "bad_request" });
   if (!env.DB) return isForm ? redirect("/book/unavailable", 303) : json(503, { error: "not_configured" });
-  const result = validateBooking(input, londonToday());
+  const result = validateBooking(input, londonToday(), londonNowMinutes());
   if (!result.ok) return isForm ? htmlErrors(result.errors) : json(400, { error: "invalid", errors: result.errors });
-  const ip = request.headers.get("cf-connecting-ip") ?? "";
+  const ip = ipKey(request.headers.get("cf-connecting-ip") ?? "");
   try {
     await ensureSchema(env.DB);
-    if (await countRecent(env.DB, ip, 15) >= 5) {
-      return isForm ? htmlErrors({ rate: "Too many requests from this connection. Please call the shop instead." }, 429) : json(429, { error: "too_many" });
-    }
     const id = crypto.randomUUID();
-    await insertBooking(env.DB, { id, ...result.value, ip });
+    const stored = await insertBookingLimited(env.DB, { id, ...result.value, ip });
+    if (!stored) {
+      return isForm ? htmlErrors({ rate: "Too many requests right now. Please call the shop instead." }, 429) : json(429, { error: "too_many" });
+    }
     try {
       await notify(env, { id, ...result.value });
     } catch {

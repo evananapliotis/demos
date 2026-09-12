@@ -12,7 +12,9 @@
     "lighthouse": "node scripts/lighthouse.mjs",
     "sizes": "node scripts/sizes.mjs",
     "preview:cf": "wrangler pages dev dist",
-    "deploy": "npm run build && wrangler pages deploy dist"
+    "deploy": "npm run preflight && npm run build && wrangler pages deploy dist --branch main",
+    "preflight": "node scripts/preflight.mjs",
+    "zip": "cd dist && rm -f ../hawar-barber.zip && zip -rq -X ../hawar-barber.zip . -x '.DS_Store'"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^12.6.13",
@@ -31,7 +33,9 @@
     "@types/react": "~19.2.0",
     "@types/three": "^0.186.0",
     "lighthouse": "^13.4.1",
-    "playwright-core": "^1.63.0"
+    "playwright-core": "^1.63.0",
+    "wrangler": "4.59.2",
+    "@cloudflare/workers-types": "^4.20260116.0"
   },
   "engines": {
     "node": ">=20"

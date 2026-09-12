@@ -1,7 +1,10 @@
 {
   "version": 1,
   "include": [
-    "/*"
+    "/_server-islands/*",
+    "/_image",
+    "/admin",
+    "/api/*"
   ],
   "exclude": [
     "/",
@@ -12,7 +15,7 @@
     "/favicon.svg",
     "/robots.txt",
     "/sitemap.xml",
-    "/book/*",
-    "/book"
+    "/404",
+    "/book/*"
   ]
 }

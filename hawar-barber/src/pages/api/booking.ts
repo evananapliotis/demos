@@ -6,8 +6,8 @@ export const prerender = false;
  */
 import type { APIRoute } from 'astro';
 import { site } from '@config';
-import { validateBooking, londonToday } from '@/lib/booking';
-import { ensureSchema, insertBooking, countRecent } from '@/lib/db';
+import { validateBooking, londonToday, londonNowMinutes } from '@/lib/booking';
+import { ensureSchema, insertBookingLimited, ipKey } from '@/lib/db';
 import { notify } from '@/lib/notify';
 
 const json = (status: number, body: unknown) =>
@@ -39,17 +39,17 @@ export const POST: APIRoute = async ({ request, locals, redirect }) => {
   if (!site.booking.enabled) return isForm ? redirect('/book', 303) : json(404, { error: 'disabled' });
   if (!env.DB) return isForm ? redirect('/book/unavailable', 303) : json(503, { error: 'not_configured' });
 
-  const result = validateBooking(input, londonToday());
+  const result = validateBooking(input, londonToday(), londonNowMinutes());
   if (!result.ok) return isForm ? htmlErrors(result.errors) : json(400, { error: 'invalid', errors: result.errors });
 
-  const ip = request.headers.get('cf-connecting-ip') ?? '';
+  const ip = ipKey(request.headers.get('cf-connecting-ip') ?? '');
   try {
     await ensureSchema(env.DB);
-    if ((await countRecent(env.DB, ip, 15)) >= 5) {
-      return isForm ? htmlErrors({ rate: 'Too many requests from this connection. Please call the shop instead.' }, 429) : json(429, { error: 'too_many' });
-    }
     const id = crypto.randomUUID();
-    await insertBooking(env.DB, { id, ...result.value, ip });
+    const stored = await insertBookingLimited(env.DB, { id, ...result.value, ip });
+    if (!stored) {
+      return isForm ? htmlErrors({ rate: 'Too many requests right now. Please call the shop instead.' }, 429) : json(429, { error: 'too_many' });
+    }
     try {
       await notify(env, { id, ...result.value });
     } catch {

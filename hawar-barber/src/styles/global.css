@@ -56,10 +56,18 @@
     line-height: 0.9;
     text-wrap: balance;
   }
-  a:focus-visible, button:focus-visible, summary:focus-visible {
+  a:focus-visible, button:focus-visible, summary:focus-visible, [tabindex='-1']:focus-visible {
     outline: 3px solid var(--color-amber-2);
     outline-offset: 3px;
     border-radius: 2px;
+  }
+  /* On amber ground the amber ring would vanish. */
+  .bg-amber a:focus-visible, .bg-amber button:focus-visible {
+    outline-color: var(--color-ink);
+  }
+  /* While someone is typing into the booking form, keep the sticky bar out of the way (iOS keyboards). */
+  body:has(form[data-booking]:focus-within) [aria-label='Call or get directions'] {
+    display: none;
   }
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
@@ -91,6 +99,10 @@
   text-decoration: none;
   transition: background-color 120ms ease, color 120ms ease, transform 120ms ease, box-shadow 120ms ease;
   -webkit-tap-highlight-color: transparent;
+}
+.btn[aria-disabled='true'] {
+  opacity: 0.6;
+  cursor: progress;
 }
 @utility btn-amber {
   background: var(--color-amber);

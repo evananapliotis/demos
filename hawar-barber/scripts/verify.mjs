@@ -73,12 +73,12 @@ async function run(width, height, tag) {
 }
 await run(390, 844, '390');
 await run(320, 568, '320');
-// /book at 390: every control is 17px and tall enough to tap, no horizontal scroll, screenshot.
-{
-  const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true });
+// /book at 390 and 320: every control is 17px and tall enough to tap, no horizontal scroll, screenshot.
+for (const [bw, bh] of [[390, 844], [320, 568]]) {
+  const ctx = await browser.newContext({ viewport: { width: bw, height: bh }, deviceScaleFactor: 2, isMobile: true, hasTouch: true });
   const page = await ctx.newPage();
   const res = await page.goto(new URL('/book', url).href, { waitUntil: 'load' });
-  console.log(`\n== /book 390×844 ==`);
+  console.log(`\n== /book ${bw}×${bh} ==`);
   check(res?.status() === 200, `HTTP ${res?.status()}`);
   const sw = await page.evaluate(() => [document.documentElement.scrollWidth, innerWidth]);
   check(sw[0] <= sw[1], `no horizontal scroll (${sw[0]} vs ${sw[1]})`);
@@ -91,7 +91,9 @@ await run(320, 568, '320');
   check(labels.length === 0, `every field has a label ${labels.length ? JSON.stringify(labels) : ''}`);
   const dayMin = await page.$eval('#day', (e) => e.min);
   check(/^\d{4}-\d{2}-\d{2}$/.test(dayMin), `date min set by script: ${dayMin}`);
-  await page.screenshot({ path: 'reports/book-390.png', fullPage: true });
+  const clipped = await page.$$eval('#day, #time', (els) => els.filter((e) => e.scrollWidth > e.clientWidth + 1).map((e) => e.id));
+  check(clipped.length === 0, `day/time controls not clipped ${clipped.length ? JSON.stringify(clipped) : ''}`);
+  await page.screenshot({ path: `reports/book-${bw}.png`, fullPage: true });
   await ctx.close();
 }
 {
