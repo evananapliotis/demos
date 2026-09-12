@@ -112,7 +112,10 @@ const letters = (word: string, offset: number) => [...word].map((ch, i) => ({ ch
 </header>
 
 <script>
-  // "Open now · closes 6:15pm" / "Closed · opens 8:30am tomorrow", from the weekly hours in the config.
+  import { shopClock } from '@/lib/clock';
+
+  // "Open now · closes 6:15pm" / "Closed · opens 8:30am tomorrow", from the weekly hours in the config,
+  // on the shop's clock (Europe/London) rather than the visitor's.
   const status = document.querySelector<HTMLElement>('[data-open-status]');
   if (status?.dataset.week) {
     type Range = { open: string; close: string } | null;
@@ -121,9 +124,7 @@ const letters = (word: string, offset: number) => [...word].map((ch, i) => ({ ch
     const short = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
     const toMin = (t: string) => { const [h, m] = t.split(':').map(Number); return h * 60 + m; };
     const fmt = (t: string) => { const [h, m] = t.split(':').map(Number); const s = h >= 12 ? 'pm' : 'am'; const hh = h % 12 || 12; return m ? `${hh}:${String(m).padStart(2, '0')}${s}` : `${hh}${s}`; };
-    const now = new Date();
-    const d = now.getDay();
-    const mins = now.getHours() * 60 + now.getMinutes();
+    const { day: d, minutes: mins } = shopClock();
     const today = week[names[d]];
     let text = '';
     if (today && mins >= toMin(today.open) && mins < toMin(today.close)) text = `Open now · closes ${fmt(today.close)}`;

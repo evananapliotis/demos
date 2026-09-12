@@ -63,6 +63,8 @@ const rows = weekRows();
 </Section>
 
 <script>
+  import { shopClock } from '@/lib/clock';
+
   // Map facade: the Google Maps iframe (~1MB) only loads when asked for.
   const box = document.querySelector<HTMLElement>('[data-map]');
   const btn = box?.querySelector<HTMLButtonElement>('[data-map-load]');
@@ -95,7 +97,7 @@ const rows = weekRows();
   const table = document.querySelector<HTMLTableElement>('[data-hours-table]');
   if (table) {
     const names = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
-    const today = names[new Date().getDay()];
+    const today = names[shopClock().day]; // the shop's day (Europe/London), not the visitor's
     const tbody = table.tBodies[0];
     const row = tbody.querySelector<HTMLTableRowElement>(`tr[data-day="${today}"]`);
     if (row) {
