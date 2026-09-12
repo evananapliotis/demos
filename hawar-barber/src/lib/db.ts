@@ -1,4 +1,4 @@
-/** Cloudflare D1 access for booking requests. The table is created on first use, so no manual migration. */
+/** Cloudflare D1 access for booking requests. Tables are created on first use, so no manual migration. */
 import type { BookingValues, Status } from './booking';
 
 export interface Env {
@@ -39,6 +39,13 @@ const SCHEMA = [
   `CREATE INDEX IF NOT EXISTS auth_failures_ip_ts ON auth_failures(ip, ts)`,
 ];
 
+const ready = new WeakSet<D1Database>();
+export async function ensureSchema(db: D1Database) {
+  if (ready.has(db)) return;
+  await db.batch(SCHEMA.map((sql) => db.prepare(sql)));
+  ready.add(db);
+}
+
 /** Rate-limit key: whole IPv4 address, /64 for IPv6 (one home connection), so rotating the low bits does not help. */
 export function ipKey(ip: string): string {
   const s = ip.trim().toLowerCase();
@@ -50,6 +57,8 @@ export function ipKey(ip: string): string {
   const groups = s.includes('::') ? [...left, ...Array(Math.max(0, 8 - left.length - right.length)).fill('0'), ...right] : left;
   return `${groups.slice(0, 4).map((h) => (parseInt(h || '0', 16) || 0).toString(16)).join(':')}::/64`;
 }
+
+export const LIMITS = { perIp: 5, perIpMinutes: 15, global: 40, globalMinutes: 60 };
 
 /**
  * Insert a request unless the caller (per /64 or IPv4) or the whole site has hit its brake.
@@ -71,6 +80,23 @@ export async function insertBookingLimited(db: D1Database, row: Omit<BookingRow,
   return (r.meta?.changes ?? 0) > 0;
 }
 
+export async function listBookings(db: D1Database, limit = 300): Promise<BookingRow[]> {
+  const r = await db
+    .prepare(
+      `SELECT id, created_at, name, phone, day, time, service, notes, status, ip FROM bookings
+       ORDER BY CASE status WHEN 'pending' THEN 0 WHEN 'confirmed' THEN 1 WHEN 'declined' THEN 2 ELSE 3 END, day, time
+       LIMIT ?`,
+    )
+    .bind(limit)
+    .all<BookingRow>();
+  return r.results ?? [];
+}
+
+export async function setStatus(db: D1Database, id: string, status: Status) {
+  const r = await db.prepare('UPDATE bookings SET status = ? WHERE id = ?').bind(status, id).run();
+  return (r.meta?.changes ?? 0) > 0;
+}
+
 /**
  * Count one sign-in attempt and say whether the connection is still allowed: a single INSERT…SELECT,
  * so a burst of parallel guesses cannot all slip under the cap. Returns false when locked out.
@@ -85,6 +111,7 @@ export async function allowAuthAttempt(db: D1Database, ip: string, max: number, 
     .run();
   return (r.meta?.changes ?? 0) > 0;
 }
+
 /** A correct password clears the connection's attempts (and prunes old rows while we are here). */
 export async function clearAuthAttempts(db: D1Database, ip: string) {
   const dayAgo = new Date(Date.now() - 24 * 3600_000).toISOString();
