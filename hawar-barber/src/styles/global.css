@@ -470,6 +470,8 @@ html.lb-open { overflow: hidden; }
 }
 
 /* ---------- Booking and admin forms ---------- */
+/* Browsers give a fieldset a minimum width of its content; the scrolling day row inside one must not widen the page. */
+fieldset { min-inline-size: 0; }
 @utility input {
   width: 100%;
   min-height: 3.25rem;

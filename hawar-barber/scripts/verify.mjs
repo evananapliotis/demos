@@ -65,6 +65,17 @@ async function run(width, height, tag) {
   const overflow = await page.$$eval('h1,h2,h3', (els) => els.filter((e) => e.scrollWidth > e.clientWidth + 1).map((e) => e.textContent.trim().slice(0, 30)));
   check(overflow.length === 0, `no heading overflow ${overflow.length ? JSON.stringify(overflow) : ''}`);
   await page.screenshot({ path: `reports/fold-${tag}.png` });
+  // booking page: no horizontal scroll at any step
+  if (await page.goto(new URL('/book', url).href, { waitUntil: 'networkidle' }).then((r) => r?.ok()).catch(() => false)) {
+    const w0 = await page.evaluate(() => document.documentElement.scrollWidth);
+    await page.check('input[name="service"]', { force: true }).catch(() => {});
+    await page.waitForFunction(() => document.querySelectorAll('[data-days] .chip').length > 0, null, { timeout: 15000 }).catch(() => {});
+    const day = await page.$('[data-days] .chip input:not([disabled])');
+    if (day) { await day.check({ force: true }); await page.waitForFunction(() => document.querySelectorAll('[data-slots] .chip').length > 0, null, { timeout: 15000 }).catch(() => {}); }
+    const w1 = await page.evaluate(() => document.documentElement.scrollWidth);
+    check(w0 <= width && w1 <= width, `/book has no horizontal scroll before or after picking a service and day (${w0}/${w1} vs ${width})`);
+    await page.goto(url, { waitUntil: 'networkidle' });
+  }
   // 3D
   const has3d = await page.waitForSelector('[data-pole-slot].has-3d', { timeout: 12000 }).then(() => true).catch(() => false);
   console.log(`3D  pole canvas mounted: ${has3d}`);
