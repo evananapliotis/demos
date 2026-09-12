@@ -5,6 +5,9 @@ export { site };
 
 export const fullAddress = `${site.address.street}, ${site.address.locality} ${site.address.postcode}`;
 export const telHref = `tel:${site.phone.tel}`;
+/** Where "Book" buttons go: an external system if one is set, else the built-in /book page, else nowhere. */
+export const bookHref: string | null = site.bookingUrl ?? (site.booking.enabled ? '/book' : null);
+export const bookExternal = !!site.bookingUrl;
 
 const placeQuery = encodeURIComponent(site.google.query);
 const destQuery = encodeURIComponent(`${site.name}, ${fullAddress}`);

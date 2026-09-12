@@ -1,6 +1,6 @@
 ---
 import { Image } from 'astro:assets';
-import { site, telHref, directionsUrl, listingUrl, fmtTime } from '@/lib/site';
+import { site, telHref, directionsUrl, listingUrl, fmtTime, bookHref, bookExternal } from '@/lib/site';
 import { heroImage, altFor } from '@/lib/images';
 import Icons from './Icons.astro';
 import Stars from './Stars.astro';
@@ -25,7 +25,14 @@ const [first, ...rest] = site.name.split(' ');
       />
     )
   }
-  <div class="absolute inset-0 -z-10 bg-[radial-gradient(90%_60%_at_100%_0%,rgb(242_169_59/0.16),transparent_60%),linear-gradient(to_bottom,rgb(14_12_10/0.2),rgb(14_12_10)_70%)]" aria-hidden="true"></div>
+  <div
+    class={`absolute inset-0 -z-10 ${
+      heroImage
+        ? 'bg-[linear-gradient(to_bottom,rgb(14_12_10/0.85),rgb(14_12_10/0.35)_22%,rgb(14_12_10/0.55)_50%,rgb(14_12_10)_78%),radial-gradient(90%_60%_at_100%_0%,rgb(242_169_59/0.12),transparent_60%)]'
+        : 'bg-[radial-gradient(90%_60%_at_100%_0%,rgb(242_169_59/0.16),transparent_60%),linear-gradient(to_bottom,rgb(14_12_10/0.2),rgb(14_12_10)_70%)]'
+    }`}
+    aria-hidden="true"
+  ></div>
 
   <nav class="flex items-center justify-between px-5 pt-4 sm:px-8 lg:px-12" aria-label="Primary">
     <a href="#top" class="display inline-flex min-h-11 items-center gap-2 text-[1.35rem] tracking-wide text-cream" aria-label={`${site.name} home`}>
@@ -36,6 +43,7 @@ const [first, ...rest] = site.name.split(' ');
       <li class="hidden md:block"><a href="#prices" class="inline-flex min-h-11 items-center px-3 text-cream-2 hover:text-amber">Prices</a></li>
       <li class="hidden md:block"><a href="#reviews" class="inline-flex min-h-11 items-center px-3 text-cream-2 hover:text-amber">Reviews</a></li>
       <li class="hidden md:block"><a href="#find-us" class="inline-flex min-h-11 items-center px-3 text-cream-2 hover:text-amber">Find us</a></li>
+      {bookHref && <li class="hidden md:block"><a href={bookHref} class="inline-flex min-h-11 items-center px-3 text-cream-2 hover:text-amber" target={bookExternal ? '_blank' : undefined} rel={bookExternal ? 'noopener' : undefined}>Book</a></li>}
       <li>
         <a href={telHref} class="inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-md px-3 text-amber hover:text-amber-2" aria-label={`Call ${site.phone.display}`}>
           <Icons name="phone" size={20} /><span class="hidden sm:inline">{site.phone.display}</span>
@@ -71,9 +79,10 @@ const [first, ...rest] = site.name.split(' ');
 
       <p class="rise mt-4 max-w-md text-lg leading-snug text-cream/85 md:text-2xl" style="animation-delay:120ms">{site.tagline}</p>
 
-      <div class="mt-6 grid grid-cols-1 gap-3 sm:flex">
+      <div class="mt-6 grid grid-cols-1 gap-3 sm:flex sm:flex-wrap">
         <a href={telHref} class="btn btn-amber"><Icons name="phone" size={19} /> Call {site.phone.display}</a>
-        <a href={directionsUrl} target="_blank" rel="noopener" class="btn btn-outline"><Icons name="pin" size={19} /> Directions</a>
+        {bookHref && <a href={bookHref} class="btn btn-outline" target={bookExternal ? '_blank' : undefined} rel={bookExternal ? 'noopener' : undefined}><Icons name="calendar" size={19} /> Book a time</a>}
+        <a href={directionsUrl} target="_blank" rel="noopener" class={`btn btn-outline ${bookHref ? 'hidden sm:inline-flex' : ''}`}><Icons name="pin" size={19} /> Directions</a>
       </div>
 
       <p class="rise mt-6 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-cream-2" style="animation-delay:180ms">

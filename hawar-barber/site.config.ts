@@ -67,8 +67,24 @@ export const site = {
     'The shop is wheelchair accessible and closes at 6pm. Call 07918 899141 to check today’s hours before you set off.',
   ],
 
-  /** Online booking link (Booksy, Fresha …). None found. */
+  /** External booking link (Booksy, Fresha …). None found. If set, every "Book" button goes there instead of /book. */
   bookingUrl: null as string | null,
+
+  /**
+   * Built-in booking requests (/book → Cloudflare D1 → /admin). Customers pick a day and time; the shop
+   * confirms by text or phone. Set `enabled: false` to hide every "Book" button.
+   */
+  booking: {
+    enabled: true,
+    /** How far ahead a request can be made. */
+    daysAhead: 60,
+    /** Slot spacing, used once `hours.week` is filled in. */
+    slotMinutes: 30,
+    /** Latest request must be at least this many minutes before closing. */
+    lastSlotBeforeClose: 30,
+    /** Shown on the form and on the confirmation. */
+    confirmNote: 'Nothing is booked until the shop confirms. They will text or call you back.',
+  },
 
   /** Social profiles. Only the Facebook page could be confirmed as this shop. */
   socials: [{ label: 'Facebook', url: 'https://www.facebook.com/61574727154851' }] as Social[],

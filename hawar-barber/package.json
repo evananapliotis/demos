@@ -10,9 +10,12 @@
     "preview": "astro preview",
     "verify": "node scripts/verify.mjs",
     "lighthouse": "node scripts/lighthouse.mjs",
-    "sizes": "node scripts/sizes.mjs"
+    "sizes": "node scripts/sizes.mjs",
+    "preview:cf": "wrangler pages dev dist",
+    "deploy": "npm run build && wrangler pages deploy dist"
   },
   "dependencies": {
+    "@astrojs/cloudflare": "^12.6.13",
     "@fontsource-variable/big-shoulders-display": "^5.3.0",
     "@fontsource-variable/dm-sans": "^5.3.0",
     "@react-three/fiber": "^9.7.0",

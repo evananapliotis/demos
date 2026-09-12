@@ -112,6 +112,25 @@
   &:active { transform: translateY(1px); }
 }
 
+/* Form controls: 17px text (no iOS zoom), 52px tall, amber focus ring. */
+@utility input {
+  display: block;
+  width: 100%;
+  min-height: 3.25rem;
+  padding: 0.75rem 1rem;
+  font-family: var(--font-sans);
+  font-size: 1.0625rem;
+  line-height: 1.4;
+  color: var(--color-cream);
+  background: var(--color-ink-2);
+  border: 1.5px solid rgb(244 238 228 / 0.22);
+  border-radius: 0.5rem;
+  color-scheme: dark;
+  &::placeholder { color: rgb(185 176 162 / 0.7); }
+  &:focus { outline: none; border-color: var(--color-amber); box-shadow: 0 0 0 3px rgb(242 169 59 / 0.25); }
+  &[aria-invalid='true'] { border-color: var(--color-amber); }
+}
+
 /* Amber stripe: the site's one graphic motif. */
 @utility stripe-amber {
   background-image: repeating-linear-gradient(-45deg, var(--color-amber) 0 14px, var(--color-ink) 14px 28px);

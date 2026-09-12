@@ -5,3 +5,6 @@ reports/*.html
 reports/*.json
 public/og.png
 src/og/fonts.conf
+.wrangler/
+.dev.vars
+.tmp/

@@ -1,0 +1,242 @@
+---
+import Base from '@/layouts/Base.astro';
+import PageHeader from '@/components/PageHeader.astro';
+import StickyBar from '@/components/StickyBar.astro';
+import Icons from '@/components/Icons.astro';
+import { site, telHref, fmtTime } from '@/lib/site';
+import { DAY_KEYS, addDays, rangeFor, slotsFor, latestTime } from '@/lib/booking';
+
+const title = `Book a time | ${site.name}, ${site.address.locality}`;
+const description = `Request a day and time at ${site.name}, ${site.address.street}, ${site.address.locality}. ${site.booking.confirmNote}`;
+
+// Per-weekday rules for the script. 2024-01-07 is a Sunday, so index = JavaScript's getDay().
+const SUNDAY = '2024-01-07';
+const weekly = DAY_KEYS.map((_, i) => {
+  const d = addDays(SUNDAY, i);
+  const r = rangeFor(d);
+  return { closed: r.closed, slots: slotsFor(d), latest: latestTime(d), open: r.open, close: r.close };
+});
+const hasSlots = weekly.some((w) => w.slots && w.slots.length);
+const allSlots = [...new Set(weekly.flatMap((w) => w.slots ?? []))].sort();
+const config = {
+  daysAhead: site.booking.daysAhead,
+  weekly,
+  sms: site.phone.tel,
+  telDisplay: site.phone.display,
+  confirmNote: site.booking.confirmNote,
+};
+const closes = fmtTime(site.hours.closes);
+const latest = fmtTime(latestTime(SUNDAY));
+---
+<Base title={title} description={description} noindex={!site.booking.enabled || !!site.bookingUrl}>
+  <PageHeader />
+  <main id="main" class="px-5 pb-16 pt-8 sm:px-8 lg:px-12">
+    <div class="mx-auto max-w-lg">
+      <p class="eyebrow flex items-center gap-3 before:block before:h-[2px] before:w-6 before:bg-amber">Booking request</p>
+      <h1 class="mt-3 text-[clamp(3rem,15vw,6rem)] text-cream">Book a <span class="text-amber">time.</span></h1>
+      <p class="mt-4 text-lg text-cream/85">Pick a day and a time. {site.booking.confirmNote}</p>
+
+      {
+        site.bookingUrl ? (
+          <a href={site.bookingUrl} target="_blank" rel="noopener" class="btn btn-amber mt-8">Book online <Icons name="external" size={16} /></a>
+        ) : !site.booking.enabled ? (
+          <a href={telHref} class="btn btn-amber mt-8"><Icons name="phone" size={19} /> Call {site.phone.display}</a>
+        ) : (
+          <>
+            <form method="post" action="/api/booking" novalidate data-booking data-config={JSON.stringify(config)} class="mt-8 grid gap-5">
+              <p class="hidden" aria-hidden="true"><label>Website <input name="website" type="text" tabindex="-1" autocomplete="off" /></label></p>
+
+              <div role="alert" aria-live="polite" class="hidden rounded-md border border-amber/50 bg-amber/10 px-4 py-3 text-cream" data-summary></div>
+
+              <div>
+                <label for="name" class="mb-2 block font-bold text-cream">Your name</label>
+                <input id="name" name="name" type="text" required minlength="2" maxlength="80" autocomplete="name" class="input" />
+                <p class="mt-2 hidden text-sm font-bold text-amber" data-err="name"></p>
+              </div>
+
+              <div>
+                <label for="phone" class="mb-2 block font-bold text-cream">Mobile number</label>
+                <input id="phone" name="phone" type="tel" required inputmode="tel" autocomplete="tel" placeholder="07123 456789" class="input" />
+                <p class="mt-1 text-sm text-cream-2">The shop texts or calls this number to confirm.</p>
+                <p class="mt-2 hidden text-sm font-bold text-amber" data-err="phone"></p>
+              </div>
+
+              <div class="grid grid-cols-2 gap-3">
+                <div>
+                  <label for="day" class="mb-2 block font-bold text-cream">Day</label>
+                  <input id="day" name="day" type="date" required class="input" />
+                  <p class="mt-2 hidden text-sm font-bold text-amber" data-err="day"></p>
+                </div>
+                <div>
+                  <label for="time" class="mb-2 block font-bold text-cream">Time</label>
+                  {
+                    hasSlots ? (
+                      <select id="time" name="time" required class="input">
+                        <option value="">Pick a day first</option>
+                        {allSlots.map((t) => <option value={t}>{fmtTime(t)}</option>)}
+                      </select>
+                    ) : (
+                      <input id="time" name="time" type="time" required step="900" max={latestTime(SUNDAY)} class="input" />
+                    )
+                  }
+                  <p class="mt-2 hidden text-sm font-bold text-amber" data-err="time"></p>
+                </div>
+              </div>
+              <p class="-mt-2 text-sm text-cream-2" data-hours-hint>{hasSlots ? 'Times follow the shop’s opening hours.' : `The shop closes at ${closes}, so the last request is ${latest}.`}</p>
+
+              <div>
+                <label for="service" class="mb-2 block font-bold text-cream">What are you coming in for? <span class="font-normal text-cream-2">(optional)</span></label>
+                {
+                  site.services.length ? (
+                    <select id="service" name="service" class="input">
+                      <option value="">Not sure yet</option>
+                      {site.services.map((s) => <option value={s.name}>{s.name}{s.price ? ` · ${s.price}` : ''}</option>)}
+                    </select>
+                  ) : (
+                    <input id="service" name="service" type="text" maxlength="120" placeholder="Tell the barber what you need" class="input" />
+                  )
+                }
+                <p class="mt-2 hidden text-sm font-bold text-amber" data-err="service"></p>
+              </div>
+
+              <div>
+                <label for="notes" class="mb-2 block font-bold text-cream">Anything else? <span class="font-normal text-cream-2">(optional)</span></label>
+                <textarea id="notes" name="notes" rows="3" maxlength="300" class="input min-h-[6rem] py-3"></textarea>
+                <p class="mt-2 hidden text-sm font-bold text-amber" data-err="notes"></p>
+              </div>
+
+              <button type="submit" class="btn btn-amber w-full" data-submit><Icons name="arrow" size={19} /> Send booking request</button>
+              <p class="text-center text-sm text-cream-2">Prefer to talk? <a href={telHref} class="inline-flex min-h-11 items-center font-bold text-amber">Call {site.phone.display}</a></p>
+            </form>
+
+            <section class="mt-8 hidden rounded-md border border-amber/40 bg-ink-2 p-6" data-done aria-live="polite">
+              <p class="eyebrow">Request sent</p>
+              <h2 class="mt-2 text-4xl text-cream">Nice one, <span class="text-amber" data-done-name></span>.</h2>
+              <p class="mt-3 text-lg text-cream/90" data-done-when></p>
+              <p class="mt-3 text-cream-2">{site.booking.confirmNote}</p>
+              <div class="mt-6 grid grid-cols-1 gap-3 sm:flex">
+                <a href="/" class="btn btn-outline">Back to the shop</a>
+                <a href={telHref} class="btn btn-outline"><Icons name="phone" size={19} /> Call if plans change</a>
+              </div>
+            </section>
+
+            <section class="mt-8 hidden rounded-md border border-line bg-ink-2 p-6" data-fallback aria-live="polite">
+              <p class="eyebrow">Online requests are off right now</p>
+              <h2 class="mt-2 text-4xl text-cream">Send it by <span class="text-amber">text</span> instead.</h2>
+              <p class="mt-3 text-cream-2">Your details are filled in already. One tap and it goes straight to the shop.</p>
+              <div class="mt-6 grid grid-cols-1 gap-3 sm:flex">
+                <a href="#" class="btn btn-amber" data-sms><Icons name="arrow" size={19} /> Text this request</a>
+                <a href={telHref} class="btn btn-outline"><Icons name="phone" size={19} /> Call {site.phone.display}</a>
+              </div>
+            </section>
+          </>
+        )
+      }
+    </div>
+  </main>
+  <StickyBar />
+</Base>
+
+<script>
+  import { smsBody, fmtDay, fmtTime } from '@/lib/booking';
+
+  const form = document.querySelector<HTMLFormElement>('[data-booking]');
+  if (form) {
+    type Weekly = { closed: boolean; slots: string[] | null; latest: string };
+    const cfg = JSON.parse(form.dataset.config!) as { daysAhead: number; weekly: Weekly[]; sms: string; telDisplay: string; confirmNote: string };
+    const field = (n: string) => form.elements.namedItem(n) as HTMLInputElement | HTMLSelectElement;
+    const day = field('day') as HTMLInputElement;
+    const time = field('time');
+    const submit = form.querySelector<HTMLButtonElement>('[data-submit]')!;
+    const summary = form.querySelector<HTMLElement>('[data-summary]')!;
+    const hint = form.querySelector<HTMLElement>('[data-hours-hint]')!;
+    const hintText = hint.textContent;
+
+    // Day limits in the visitor's local time (the server re-checks in Europe/London).
+    const pad = (n: number) => String(n).padStart(2, '0');
+    const iso = (d: Date) => `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+    const today = new Date();
+    const max = new Date(today);
+    max.setDate(max.getDate() + cfg.daysAhead);
+    day.min = iso(today);
+    day.max = iso(max);
+
+    const syncTime = () => {
+      if (!day.value) return;
+      const w = cfg.weekly[new Date(`${day.value}T00:00:00`).getDay()];
+      if (w.closed) {
+        hint.textContent = 'The shop is closed that day. Pick another.';
+        return;
+      }
+      hint.textContent = hintText;
+      if (time instanceof HTMLSelectElement && w.slots) {
+        const current = time.value;
+        time.innerHTML = '<option value="">Pick a time</option>' + w.slots.map((s) => `<option value="${s}">${fmtTime(s)}</option>`).join('');
+        if (w.slots.includes(current)) time.value = current;
+      } else if (time instanceof HTMLInputElement) {
+        time.max = w.latest;
+      }
+    };
+    day.addEventListener('change', syncTime);
+
+    const showErrors = (errors: Record<string, string>) => {
+      form.querySelectorAll<HTMLElement>('[data-err]').forEach((el) => {
+        const msg = errors[el.dataset.err!];
+        el.textContent = msg ?? '';
+        el.classList.toggle('hidden', !msg);
+        const input = field(el.dataset.err!);
+        if (input) input.setAttribute('aria-invalid', msg ? 'true' : 'false');
+      });
+      const general = Object.entries(errors).filter(([k]) => !form.querySelector(`[data-err="${k}"]`)).map(([, v]) => v);
+      summary.textContent = general.length ? general.join(' ') : Object.keys(errors).length ? 'Please check the highlighted fields.' : '';
+      summary.classList.toggle('hidden', !summary.textContent);
+      const first = form.querySelector<HTMLElement>('[aria-invalid="true"]');
+      first?.focus();
+    };
+
+    const values = () => Object.fromEntries(new FormData(form).entries()) as Record<string, string>;
+
+    const fallback = () => {
+      const v = values();
+      const box = document.querySelector<HTMLElement>('[data-fallback]')!;
+      const sms = box.querySelector<HTMLAnchorElement>('[data-sms]')!;
+      sms.href = `sms:${cfg.sms}?&body=${encodeURIComponent(smsBody(v))}`;
+      form.classList.add('hidden');
+      box.classList.remove('hidden');
+      box.querySelector<HTMLElement>('h2')?.focus();
+    };
+
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      submit.disabled = true;
+      submit.setAttribute('aria-busy', 'true');
+      try {
+        const res = await fetch(form.action, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
+          body: JSON.stringify(values()),
+        });
+        const data = (await res.json().catch(() => ({}))) as { error?: string; errors?: Record<string, string>; value?: Record<string, string> };
+        if (res.status === 201 && data.value) {
+          const done = document.querySelector<HTMLElement>('[data-done]')!;
+          done.querySelector('[data-done-name]')!.textContent = data.value.name;
+          done.querySelector('[data-done-when]')!.textContent = `${fmtDay(data.value.day)} at ${fmtTime(data.value.time)}${data.value.service ? ` for ${data.value.service}` : ''}. We’ll confirm on ${data.value.phone.replace(/^\+44/, '0')}.`;
+          form.classList.add('hidden');
+          done.classList.remove('hidden');
+          done.scrollIntoView({ block: 'start' });
+        } else if (res.status === 400 && data.errors) {
+          showErrors(data.errors);
+        } else if (res.status === 429) {
+          showErrors({ rate: `Too many requests from this connection. Call ${cfg.telDisplay} instead.` });
+        } else {
+          fallback();
+        }
+      } catch {
+        fallback();
+      } finally {
+        submit.disabled = false;
+        submit.removeAttribute('aria-busy');
+      }
+    });
+  }
+</script>

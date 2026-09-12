@@ -1,0 +1,87 @@
+---
+export const prerender = false;
+/**
+ * /admin — booking requests for the shop. Basic auth (any username, ADMIN_PASSWORD secret).
+ * Rendered on Cloudflare at request time; never cached, never indexed.
+ */
+import '@/styles/global.css';
+import { site } from '@/lib/site';
+import { requireAdmin, noStoreHeaders } from '@/lib/auth';
+import { ensureSchema, listBookings, type BookingRow } from '@/lib/db';
+import { displayPhone, fmtDay, fmtTime, type Status } from '@/lib/booking';
+
+const env = Astro.locals.runtime?.env ?? {};
+const denied = requireAdmin(Astro.request, env);
+if (denied) return denied;
+for (const [k, v] of Object.entries(noStoreHeaders)) Astro.response.headers.set(k, v);
+
+let rows: BookingRow[] = [];
+let dbError = '';
+if (!env.DB) dbError = 'No D1 database is bound as "DB" on this Pages project yet.';
+else {
+  try {
+    await ensureSchema(env.DB);
+    rows = await listBookings(env.DB);
+  } catch (e) {
+    dbError = `Database error: ${(e as Error).message}`;
+  }
+}
+const groups: { status: Status; label: string; rows: BookingRow[] }[] = [
+  { status: 'pending', label: 'Waiting for you', rows: rows.filter((r) => r.status === 'pending') },
+  { status: 'confirmed', label: 'Confirmed', rows: rows.filter((r) => r.status === 'confirmed') },
+  { status: 'declined', label: 'Declined', rows: rows.filter((r) => r.status === 'declined') },
+  { status: 'done', label: 'Done', rows: rows.filter((r) => r.status === 'done') },
+];
+const actions: { status: Status; label: string; cls: string }[] = [
+  { status: 'confirmed', label: 'Confirm', cls: 'btn-amber' },
+  { status: 'declined', label: 'Decline', cls: 'btn-outline' },
+  { status: 'done', label: 'Done', cls: 'btn-outline' },
+  { status: 'pending', label: 'Reopen', cls: 'btn-outline' },
+];
+---
+<!doctype html>
+<html lang="en-GB" class="bg-ink">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="robots" content="noindex,nofollow" />
+    <title>Booking requests | {site.name}</title>
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body class="bg-ink text-cream antialiased">
+    <main class="mx-auto max-w-2xl px-5 py-8 sm:px-8">
+      <p class="eyebrow">{site.name}</p>
+      <h1 class="mt-2 text-[clamp(2.5rem,12vw,4.5rem)]">Booking <span class="text-amber">requests.</span></h1>
+      <p class="mt-3 text-cream-2">{groups[0].rows.length} waiting · {rows.length} total. Confirm by texting or calling the customer, then mark it here.</p>
+      {dbError && <p class="mt-6 rounded-md border border-amber/50 bg-amber/10 p-4 text-cream">{dbError}</p>}
+
+      {groups.map((g) => g.rows.length > 0 && (
+        <section class="mt-10" aria-labelledby={`g-${g.status}`}>
+          <h2 id={`g-${g.status}`} class="text-3xl">{g.label} <span class="text-cream-2">({g.rows.length})</span></h2>
+          <ul class="mt-4 grid gap-4" role="list">
+            {g.rows.map((r) => (
+              <li class={`rounded-md border p-5 ${r.status === 'pending' ? 'border-amber/50 bg-ink-2' : 'border-line bg-ink-2/60'}`}>
+                <p class="display text-3xl">{fmtDay(r.day)} · {fmtTime(r.time)}</p>
+                <p class="mt-2 text-xl font-bold">{r.name}</p>
+                <p class="mt-1"><a href={`tel:${r.phone}`} class="inline-flex min-h-11 items-center font-bold text-amber">{displayPhone(r.phone)}</a> <a href={`sms:${r.phone}`} class="ml-3 inline-flex min-h-11 items-center text-cream-2 underline">Text</a></p>
+                {r.service && <p class="mt-1 text-cream/90">For: {r.service}</p>}
+                {r.notes && <p class="mt-1 whitespace-pre-line text-cream-2">{r.notes}</p>}
+                <p class="mt-2 text-xs text-cream-2">Requested {new Date(r.created_at).toLocaleString('en-GB', { timeZone: 'Europe/London', dateStyle: 'medium', timeStyle: 'short' })}</p>
+                <div class="mt-4 flex flex-wrap gap-2">
+                  {actions.filter((a) => a.status !== r.status).map((a) => (
+                    <form method="post" action="/api/admin/status">
+                      <input type="hidden" name="id" value={r.id} />
+                      <input type="hidden" name="status" value={a.status} />
+                      <button type="submit" class={`btn ${a.cls} min-h-12 px-4 text-base`}>{a.label}</button>
+                    </form>
+                  ))}
+                </div>
+              </li>
+            ))}
+          </ul>
+        </section>
+      ))}
+      {!dbError && rows.length === 0 && <p class="mt-10 text-lg text-cream-2">No requests yet. They’ll appear here the moment someone sends one from /book.</p>}
+    </main>
+  </body>
+</html>

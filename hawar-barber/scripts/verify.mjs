@@ -73,6 +73,27 @@ async function run(width, height, tag) {
 }
 await run(390, 844, '390');
 await run(320, 568, '320');
+// /book at 390: every control is 17px and tall enough to tap, no horizontal scroll, screenshot.
+{
+  const ctx = await browser.newContext({ viewport: { width: 390, height: 844 }, deviceScaleFactor: 2, isMobile: true, hasTouch: true });
+  const page = await ctx.newPage();
+  const res = await page.goto(new URL('/book', url).href, { waitUntil: 'load' });
+  console.log(`\n== /book 390×844 ==`);
+  check(res?.status() === 200, `HTTP ${res?.status()}`);
+  const sw = await page.evaluate(() => [document.documentElement.scrollWidth, innerWidth]);
+  check(sw[0] <= sw[1], `no horizontal scroll (${sw[0]} vs ${sw[1]})`);
+  const controls = await page.$$eval('input:not([type=hidden]):not([name=website]), select, textarea, button, a.btn', (els) => els.map((e) => ({ tag: e.tagName, name: e.getAttribute('name') || e.textContent.trim().slice(0, 20), fs: parseFloat(getComputedStyle(e).fontSize), h: e.getBoundingClientRect().height })));
+  const small = controls.filter((c) => c.fs < 16);
+  const short = controls.filter((c) => c.tag !== 'A' && c.h < 48);
+  check(small.length === 0, `all ${controls.length} form controls ≥16px text ${small.length ? JSON.stringify(small) : ''}`);
+  check(short.length === 0, `all controls ≥48px tall ${short.length ? JSON.stringify(short) : ''}`);
+  const labels = await page.$$eval('input:not([type=hidden]):not([name=website]), select, textarea', (els) => els.filter((e) => !document.querySelector(`label[for="${e.id}"]`)).map((e) => e.name));
+  check(labels.length === 0, `every field has a label ${labels.length ? JSON.stringify(labels) : ''}`);
+  const dayMin = await page.$eval('#day', (e) => e.min);
+  check(/^\d{4}-\d{2}-\d{2}$/.test(dayMin), `date min set by script: ${dayMin}`);
+  await page.screenshot({ path: 'reports/book-390.png', fullPage: true });
+  await ctx.close();
+}
 {
   const ctx = await browser.newContext({ viewport: { width: 1280, height: 800 } });
   const page = await ctx.newPage();

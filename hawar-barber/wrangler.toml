@@ -1,0 +1,14 @@
+# Cloudflare Pages project settings. Used by `wrangler pages dev dist`, `wrangler pages deploy dist`
+# and by `astro dev` (local D1 emulation). Bindings set here are applied to the Pages project on deploy.
+name = "hawar-barber"
+compatibility_date = "2025-09-01"
+compatibility_flags = ["nodejs_compat"]
+pages_build_output_dir = "dist"
+
+# Booking requests are stored in D1. Create it once:
+#   npx wrangler d1 create hawar-barber-bookings
+# then paste the database_id it prints below.
+[[d1_databases]]
+binding = "DB"
+database_name = "hawar-barber-bookings"
+database_id = "00000000-0000-0000-0000-000000000000"

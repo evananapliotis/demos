@@ -1,0 +1,14 @@
+---
+/* Slim header for inner pages: wordmark, back link, Call. */
+import { site, telHref } from '@/lib/site';
+import Icons from './Icons.astro';
+---
+<nav class="flex items-center justify-between px-5 pt-4 sm:px-8 lg:px-12" aria-label="Primary">
+  <a href="/" class="display inline-flex min-h-11 items-center gap-2 text-[1.35rem] tracking-wide text-cream" aria-label={`${site.name} home`}>
+    <span class="inline-block h-6 w-[7px] rounded-sm stripe-amber" aria-hidden="true"></span>
+    {site.name}
+  </a>
+  <a href={telHref} class="inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-md px-3 text-amber hover:text-amber-2" aria-label={`Call ${site.phone.display}`}>
+    <Icons name="phone" size={20} /><span class="hidden sm:inline">{site.phone.display}</span>
+  </a>
+</nav>

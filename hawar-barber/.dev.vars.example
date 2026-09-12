@@ -1,0 +1,7 @@
+# Copy to .dev.vars for local runs. In production set these as Secrets on the Pages project.
+ADMIN_PASSWORD=change-me
+# Optional: email every new request through Resend (https://resend.com).
+RESEND_API_KEY=
+BOOKINGS_EMAIL=
+# Optional sender once a domain is verified in Resend, e.g. "HAWAR BARBER <bookings@example.com>"
+BOOKINGS_FROM=
