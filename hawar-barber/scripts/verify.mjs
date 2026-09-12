@@ -60,7 +60,16 @@ async function run(width, height, tag) {
   const has3d = await page.waitForSelector('[data-pole-slot].has-3d', { timeout: 12000 }).then(() => true).catch(() => false);
   console.log(`3D  pole canvas mounted: ${has3d}`);
   // lazy images + full page shot
-  await page.evaluate(async () => { for (let y = 0; y < document.body.scrollHeight; y += 500) { scrollTo(0, y); await new Promise((r) => setTimeout(r, 80)); } scrollTo(0, 0); });
+  await page.evaluate(async () => {
+    for (let y = 0; y < document.body.scrollHeight; y += 500) { scrollTo(0, y); await new Promise((r) => setTimeout(r, 80)); }
+    // swipe through horizontal galleries so their lazy images get requested too
+    for (const track of document.querySelectorAll('.gallery-track')) {
+      track.scrollIntoView({ block: 'center' });
+      for (let x = 0; x <= track.scrollWidth; x += 200) { track.scrollLeft = x; await new Promise((r) => setTimeout(r, 60)); }
+      track.scrollLeft = 0;
+    }
+    scrollTo(0, 0);
+  });
   await page.waitForLoadState('networkidle').catch(() => {});
   const imgs = await page.$$eval('img', (els) => els.map((i) => ({ src: i.currentSrc || i.src, ok: i.complete && i.naturalWidth > 0 })));
   check(imgs.every((i) => i.ok), `images: ${imgs.length} found, ${imgs.filter((i) => !i.ok).length} broken`);
