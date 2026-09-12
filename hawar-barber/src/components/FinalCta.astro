@@ -1,5 +1,5 @@
 ---
-import { site, telHref, directionsUrl, bookHref, bookExternal, openDaysLabel } from '@/lib/site';
+import { site, telHref, directionsUrl, bookHref, bookExternal, openDaysLabel, fullAddress } from '@/lib/site';
 import Icons from './Icons.astro';
 ---
 <section class="relative overflow-hidden bg-amber px-5 py-16 text-ink sm:px-8 md:py-24 lg:px-12" aria-labelledby="cta-title">
@@ -11,6 +11,33 @@ import Icons from './Icons.astro';
       <a href={telHref} class="btn btn-ink"><Icons name="phone" size={19} /> Call {site.phone.display}</a>
       {bookHref && <a href={bookHref} class="btn border-2 border-ink text-ink hover:bg-ink hover:text-cream" target={bookExternal ? '_blank' : undefined} rel={bookExternal ? 'noopener' : undefined}><Icons name="calendar" size={19} /> Book a time{bookExternal && <><Icons name="external" size={14} /><span class="sr-only">(opens in a new tab)</span></>}</a>}
       <a href={directionsUrl} target="_blank" rel="noopener" class={`btn border-2 border-ink text-ink hover:bg-ink hover:text-cream ${bookHref ? 'hidden sm:inline-flex' : ''}`}><Icons name="pin" size={19} /> Directions</a>
+      <button type="button" class="btn border-2 border-ink text-ink hover:bg-ink hover:text-cream" data-share data-share-title={site.name} data-share-text={`${site.name}, ${fullAddress}. Call ${site.phone.display}.`} hidden>
+        <Icons name="share" size={19} /> <span data-share-label>Share</span>
+      </button>
     </div>
   </div>
 </section>
+
+<script>
+  // Share the site with the phone's share sheet (WhatsApp, Messages …); copies the link where there is no share sheet.
+  const btn = document.querySelector<HTMLButtonElement>('[data-share]');
+  if (btn) {
+    const label = btn.querySelector<HTMLElement>('[data-share-label]')!;
+    const url = location.href.split('#')[0];
+    const data = { title: btn.dataset.shareTitle, text: btn.dataset.shareText, url };
+    const canShare = typeof navigator.share === 'function' && (!navigator.canShare || navigator.canShare(data));
+    if (canShare || navigator.clipboard) btn.hidden = false;
+    btn.addEventListener('click', async () => {
+      try {
+        if (canShare) await navigator.share(data);
+        else {
+          await navigator.clipboard.writeText(url);
+          label.textContent = 'Link copied';
+          setTimeout(() => (label.textContent = 'Share'), 2200);
+        }
+      } catch {
+        /* the person closed the share sheet */
+      }
+    });
+  }
+</script>

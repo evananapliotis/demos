@@ -1,7 +1,7 @@
 ---
 interface Props { index?: string }
 const { index } = Astro.props;
-import { site, telHref, directionsUrl, listingUrl, embedUrl, fullAddress, fmtTime, weekRows } from '@/lib/site';
+import { site, telHref, directionsUrl, listingUrl, embedUrl, fullAddress, fmtTime, weekRows, openDaysLabel } from '@/lib/site';
 import Section from './Section.astro';
 import Icons from './Icons.astro';
 const rows = weekRows();
@@ -23,6 +23,12 @@ const rows = weekRows();
       </p>
 
       <h3 class="eyebrow mb-3 mt-8">Opening hours</h3>
+      {rows && (
+        <p class="mb-3 flex items-center gap-2 text-base font-bold text-cream">
+          <span class="status-dot" data-status-dot aria-hidden="true"></span>
+          <span data-open-status data-week={JSON.stringify(site.hours.week)}>{openDaysLabel()}</span>
+        </p>
+      )}
       {
         rows ? (
           <table class="w-full border-collapse text-lg" data-hours-table>

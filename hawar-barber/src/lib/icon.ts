@@ -1,0 +1,9 @@
+/**
+ * The site icon: a barber pole on an ink tile. Used by the favicon, the Apple touch icon and the
+ * home-screen icons in the web manifest. `inset` shrinks the pole toward the centre so maskable
+ * icons keep it inside the safe zone when Android rounds or circles the tile.
+ */
+export function iconSvg({ size, radius = 0, inset = 0 }: { size: number; radius?: number; inset?: number }) {
+  const s = 1 - inset;
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${size}" height="${size}" viewBox="0 0 64 64"><rect width="64" height="64" rx="${radius}" fill="#0e0c0a"/><defs><clipPath id="c"><rect x="22" y="12" width="20" height="40" rx="4"/></clipPath></defs><g transform="translate(32 32) scale(${s}) translate(-32 -32)"><g clip-path="url(#c)"><rect x="22" y="12" width="20" height="40" fill="#f4eee4"/><g fill="#f2a93b"><path d="M10 20l40-14v8L10 28z"/><path d="M10 36l40-14v8L10 44z"/><path d="M10 52l40-14v8L10 60z"/></g><g fill="#0e0c0a"><path d="M10 28l40-14v4L10 32z"/><path d="M10 44l40-14v4L10 48z"/></g></g><rect x="20" y="8" width="24" height="6" rx="2" fill="#d9d4cb"/><rect x="20" y="50" width="24" height="6" rx="2" fill="#d9d4cb"/></g></svg>`;
+}

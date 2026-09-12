@@ -3,6 +3,6 @@ node_modules/
 .astro/
 reports/*.html
 reports/*.json
-public/og.png
+public/og.jpg
 src/og/fonts.conf
 .tmp/

@@ -1,31 +1,142 @@
 ---
 interface Props { index?: string }
 const { index } = Astro.props;
-import { Image } from 'astro:assets';
+import { Image, getImage } from 'astro:assets';
 import { galleryImages } from '@/lib/images';
 import Section from './Section.astro';
+import Icons from './Icons.astro';
+// Full-size versions for the lightbox (never upscaled beyond the original).
+const full = await Promise.all(galleryImages.map((g) => getImage({ src: g.image, width: 1400, format: 'webp', quality: 78, layout: 'none' })));
+const photos = galleryImages.map((g, i) => ({ src: full[i].src, w: Number(full[i].attributes.width), h: Number(full[i].attributes.height), alt: g.alt }));
 ---
 {
   galleryImages.length > 0 && (
     <Section id="gallery" index={index} eyebrow="The work" title="Fresh from the <span class='text-amber'>chair.</span>" class="bg-ink-2">
       <ul class="gallery-track" role="list" aria-label="Photos from the shop">
-        {galleryImages.map((g) => (
+        {galleryImages.map((g, i) => (
           <li class="overflow-hidden rounded-md bg-ink-3">
-            <Image
-              src={g.image}
-              alt={g.alt}
-              widths={[360, 640, 960]}
-              sizes="(min-width: 768px) 33vw, 82vw"
-              format="webp"
-              quality={72}
-              loading="lazy"
-              decoding="async"
-              class="aspect-[4/5] h-auto w-full object-cover"
-            />
+            <button type="button" class="gallery-open group block w-full cursor-zoom-in" data-index={i} aria-label={`Open photo ${i + 1} of ${galleryImages.length} full size: ${g.alt}`}>
+              <Image
+                src={g.image}
+                alt={g.alt}
+                widths={[360, 640, 960]}
+                sizes="(min-width: 768px) 33vw, 82vw"
+                format="webp"
+                quality={72}
+                loading="lazy"
+                decoding="async"
+                class="aspect-[4/5] h-auto w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+              />
+            </button>
           </li>
         ))}
       </ul>
-      <p class="mt-4 text-sm text-cream-2 md:hidden">Swipe for more.</p>
+      <p class="mt-4 text-sm text-cream-2">Tap a photo to see it full size.<span class="md:hidden"> Swipe for more.</span></p>
+
+      <dialog class="lightbox" data-lightbox data-photos={JSON.stringify(photos)} aria-label="Photo viewer">
+        <div class="lb-bar">
+          <p class="lb-count text-sm font-bold text-cream-2" data-lb-count aria-live="polite"></p>
+          <button type="button" class="lb-btn" data-lb-close aria-label="Close photo viewer"><Icons name="close" size={22} /></button>
+        </div>
+        <ul class="lb-track" data-lb-track role="list"></ul>
+        <button type="button" class="lb-btn lb-prev" data-lb-prev aria-label="Previous photo"><Icons name="chevron" size={24} class="rotate-180" /></button>
+        <button type="button" class="lb-btn lb-next" data-lb-next aria-label="Next photo"><Icons name="chevron" size={24} /></button>
+        <p class="lb-caption" data-lb-caption></p>
+      </dialog>
     </Section>
   )
 }
+
+<script>
+  // Lightbox: tap a gallery photo to see it full size; swipe (or arrow keys / buttons) between photos.
+  // Slides are created on first open, and only the current photo and its neighbours are fetched.
+  // Android's back button closes it (a history entry is pushed on open).
+  const dlg = document.querySelector<HTMLDialogElement>('[data-lightbox]');
+  if (dlg && typeof dlg.showModal === 'function') {
+    type Photo = { src: string; w: number; h: number; alt: string };
+    const photos = JSON.parse(dlg.dataset.photos || '[]') as Photo[];
+    const track = dlg.querySelector<HTMLElement>('[data-lb-track]')!;
+    const count = dlg.querySelector<HTMLElement>('[data-lb-count]')!;
+    const caption = dlg.querySelector<HTMLElement>('[data-lb-caption]')!;
+    const prev = dlg.querySelector<HTMLButtonElement>('[data-lb-prev]')!;
+    const next = dlg.querySelector<HTMLButtonElement>('[data-lb-next]')!;
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let built = false;
+    let opener: HTMLElement | null = null;
+    let current = 0;
+
+    const build = () => {
+      if (built) return;
+      built = true;
+      for (const p of photos) {
+        const li = document.createElement('li');
+        const img = document.createElement('img');
+        img.dataset.src = p.src;
+        img.alt = p.alt;
+        img.width = p.w;
+        img.height = p.h;
+        img.decoding = 'async';
+        li.append(img);
+        track.append(li);
+      }
+    };
+    const ensure = (i: number) => {
+      for (const k of [i - 1, i, i + 1]) {
+        const img = track.children[k]?.querySelector('img');
+        if (img && !img.getAttribute('src') && img.dataset.src) img.src = img.dataset.src;
+      }
+    };
+    const paint = () => {
+      count.textContent = `${current + 1} / ${photos.length}`;
+      caption.textContent = photos[current]?.alt ?? '';
+      prev.disabled = current === 0;
+      next.disabled = current === photos.length - 1;
+      ensure(current);
+    };
+    const goTo = (i: number, smooth = !reduced) => {
+      current = Math.max(0, Math.min(photos.length - 1, i));
+      track.scrollTo({ left: current * track.clientWidth, behavior: smooth ? 'smooth' : 'instant' });
+      paint();
+    };
+    const open = (i: number, from: HTMLElement) => {
+      build();
+      opener = from;
+      dlg.showModal();
+      document.documentElement.classList.add('lb-open');
+      history.pushState({ lightbox: true }, '');
+      requestAnimationFrame(() => goTo(i, false));
+    };
+    const close = () => {
+      if (history.state?.lightbox) history.back();
+      else dlg.close();
+    };
+
+    for (const b of document.querySelectorAll<HTMLElement>('.gallery-open')) b.addEventListener('click', () => open(Number(b.dataset.index) || 0, b));
+    dlg.querySelector('[data-lb-close]')!.addEventListener('click', close);
+    prev.addEventListener('click', () => goTo(current - 1));
+    next.addEventListener('click', () => goTo(current + 1));
+    dlg.addEventListener('click', (e) => {
+      const t = e.target as HTMLElement;
+      if (t === dlg || t === track || t.tagName === 'LI') close();
+    });
+    dlg.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') goTo(current + 1);
+      if (e.key === 'ArrowLeft') goTo(current - 1);
+    });
+    dlg.addEventListener('close', () => {
+      document.documentElement.classList.remove('lb-open');
+      if (history.state?.lightbox) history.back();
+      opener?.focus();
+    });
+    addEventListener('popstate', () => { if (dlg.open) dlg.close(); });
+    let raf = 0;
+    track.addEventListener('scroll', () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        const i = Math.round(track.scrollLeft / Math.max(1, track.clientWidth));
+        if (i !== current) { current = i; paint(); }
+      });
+    }, { passive: true });
+  }
+</script>

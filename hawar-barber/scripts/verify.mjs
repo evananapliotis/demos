@@ -73,6 +73,21 @@ async function run(width, height, tag) {
   await page.waitForLoadState('networkidle').catch(() => {});
   const imgs = await page.$$eval('img', (els) => els.map((i) => ({ src: i.currentSrc || i.src, ok: i.complete && i.naturalWidth > 0 })));
   check(imgs.every((i) => i.ok), `images: ${imgs.length} found, ${imgs.filter((i) => !i.ok).length} broken`);
+  // gallery lightbox: opens full size on tap, closes on Escape, focus returns to the thumbnail
+  if (await page.$('.gallery-open')) {
+    await page.evaluate(() => document.querySelector('.gallery-open').scrollIntoView({ block: 'center' }));
+    await page.click('.gallery-open');
+    const lb = await page.waitForFunction(() => {
+      const d = document.querySelector('[data-lightbox]');
+      const img = d?.querySelector('.lb-track img');
+      return d?.open && img?.complete && img.naturalWidth > 0 ? { count: d.querySelector('[data-lb-count]')?.textContent, w: img.naturalWidth } : null;
+    }, null, { timeout: 8000 }).then((h) => h.jsonValue()).catch(() => null);
+    check(!!lb, `lightbox opens with a full-size photo (${lb?.count}, ${lb?.w}px wide)`);
+    await page.keyboard.press('Escape');
+    await page.waitForTimeout(300);
+    const after = await page.evaluate(() => ({ open: document.querySelector('[data-lightbox]')?.open, focusBack: document.activeElement?.classList.contains('gallery-open'), scrollLocked: document.documentElement.classList.contains('lb-open') }));
+    check(after.open === false && after.focusBack === true && after.scrollLocked === false, `lightbox closes on Escape and returns focus (${JSON.stringify(after)})`);
+  }
   await page.evaluate(() => document.querySelectorAll('[data-reveal]').forEach((e) => e.classList.add('is-in')));
   await page.waitForTimeout(800);
   await page.screenshot({ path: `reports/mobile-${tag}.png`, fullPage: true });

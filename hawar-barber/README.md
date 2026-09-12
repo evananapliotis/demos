@@ -1,6 +1,7 @@
 # HAWAR BARBER — 321 North Rd, Darlington
 
-Static, phone-first one-page site. Astro 5 + Tailwind 4, a lazy three.js barber pole in the hero.
+Static, phone-first one-page site. Astro 5 + Tailwind 4, a three.js barber pole in the hero, a tap-to-enlarge
+photo gallery, a photo-backed link preview for WhatsApp and Facebook, and a home-screen icon (web manifest).
 Nothing runs on a server: upload `dist/` (or `hawar-barber.zip`) to any static host.
 
 ## Edit
@@ -15,7 +16,7 @@ Photos go in **`public/images/`** and are picked up automatically:
 | --- | --- |
 | `hero.jpg` | behind the hero (optional) |
 | `shopfront.jpg` | About section |
-| `gallery-1.jpg`, `gallery-2.jpg` … | gallery (swipe on phones, grid on desktop) |
+| `gallery-0.jpg`, `gallery-1.jpg` … | gallery (swipe on phones, grid on desktop; tap opens the lightbox) |
 
 Any size; the build resizes, converts to WebP and lazy-loads everything below the fold.
 
@@ -24,12 +25,13 @@ Any size; the build resizes, converts to WebP and lazy-loads everything below th
 ```sh
 npm install
 npm run dev              # http://localhost:4321
-npm run build            # renders public/og.png, then builds → dist/
+npm run build            # renders public/og.jpg (link preview), then builds → dist/
 npm run preview          # serves dist/ on http://localhost:4321
 npm run verify -- http://localhost:4321/       # phone checks + screenshots → reports/
 npm run lighthouse -- http://localhost:4321/   # mobile Lighthouse → reports/
 npm run desktopshots -- http://localhost:4321/ # hero at four desktop sizes
 npm run sizes                                  # gzip size of every built asset
+npm run poster                                 # A4 window poster with a QR code → hawar-barber-poster.pdf
 npm run zip                                    # dist/ → hawar-barber.zip
 ```
 
@@ -40,7 +42,7 @@ Upload and deploy, or the Pages "Upload assets" flow), Netlify, Vercel or any st
 sets long cache on `/_astro/*` and security headers on Cloudflare and Netlify.
 
 Set `url` in `site.config.ts` to the final domain so the canonical, sitemap and Open Graph URLs are right,
-then rebuild.
+then rebuild, and re-run `npm run poster` so the QR code points at the live address.
 
 ## What is on the page, and where it came from
 

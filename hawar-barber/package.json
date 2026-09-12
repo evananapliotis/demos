@@ -14,25 +14,25 @@
     "shots": "node scripts/shot.mjs",
     "scrollshots": "node scripts/scrollshots.mjs",
     "desktopshots": "node scripts/desktopshots.mjs",
+    "poster": "node scripts/poster.mjs",
     "zip": "cd dist && rm -f ../hawar-barber.zip && zip -rq -X ../hawar-barber.zip . -x '.DS_Store' '*/.DS_Store' 'images/*'"
   },
   "dependencies": {
     "@fontsource-variable/big-shoulders-display": "^5.3.0",
     "@fontsource-variable/dm-sans": "^5.3.0",
-    "@react-three/fiber": "^9.7.0",
     "@tailwindcss/vite": "^4.1.0",
     "astro": "^5.18.2",
-    "react": "~19.2.0",
-    "react-dom": "~19.2.0",
     "sharp": "^0.34.0",
     "tailwindcss": "^4.1.0",
     "three": "^0.186.0"
   },
   "devDependencies": {
-    "@types/react": "~19.2.0",
+    "@astrojs/check": "^0.9.10",
     "@types/three": "^0.186.0",
     "lighthouse": "^13.4.1",
-    "playwright-core": "^1.63.0"
+    "playwright-core": "^1.63.0",
+    "qrcode": "^1.5.4",
+    "typescript": "^5.9.3"
   },
   "engines": {
     "node": ">=20"
