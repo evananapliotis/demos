@@ -14,7 +14,7 @@ const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
 export function writeContactSheet(): void {
   const currentPicks = existsSync(PICKS_FILE) ? JSON.parse(readFileSync(PICKS_FILE, 'utf8')) : {};
 
-  const slotsJson = searchedSlots.map((s) => ({ id: s.id, role: s.role ?? null, group: s.group ?? null }));
+  const slotsJson = searchedSlots.map((s) => ({ id: s.id }));
 
   const sections = searchedSlots
     .map((slot) => {
@@ -34,16 +34,12 @@ export function writeContactSheet(): void {
         </label>`,
         )
         .join('');
-      const derive =
-        slot.role === 'before'
-          ? `<label class="opt"><input type="radio" name="${slot.id}" value="derive"> Reuse the <code>${slot.group}-after</code> photo, ungraded (placeholder)</label>`
-          : '';
       return `
     <section id="${slot.id}">
       <h2>${slot.id}</h2>
       <p class="q">&ldquo;${esc(slot.query)}&rdquo; &middot; ${slot.orientation} ${aw}:${ah} &middot; widths ${slot.widths.join('/')} &middot; &le;${slot.budgetKB}KB
         ${credits ? `&middot; ${credits.candidates.length} candidates` : '&middot; <em>nothing fetched yet</em>'}</p>
-      <div class="opts"><label class="opt"><input type="radio" name="${slot.id}" value="none" checked> None</label>${derive}</div>
+      <div class="opts"><label class="opt"><input type="radio" name="${slot.id}" value="none" checked> None</label></div>
       <div class="grid">${cards}</div>
     </section>`;
     })
@@ -129,7 +125,6 @@ export function writeContactSheet(): void {
     const slot = SLOTS.find((s) => s.id === input.name);
     if (!slot) return;
     if (input.value === 'none') picks[slot.id] = null;
-    else if (input.value === 'derive') picks[slot.id] = { sameAs: slot.group + '-after', treatment: 'raw' };
     else picks[slot.id] = Number(input.value);
     save(); render();
   });

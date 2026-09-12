@@ -34,7 +34,6 @@ const raw = {
     { label: 'Services', href: '#services' },
     { label: 'Team', href: '#team' },
     { label: 'Gallery', href: '#gallery' },
-    { label: 'Before & after', href: '#before-after' },
     { label: 'Hours', href: '#hours' },
     { label: 'Contact', href: '#contact' },
     { label: 'Book', href: '/book' },
@@ -182,31 +181,6 @@ const raw = {
     ],
   },
 
-  beforeAfter: {
-    heading: 'Before & after',
-    intro: 'Drag the handle to compare.',
-    beforeLabel: 'Before',
-    afterLabel: 'After',
-    dragHint: 'Drag to compare',
-    pairs: [
-      {
-        before: { slot: 'before-after-1-before', alt: 'Before: overgrown hair, no shape' },
-        after: { slot: 'before-after-1-after', alt: 'After: skin fade with a textured top' },
-        caption: 'Skin fade and beard reshape',
-      },
-      {
-        before: { slot: 'before-after-2-before', alt: 'Before: untrimmed beard' },
-        after: { slot: 'before-after-2-after', alt: 'After: beard shaped and lined up' },
-        caption: 'Beard trim & shape',
-      },
-      {
-        before: { slot: 'before-after-3-before', alt: 'Before: six weeks of growth' },
-        after: { slot: 'before-after-3-after', alt: 'After: classic scissor cut' },
-        caption: 'Classic cut',
-      },
-    ],
-  },
-
   hours: {
     heading: 'Opening hours',
     note: 'Last appointment 30 minutes before closing. Walk-ins taken when there is a free chair.',
@@ -299,20 +273,6 @@ const raw = {
   footer: {
     sampleLabel: 'This is a sample site. Halden & Crane is a fictional business.',
     copyrightHolder: 'Halden & Crane',
-    creditsLinkLabel: 'Photo credits',
-    pexelsLinkLabel: 'Photos from Pexels',
-  },
-
-  credits: {
-    title: 'Photo credits',
-    heading: 'Photo credits',
-    intro: 'Photography on this site is used under the Pexels licence. Thank you to the photographers.',
-    photographerLabel: 'Photographer',
-    licenceLabel: 'Licence',
-    usedForLabel: 'Used for',
-    viewOnPexels: 'View on Pexels',
-    empty: 'No photos have been added yet. The images on this site are placeholders.',
-    backHome: 'Back to the site',
   },
 
   notFound: {

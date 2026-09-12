@@ -47,9 +47,6 @@ export interface SearchedSlot {
   sizes: string;
   /** Default crop focus. A per-photo override can be set in image-picks.json. */
   focal: Focal;
-  /** Before/after pairs share a group id and carry a role. */
-  group?: string;
-  role?: 'before' | 'after';
 }
 
 export interface DerivedSlot {
@@ -81,7 +78,7 @@ function searched(
   aspect: readonly [number, number],
   widths: readonly number[],
   sizes: string,
-  extra: Partial<Pick<SearchedSlot, 'budgetKB' | 'focal' | 'group' | 'role'>> = {},
+  extra: Partial<Pick<SearchedSlot, 'budgetKB' | 'focal'>> = {},
 ): SearchedSlot {
   return {
     kind: 'searched',
@@ -93,16 +90,7 @@ function searched(
     sizes,
     budgetKB: extra.budgetKB ?? DEFAULT_BUDGET_KB,
     focal: extra.focal ?? 'attention',
-    ...(extra.group ? { group: extra.group, role: extra.role } : {}),
   };
-}
-
-function pair(n: number, beforeQuery: string, afterQuery: string): SearchedSlot[] {
-  const group = `before-after-${n}`;
-  return [
-    searched(`${group}-before`, beforeQuery, 'portrait', [4, 5], [480, 960], SIZES.card, { group, role: 'before' }),
-    searched(`${group}-after`, afterQuery, 'portrait', [4, 5], [480, 960], SIZES.card, { group, role: 'after' }),
-  ];
 }
 
 export const slots: readonly Slot[] = [
@@ -133,14 +121,6 @@ export const slots: readonly Slot[] = [
   searched('gallery-4', 'straight razor shave', 'square', [1, 1], [480, 960], SIZES.gallery),
   searched('gallery-5', 'hair pomade styling', 'square', [1, 1], [480, 960], SIZES.gallery),
   searched('gallery-6', 'barber shop neon sign', 'square', [1, 1], [480, 960], SIZES.gallery),
-
-  // Before/after slider pairs. Pexels has no matched pairs, so these are
-  // placeholders until a client supplies real ones. image-picks.json can point
-  // a "before" slot at its "after" photo with an ungraded treatment so the
-  // slider demonstrates on a single pick per pair.
-  ...pair(1, 'man long messy hair portrait', 'fresh fade haircut man portrait'),
-  ...pair(2, 'man overgrown beard portrait', 'groomed beard man portrait'),
-  ...pair(3, 'man unkempt hair before haircut', 'sharp haircut man portrait'),
 
   // Shopfront, used as the contact section image and CTA band.
   searched('contact-exterior', 'barber shop exterior street', 'landscape', [21, 9], [640, 1024, 1600], SIZES.full),
@@ -202,13 +182,7 @@ for (const slot of slots) {
     for (let i = 1; i < slot.widths.length; i++) {
       if (slot.widths[i]! <= slot.widths[i - 1]!) throw new Error(`Slot "${slot.id}" widths must ascend`);
     }
-    if ((slot.group && !slot.role) || (slot.role && !slot.group)) throw new Error(`Slot "${slot.id}" needs both group and role`);
   } else if (!byId.has(slot.from) || byId.get(slot.from)!.kind !== 'searched') {
     throw new Error(`Derived slot "${slot.id}" points at unknown searched slot "${slot.from}"`);
   }
-}
-for (const slot of searchedSlots) {
-  if (!slot.group) continue;
-  const partner = searchedSlots.find((s) => s.group === slot.group && s.role !== slot.role);
-  if (!partner) throw new Error(`Slot "${slot.id}" has no ${slot.role === 'before' ? 'after' : 'before'} partner in group "${slot.group}"`);
 }

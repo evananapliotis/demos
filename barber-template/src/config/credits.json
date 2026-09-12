@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-12T20:04:46.413Z",
+  "generatedAt": "2026-09-12T20:13:29.678Z",
   "licence": {
     "name": "Pexels License",
     "url": "https://www.pexels.com/license/"
@@ -166,60 +166,6 @@
       "photoUrl": "https://www.pexels.com/photo/display-of-merchandise-in-corridor-18665831/",
       "slots": [
         "gallery-6"
-      ]
-    },
-    {
-      "id": 18361095,
-      "photographer": "Ali Ahmed",
-      "photographerUrl": "https://www.pexels.com/@ali-ahmed-83499412",
-      "photoUrl": "https://www.pexels.com/photo/photo-of-a-young-man-with-long-hair-and-mustache-standing-outside-in-sunlight-18361095/",
-      "slots": [
-        "before-after-1-before"
-      ]
-    },
-    {
-      "id": 27467943,
-      "photographer": "Clark Enzzo",
-      "photographerUrl": "https://www.pexels.com/@clark07",
-      "photoUrl": "https://www.pexels.com/photo/barber-shop-27467943/",
-      "slots": [
-        "before-after-1-after"
-      ]
-    },
-    {
-      "id": 10935029,
-      "photographer": "R. Fera",
-      "photographerUrl": "https://www.pexels.com/@rfera",
-      "photoUrl": "https://www.pexels.com/photo/grayscale-photo-of-a-bearded-man-10935029/",
-      "slots": [
-        "before-after-2-before"
-      ]
-    },
-    {
-      "id": 9410145,
-      "photographer": "Erik Mclean",
-      "photographerUrl": "https://www.pexels.com/@introspectivedsgn",
-      "photoUrl": "https://www.pexels.com/photo/close-up-photo-of-man-s-beard-9410145/",
-      "slots": [
-        "before-after-2-after"
-      ]
-    },
-    {
-      "id": 9992819,
-      "photographer": "Alex Urezkov",
-      "photographerUrl": "https://www.pexels.com/@instasky",
-      "photoUrl": "https://www.pexels.com/photo/bearded-man-in-a-barber-shop-9992819/",
-      "slots": [
-        "before-after-3-before"
-      ]
-    },
-    {
-      "id": 16098668,
-      "photographer": "TONI&GUY PONDICHERRY",
-      "photographerUrl": "https://www.pexels.com/@toni-guy-pondicherry-404397363",
-      "photoUrl": "https://www.pexels.com/photo/man-dressed-in-a-shirt-at-the-barbershop-16098668/",
-      "slots": [
-        "before-after-3-after"
       ]
     },
     {

@@ -13,7 +13,7 @@
  * Writes:
  *   public/img/<slot>-<width>.avif|webp     committed
  *   public/img/og.jpg                       committed
- *   src/config/credits.json                 committed, rendered at /credits
+ *   src/config/credits.json                 committed, photo provenance, not rendered
  */
 import { createHash } from 'node:crypto';
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';

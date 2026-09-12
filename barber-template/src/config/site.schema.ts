@@ -6,7 +6,7 @@
  * instead of rendering a placeholder.
  */
 import { z } from 'zod';
-import { derivedSlotIds, getSlot, searchedSlotIds, searchedSlots } from './images.ts';
+import { derivedSlotIds, searchedSlotIds, searchedSlots } from './images.ts';
 
 export const DAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'] as const;
 export type Day = (typeof DAYS)[number];
@@ -125,23 +125,6 @@ export const SiteSchema = z
       images: z.array(image).min(1),
     }),
 
-    beforeAfter: z.strictObject({
-      heading: text,
-      intro: text,
-      beforeLabel: text,
-      afterLabel: text,
-      dragHint: text,
-      pairs: z
-        .array(
-          z.strictObject({
-            before: image,
-            after: image,
-            caption: text,
-          }),
-        )
-        .min(1),
-    }),
-
     hours: z.strictObject({
       heading: text,
       note: text,
@@ -244,21 +227,6 @@ export const SiteSchema = z
       /** Permanent label. The site is a demo and must say so. */
       sampleLabel: text,
       copyrightHolder: text,
-      creditsLinkLabel: text,
-      pexelsLinkLabel: text,
-    }),
-
-    credits: z.strictObject({
-      title: text,
-      heading: text,
-      intro: text,
-      photographerLabel: text,
-      licenceLabel: text,
-      usedForLabel: text,
-      viewOnPexels: text,
-      /** Shown when no photo has been picked yet and placeholders are in use. */
-      empty: text,
-      backHome: text,
     }),
 
     notFound: z.strictObject({
@@ -283,21 +251,6 @@ export const SiteSchema = z
         ctx.addIssue({ code: 'custom', path: ['hours', 'schedule', d], message: `shop is open on ${d} but no team member works that day` });
       }
     }
-
-    // Before/after pairs must reference a matching before and after slot from the same group.
-    site.beforeAfter.pairs.forEach((p, i) => {
-      const before = getSlot(p.before.slot);
-      const after = getSlot(p.after.slot);
-      if (before.kind !== 'searched' || before.role !== 'before') {
-        ctx.addIssue({ code: 'custom', path: ['beforeAfter', 'pairs', i, 'before', 'slot'], message: `"${p.before.slot}" is not a before slot` });
-      }
-      if (after.kind !== 'searched' || after.role !== 'after') {
-        ctx.addIssue({ code: 'custom', path: ['beforeAfter', 'pairs', i, 'after', 'slot'], message: `"${p.after.slot}" is not an after slot` });
-      }
-      if (before.kind === 'searched' && after.kind === 'searched' && before.group !== after.group) {
-        ctx.addIssue({ code: 'custom', path: ['beforeAfter', 'pairs', i], message: `"${p.before.slot}" and "${p.after.slot}" are from different groups` });
-      }
-    });
 
     // Hero art direction: landscape slot up top, portrait slot for phones.
     const heroSlot = searchedSlots.find((s) => s.id === site.hero.image.slot);

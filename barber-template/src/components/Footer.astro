@@ -8,10 +8,6 @@ const year = new Date().getFullYear();
     <p class="sample-label">{site.footer.sampleLabel}</p>
     <div class="site-footer__row">
       <p class="muted">&copy; {year} {site.footer.copyrightHolder}</p>
-      <ul class="site-footer__links">
-        <li><a href="/credits">{site.footer.creditsLinkLabel}</a></li>
-        <li><a href="https://www.pexels.com" rel="noopener">{site.footer.pexelsLinkLabel}</a></li>
-      </ul>
     </div>
   </div>
 </footer>
@@ -41,9 +37,5 @@ const year = new Date().getFullYear();
     flex-wrap: wrap;
     justify-content: space-between;
     gap: var(--space-3);
-  }
-  .site-footer__links {
-    display: flex;
-    gap: var(--space-4);
   }
 </style>

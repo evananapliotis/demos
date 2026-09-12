@@ -3,7 +3,7 @@
  *
  *   "hero": 1234567                                   photo id
  *   "hero": { "id": 1234567, "focal": "top" }         photo id with a crop focus override
- *   "before-after-1-before": { "sameAs": "before-after-1-after", "treatment": "raw" }
+ *   "gallery-2": { "sameAs": "gallery-1", "treatment": "raw" }
  *                                                     reuse another slot's photo, optionally ungraded
  *   "hero": null                                      not picked yet
  */

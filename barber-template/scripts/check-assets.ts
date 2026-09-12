@@ -85,7 +85,7 @@ if (existsSync(dir)) {
 // 4. Manifest slots nothing references. Informational.
 for (const slot of slots) if (!referenced.has(slot.id)) warnings.push(`slot "${slot.id}" is in the manifest but not used by site.ts`);
 
-// 5. Credits, needed by the /credits page.
+// 5. Credits, the record of where every photo came from. Not rendered.
 if (!existsSync(resolve(args.credits))) problems.push(`${resolve(args.credits)} is missing. Run npm run images:grade`);
 
 for (const w of warnings) console.warn(`warning: ${w}`);
