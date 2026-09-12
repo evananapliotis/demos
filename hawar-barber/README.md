@@ -70,6 +70,8 @@ branch `hawar-barber-static`, root directory `hawar-barber`, build command `npm 
 `npx wrangler d1 migrations apply hawar-barber-bookings --remote && npx wrangler deploy`. The D1 database
 is created in the dashboard (Storage & Databases → D1) and its id goes in `wrangler.toml`; the five secrets
 are added under the Worker's Settings → Variables and Secrets. `.node-version` pins the builder to Node 22.
+Cloudflare builds the repository's default branch unless Settings → Build → Branch control says otherwise;
+the repository's default branch is `hawar-barber-static` for that reason.
 
 ## Deploy from a terminal (Cloudflare Workers)
 
