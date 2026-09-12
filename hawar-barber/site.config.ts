@@ -25,8 +25,8 @@ export const site = {
   /** Meta description (~150 chars). */
   description:
     'HAWAR BARBER, 321 North Rd, Darlington DL1 3BL. Barber shop rated 5.0 from 56 Google reviews. Open 7 days, wheelchair accessible. Call 07918 899141.',
-  /** Public URL. Cloudflare Pages gives <project>.pages.dev; change when a domain is attached. */
-  url: 'https://hawar-barber.pages.dev',
+  /** Public URL: the live domain on Cloudflare. Canonical, sitemap, link preview and the poster's QR code all use it. */
+  url: 'https://hawarbarbers.co.uk',
 
   phone: { display: '07918 899141', tel: '+447918899141' },
   address: { street: '321 North Rd', locality: 'Darlington', postcode: 'DL1 3BL', region: 'County Durham', country: 'GB' },

@@ -1,4 +1,4 @@
 User-agent: *
 Allow: /
 
-Sitemap: https://hawar-barber.pages.dev/sitemap.xml
+Sitemap: https://hawarbarbers.co.uk/sitemap.xml
