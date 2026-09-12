@@ -58,7 +58,7 @@ const letters = (word: string, offset: number) => [...word].map((ch, i) => ({ ch
     <div class="flex justify-end md:order-2 md:justify-center">
       <div class="relative" data-pole-wrap>
         <div class="pole-glow pointer-events-none absolute -inset-x-[60%] -inset-y-[18%] -z-10" aria-hidden="true"></div>
-        <div class="pole-slot h-[clamp(10rem,25svh,19rem)] [@media(max-height:700px)]:h-32 md:h-[min(68vh,34rem)]" data-pole-slot aria-hidden="true">
+        <div class="pole-slot h-[clamp(10rem,25svh,19rem)] [@media(max-height:700px)_and_(max-width:767px)]:h-32 md:h-[clamp(20rem,70vh,40rem)]" data-pole-slot aria-hidden="true">
           <PoleStatic />
         </div>
       </div>
