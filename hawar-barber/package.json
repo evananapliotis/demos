@@ -14,7 +14,7 @@
     "shots": "node scripts/shot.mjs",
     "scrollshots": "node scripts/scrollshots.mjs",
     "desktopshots": "node scripts/desktopshots.mjs",
-    "zip": "cd dist && rm -f ../hawar-barber.zip && zip -rq -X ../hawar-barber.zip . -x '.DS_Store' '*/.DS_Store'"
+    "zip": "cd dist && rm -f ../hawar-barber.zip && zip -rq -X ../hawar-barber.zip . -x '.DS_Store' '*/.DS_Store' 'images/*'"
   },
   "dependencies": {
     "@fontsource-variable/big-shoulders-display": "^5.3.0",
