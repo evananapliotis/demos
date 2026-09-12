@@ -2,10 +2,12 @@
 import { site, telHref } from '@/lib/site';
 import Section from './Section.astro';
 import Icons from './Icons.astro';
+interface Props { index?: string }
+const { index } = Astro.props;
 const hasServices = site.services.length > 0;
 const anyPrice = site.services.some((s) => s.price);
 ---
-<Section id="prices" eyebrow="Prices" title={hasServices ? 'What we <span class="text-amber">do.</span>' : 'Ask for <span class="text-amber">prices.</span>'}>
+<Section id="prices" index={index} eyebrow="Prices" title={hasServices ? 'What we <span class="text-amber">do.</span>' : 'Ask for <span class="text-amber">prices.</span>'}>
   {
     hasServices && (
       <ul class="border-t border-line" role="list">
@@ -21,10 +23,14 @@ const anyPrice = site.services.some((s) => s.price);
       </ul>
     )
   }
-  <div class={`flex flex-col gap-5 sm:flex-row sm:items-center sm:justify-between ${hasServices ? 'mt-8' : ''}`} data-reveal>
+  <div class={hasServices ? 'mt-8' : ''} data-reveal>
     <p class="max-w-md text-lg text-cream-2">{site.pricesNote}</p>
     {(!hasServices || !anyPrice) && (
-      <a href={telHref} class="btn btn-amber sm:shrink-0"><Icons name="phone" size={19} /> Call for prices</a>
+      <a href={telHref} class="group mt-6 inline-flex flex-col rounded-md py-2" aria-label={`Call ${site.phone.display} for prices`}>
+        <span class="eyebrow">Call for prices</span>
+        <span class="display mt-1 text-[clamp(2.6rem,12.5vw,7rem)] leading-[0.95] text-amber transition-colors group-hover:text-amber-2">{site.phone.display}</span>
+        <span class="mt-2 block h-[3px] w-16 bg-amber transition-[width] duration-300 group-hover:w-full" aria-hidden="true"></span>
+      </a>
     )}
   </div>
 </Section>

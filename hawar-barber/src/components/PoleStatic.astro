@@ -1,5 +1,5 @@
 ---
-/* The hero's first paint: a flat barber pole in the site palette. The 3D canvas fades in over it. */
+/* The hero's first paint: a flat barber pole in the site palette whose stripes crawl (SMIL, paused under reduced motion). The 3D canvas fades in over it. */
 ---
 <svg viewBox="0 0 100 240" aria-hidden="true" focusable="false">
   <defs>
@@ -10,6 +10,7 @@
       <stop offset="0" stop-color="#000" stop-opacity="0.55"/><stop offset="0.3" stop-color="#000" stop-opacity="0"/><stop offset="0.55" stop-color="#fff" stop-opacity="0.12"/><stop offset="0.8" stop-color="#000" stop-opacity="0.1"/><stop offset="1" stop-color="#000" stop-opacity="0.6"/>
     </linearGradient>
     <pattern id="stripes" width="64" height="64" patternUnits="userSpaceOnUse" patternTransform="rotate(-38)">
+      <animateTransform attributeName="patternTransform" type="translate" additive="sum" from="0 0" to="0 -64" dur="2.6s" repeatCount="indefinite"/>
       <rect width="64" height="64" fill="#f4eee4"/>
       <rect width="64" height="20" fill="#f2a93b"/>
       <rect y="32" width="64" height="12" fill="#0e0c0a"/>

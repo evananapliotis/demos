@@ -136,6 +136,18 @@
   background-image: repeating-linear-gradient(-45deg, var(--color-amber) 0 14px, var(--color-ink) 14px 28px);
 }
 
+/* Outlined display text (footer wordmark, ticker). */
+@utility text-outline {
+  color: transparent;
+  -webkit-text-stroke: 1.5px var(--color-cream);
+  paint-order: stroke fill;
+}
+
+/* Cross-document view transitions: a free fade between / and /book where supported. */
+@view-transition {
+  navigation: auto;
+}
+
 /* ---------- Motion (all off under prefers-reduced-motion) ---------- */
 @keyframes rise {
   from { opacity: 0; transform: translateY(16px); }
@@ -144,6 +156,151 @@
 @utility rise {
   animation: rise 450ms cubic-bezier(0.2, 0.7, 0.2, 1) both;
 }
+/* Hero letters rise out of a clipped line, one after another. Transform only, so paint (and LCP) is immediate. */
+@keyframes letter {
+  from { transform: translateY(1.05em) rotate(3deg); }
+  to { transform: none; }
+}
+.letters {
+  overflow: hidden;
+  padding-bottom: 0.04em;
+  margin-bottom: -0.04em;
+}
+.letter {
+  display: inline-block;
+  animation: letter 560ms cubic-bezier(0.2, 0.7, 0.1, 1) both;
+  animation-delay: calc(var(--i, 0) * 32ms);
+  transition: font-variation-settings 260ms ease;
+}
+@media (hover: hover) {
+  .letter:hover { font-variation-settings: 'wght' 900; }
+}
+
+/* Rating pill: one light sweep after load. */
+@keyframes shimmer {
+  from { transform: translateX(-120%) skewX(-18deg); }
+  to { transform: translateX(240%) skewX(-18deg); }
+}
+.shimmer::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  width: 40%;
+  background: linear-gradient(90deg, transparent, rgb(244 238 228 / 0.18), transparent);
+  animation: shimmer 1400ms 700ms ease-out both;
+  pointer-events: none;
+}
+
+/* Ticker */
+@keyframes ticker {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(-50%, 0, 0); }
+}
+.ticker { overflow: hidden; }
+.ticker-track {
+  display: flex;
+  width: max-content;
+  animation: ticker 46s linear infinite;
+}
+.ticker:hover .ticker-track { animation-play-state: paused; }
+
+/* Moving barber stripes (final CTA edge). Seamless 40px tile. */
+@keyframes stripes {
+  from { background-position: 0 0; }
+  to { background-position: 40px 0; }
+}
+@utility stripes-move {
+  background-image: linear-gradient(-45deg, var(--color-ink) 25%, var(--color-amber) 25% 50%, var(--color-ink) 50% 75%, var(--color-amber) 75%);
+  background-size: 40px 40px;
+  animation: stripes 1.6s linear infinite;
+}
+
+/* Amber breathing glow behind the pole. */
+@keyframes breathe {
+  0%, 100% { opacity: 0.55; transform: scale(1); }
+  50% { opacity: 0.9; transform: scale(1.08); }
+}
+.pole-glow {
+  background: radial-gradient(closest-side, rgb(242 169 59 / 0.3), transparent 72%);
+  animation: breathe 5s ease-in-out infinite;
+  transform-origin: 50% 45%;
+}
+
+/* Scroll cue line, pulsing pin, stars lighting up, count-up. */
+@keyframes slide-down {
+  from { transform: translateY(-100%); }
+  to { transform: translateY(100%); }
+}
+.scroll-line { animation: slide-down 1.6s cubic-bezier(0.4, 0, 0.2, 1) infinite; }
+@keyframes ring {
+  from { transform: scale(0.6); opacity: 0.9; }
+  to { transform: scale(2.6); opacity: 0; }
+}
+.pin-ring::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: 999px;
+  border: 2px solid var(--color-amber);
+  animation: ring 1.8s ease-out infinite;
+}
+@keyframes star-in {
+  from { transform: scale(0.4) rotate(-20deg); opacity: 0; }
+  to { transform: none; opacity: 1; }
+}
+.stars-in.is-in svg {
+  animation: star-in 420ms cubic-bezier(0.2, 0.7, 0.2, 1.4) both;
+}
+.stars-in.is-in svg:nth-child(2) { animation-delay: 90ms; }
+.stars-in.is-in svg:nth-child(3) { animation-delay: 180ms; }
+.stars-in.is-in svg:nth-child(4) { animation-delay: 270ms; }
+.stars-in.is-in svg:nth-child(5) { animation-delay: 360ms; }
+
+/* Section index watermark. */
+.watermark {
+  position: absolute;
+  right: -0.05em;
+  top: -0.12em;
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: clamp(7rem, 34vw, 20rem);
+  line-height: 1;
+  color: transparent;
+  -webkit-text-stroke: 1px rgb(244 238 228 / 0.09);
+  pointer-events: none;
+  user-select: none;
+}
+
+/* Button sheen on hover (desktop only). */
+@media (hover: hover) {
+  .btn-amber { position: relative; overflow: hidden; }
+  .btn-amber::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    width: 45%;
+    transform: translateX(-160%) skewX(-18deg);
+    background: linear-gradient(90deg, transparent, rgb(255 255 255 / 0.35), transparent);
+    transition: transform 600ms ease;
+    pointer-events: none;
+  }
+  .btn-amber:hover::after { transform: translateX(300%) skewX(-18deg); }
+}
+
+/* Scroll progress line. */
+.progress {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 3px;
+  width: 100%;
+  background: var(--color-amber);
+  transform-origin: left;
+  transform: scaleX(0);
+  z-index: 60;
+  pointer-events: none;
+}
+
 html.js [data-reveal] {
   opacity: 0;
   transform: translateY(18px);

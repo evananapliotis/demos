@@ -3,7 +3,8 @@ import { site, telHref, directionsUrl, listingUrl, fullAddress, bookHref, bookEx
 import Icons from './Icons.astro';
 const year = new Date().getFullYear();
 ---
-<footer class="border-t border-line px-5 pb-8 pt-12 sm:px-8 lg:px-12">
+<footer class="overflow-hidden border-t border-line px-5 pb-8 pt-12 sm:px-8 lg:px-12">
+  <p class="text-outline mx-auto mb-10 max-w-5xl whitespace-nowrap text-[clamp(2.2rem,10.6vw,9.5rem)] leading-none opacity-40" aria-hidden="true" data-reveal>{site.name}</p>
   <div class="mx-auto flex max-w-5xl flex-col gap-8 md:flex-row md:items-end md:justify-between">
     <div>
       <p class="display text-3xl text-cream">{site.name}</p>

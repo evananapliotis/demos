@@ -1,11 +1,13 @@
 ---
+interface Props { index?: string }
+const { index } = Astro.props;
 import { Image } from 'astro:assets';
 import { galleryImages } from '@/lib/images';
 import Section from './Section.astro';
 ---
 {
   galleryImages.length > 0 && (
-    <Section id="gallery" eyebrow="The work" title="Fresh from the <span class='text-amber'>chair.</span>" class="bg-ink-2">
+    <Section id="gallery" index={index} eyebrow="The work" title="Fresh from the <span class='text-amber'>chair.</span>" class="bg-ink-2">
       <ul class="gallery-track" role="list" aria-label="Photos from the shop">
         {galleryImages.map((g) => (
           <li class="overflow-hidden rounded-md bg-ink-3">

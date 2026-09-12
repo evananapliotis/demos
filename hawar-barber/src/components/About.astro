@@ -1,11 +1,13 @@
 ---
+interface Props { index?: string }
+const { index } = Astro.props;
 import { Image } from 'astro:assets';
 import { site, telHref } from '@/lib/site';
 import { shopfrontImage, altFor } from '@/lib/images';
 import Section from './Section.astro';
 import Icons from './Icons.astro';
 ---
-<Section id="about" eyebrow="The shop" title="North Road, <span class='text-amber'>Darlington.</span>">
+<Section id="about" index={index} eyebrow="The shop" title="North Road, <span class='text-amber'>Darlington.</span>">
   <div class={`grid gap-8 ${shopfrontImage ? 'md:grid-cols-2 md:gap-14' : 'md:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]'}`}>
     <div class="space-y-5 text-lg leading-relaxed text-cream/90 md:text-xl" data-reveal>
       {site.about.map((p) => <p>{p}</p>)}

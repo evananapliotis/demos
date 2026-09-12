@@ -1154,7 +1154,7 @@ function getActionQueryString(name) {
 }
 function serializeActionResult(res) {
   if (res.error) {
-    if (Object.assign(__vite_import_meta_env__, { _: process.env._ })?.DEV) {
+    if (Object.assign(__vite_import_meta_env__, { CI: true, _: process.env._ })?.DEV) {
       actionResultErrorStack.set(res.error.stack);
     }
     let body2;
@@ -1221,7 +1221,7 @@ function deserializeActionResult(res) {
         })
       };
     }
-    if (Object.assign(__vite_import_meta_env__, { _: process.env._ })?.PROD) {
+    if (Object.assign(__vite_import_meta_env__, { CI: true, _: process.env._ })?.PROD) {
       return { error: ActionError.fromJson(json), data: void 0 };
     } else {
       const error = ActionError.fromJson(json);

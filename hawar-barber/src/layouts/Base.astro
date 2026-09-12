@@ -61,8 +61,20 @@ const ld = jsonLd(pageUrl, ogImage);
       class="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[100] focus:rounded-md focus:bg-amber focus:px-4 focus:py-3 focus:font-bold focus:text-ink"
       >Skip to content</a
     >
+    <div class="progress" data-progress aria-hidden="true"></div>
     <slot />
     <script>
+      const bar = document.querySelector<HTMLElement>('[data-progress]');
+      if (bar && !matchMedia('(prefers-reduced-motion: reduce)').matches) {
+        let raf = 0;
+        const paint = () => {
+          raf = 0;
+          const max = document.documentElement.scrollHeight - innerHeight;
+          bar.style.transform = `scaleX(${max > 0 ? Math.min(1, scrollY / max) : 0})`;
+        };
+        addEventListener('scroll', () => { if (!raf) raf = requestAnimationFrame(paint); }, { passive: true });
+        paint();
+      }
       const els = document.querySelectorAll('[data-reveal]');
       if ('IntersectionObserver' in window) {
         const io = new IntersectionObserver(
