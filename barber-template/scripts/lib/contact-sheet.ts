@@ -4,10 +4,10 @@
  * image-picks.json for you to copy. Thumbnails load from Pexels' CDN so the
  * file works anywhere; the local JPEGs are only used by the grade step.
  */
-import { existsSync, readFileSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { searchedSlots } from '../../src/config/images.ts';
 import { readSlotCredits } from './candidates.ts';
-import { CONTACT_SHEET, PICKS_FILE } from './paths.ts';
+import { CANDIDATES_DIR, CONTACT_SHEET, PICKS_FILE } from './paths.ts';
 
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
@@ -143,5 +143,6 @@ export function writeContactSheet(): void {
   load(); syncInputs(); render();
 </script>
 `;
+  mkdirSync(CANDIDATES_DIR, { recursive: true });
   writeFileSync(CONTACT_SHEET, html);
 }
