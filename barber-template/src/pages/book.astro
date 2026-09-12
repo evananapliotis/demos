@@ -1,0 +1,622 @@
+---
+/**
+ * Front-end only booking flow. Availability is computed in the browser from
+ * the config: shop hours, each barber's days, closed dates, notice period.
+ * Nothing is sent anywhere. The confirmation says so.
+ */
+import Base from '../layouts/Base.astro';
+import { site } from '../config/site.ts';
+import { DAYS } from '../config/site.schema.ts';
+
+const { booking, ui } = site;
+const gbp = new Intl.NumberFormat(site.seo.locale.replace('_', '-'), { style: 'currency', currency: 'GBP', minimumFractionDigits: 0 });
+const steps = ['service', 'barber', 'date', 'time', 'details', 'confirmation'] as const;
+
+const data = {
+  locale: site.seo.locale.replace('_', '-'),
+  days: DAYS,
+  schedule: site.hours.schedule,
+  services: site.services.items.map((s) => ({ id: s.id, name: s.name, priceGBP: s.priceGBP, durationMinutes: s.durationMinutes })),
+  barbers: site.team.members.map((m) => ({ id: m.id, name: m.name, role: m.role, days: m.days })),
+  horizonDays: booking.horizonDays,
+  minNoticeHours: booking.minNoticeHours,
+  slotIntervalMinutes: booking.slotIntervalMinutes,
+  closedDates: booking.closedDates,
+  busyFraction: booking.demo.busyFraction,
+  minutes: ui.minutes,
+  ui: booking.ui,
+};
+---
+
+<Base title={booking.heading} description={booking.intro}>
+  <section class="section book">
+    <div class="wrap">
+      <div class="section-head">
+        <h1>{booking.heading}</h1>
+        <p class="lede">{booking.intro}</p>
+        <p class="notice" role="note">{booking.demoNotice}</p>
+      </div>
+
+      <ol class="steps" aria-label={booking.ui.progress}>
+        {
+          steps.map((s, i) => (
+            <li data-step-marker={s} aria-current={i === 0 ? 'step' : undefined}>
+              <span class="steps__n">{i + 1}</span>
+              <span class="steps__label">{booking.steps[s]}</span>
+            </li>
+          ))
+        }
+      </ol>
+
+      <div class="book__layout" data-book>
+        <div class="book__panels">
+          <section class="panel" data-panel="service">
+            <h2>{booking.ui.chooseService}</h2>
+            <div class="choices" data-choices="service" role="group" aria-label={booking.steps.service}>
+              {
+                site.services.items.map((s) => (
+                  <button type="button" class="choice" data-value={s.id} aria-pressed="false">
+                    <span class="choice__title">{s.name}</span>
+                    <span class="choice__meta">
+                      {s.durationMinutes} {ui.minutes}
+                    </span>
+                    <span class="choice__price">{gbp.format(s.priceGBP)}</span>
+                  </button>
+                ))
+              }
+            </div>
+          </section>
+          <section class="panel" data-panel="barber" hidden>
+            <h2>{booking.ui.chooseBarber}</h2>
+            <div class="choices" data-choices="barber" role="group" aria-label={booking.steps.barber}></div>
+          </section>
+          <section class="panel" data-panel="date" hidden>
+            <h2>{booking.ui.chooseDate}</h2>
+            <div class="choices choices--dates" data-choices="date" role="group" aria-label={booking.steps.date}></div>
+          </section>
+          <section class="panel" data-panel="time" hidden>
+            <h2>{booking.ui.chooseTime}</h2>
+            <div class="choices choices--times" data-choices="time" role="group" aria-label={booking.steps.time}></div>
+            <p class="muted" data-no-slots hidden>{booking.ui.noSlots}</p>
+          </section>
+          <section class="panel" data-panel="details" hidden>
+            <h2>{booking.ui.yourDetails}</h2>
+            <form class="form" data-form novalidate>
+              <div class="field">
+                <label for="bk-name">{booking.ui.name}</label>
+                <input id="bk-name" name="name" type="text" autocomplete="name" required />
+                <p class="field__error" data-error-for="name" hidden></p>
+              </div>
+              <div class="field">
+                <label for="bk-phone">{booking.ui.phone}</label>
+                <input id="bk-phone" name="phone" type="tel" autocomplete="tel" inputmode="tel" required />
+                <p class="field__error" data-error-for="phone" hidden></p>
+              </div>
+              <div class="field">
+                <label for="bk-email">{booking.ui.email}</label>
+                <input id="bk-email" name="email" type="email" autocomplete="email" inputmode="email" required />
+                <p class="field__error" data-error-for="email" hidden></p>
+              </div>
+              <div class="field">
+                <label for="bk-notes">{booking.ui.notes} <span class="muted">({booking.ui.optional})</span></label>
+                <textarea id="bk-notes" name="notes" rows="3"></textarea>
+              </div>
+            </form>
+          </section>
+          <section class="panel panel--confirmed" data-panel="confirmation" hidden aria-live="polite">
+            <h2>{booking.ui.confirmedHeading}</h2>
+            <p class="lede" data-confirmed-body></p>
+            <p class="notice" role="note">{booking.demoNotice}</p>
+            <p><span class="muted">{booking.ui.reference}</span> <strong data-ref></strong></p>
+          </section>
+
+          <div class="book__actions">
+            <button type="button" class="btn btn--ghost" data-back disabled>{booking.ui.back}</button>
+            <button type="button" class="btn" data-next disabled>{booking.ui.next}</button>
+          </div>
+        </div>
+
+        <aside class="summary" data-summary hidden>
+          <h3>{booking.ui.summary}</h3>
+          <dl>
+            <div><dt>{booking.steps.service}</dt><dd data-sum="service"></dd></div>
+            <div><dt>{booking.steps.barber}</dt><dd data-sum="barber"></dd></div>
+            <div><dt>{booking.steps.date}</dt><dd data-sum="date"></dd></div>
+            <div><dt>{booking.steps.time}</dt><dd data-sum="time"></dd></div>
+          </dl>
+        </aside>
+      </div>
+    </div>
+  </section>
+
+  <script is:inline type="application/json" id="book-data" set:html={JSON.stringify(data).replace(/</g, '\\u003c')} />
+</Base>
+
+<style>
+  .notice {
+    display: inline-block;
+    padding: var(--space-2) var(--space-3);
+    border: 1px dashed var(--accent);
+    border-radius: var(--radius);
+    color: var(--accent);
+    font-size: var(--step--1);
+    letter-spacing: 0.04em;
+  }
+  .steps {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2) var(--space-4);
+    margin-bottom: var(--space-5);
+    padding: 0;
+    counter-reset: step;
+    font-size: var(--step--1);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-3);
+  }
+  .steps li {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+  .steps__n {
+    display: grid;
+    place-items: center;
+    width: 1.6rem;
+    height: 1.6rem;
+    border: 1px solid currentColor;
+    border-radius: 50%;
+    font-family: var(--font-display);
+    font-size: 1rem;
+  }
+  .steps li[aria-current='step'] {
+    color: var(--accent);
+  }
+  .steps li.is-done {
+    color: var(--ink-2);
+  }
+  .steps li.is-done .steps__n {
+    background: var(--ink-2);
+    color: var(--bg);
+  }
+  .book__layout {
+    display: grid;
+    gap: var(--space-5);
+    align-items: start;
+  }
+  .panel {
+    display: grid;
+    gap: var(--space-4);
+  }
+  .panel h2 {
+    font-size: var(--step-2);
+  }
+  .choices {
+    display: grid;
+    gap: var(--space-2);
+  }
+  .choices--dates,
+  .choices--times {
+    grid-template-columns: repeat(auto-fill, minmax(7.5rem, 1fr));
+  }
+  :global(.choice) {
+    display: grid;
+    gap: 0.15rem;
+    width: 100%;
+    padding: var(--space-3);
+    text-align: left;
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    color: var(--ink);
+    cursor: pointer;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  :global(.choice:hover) {
+    border-color: var(--ink-3);
+  }
+  :global(.choice[aria-pressed='true']) {
+    border-color: var(--accent);
+    background: var(--bg-3);
+    box-shadow: inset 0 0 0 1px var(--accent);
+  }
+  :global(.choice:disabled) {
+    opacity: 0.4;
+    cursor: not-allowed;
+    text-decoration: line-through;
+  }
+  :global(.choice__title) {
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  :global(.choice__meta) {
+    color: var(--ink-3);
+    font-size: var(--step--1);
+  }
+  :global(.choice__price) {
+    color: var(--accent);
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+  }
+  :global(.choice--compact) {
+    text-align: center;
+    padding: var(--space-2);
+  }
+  .form {
+    display: grid;
+    gap: var(--space-3);
+    max-width: 30rem;
+  }
+  .field {
+    display: grid;
+    gap: var(--space-1);
+  }
+  .field label {
+    font-size: var(--step--1);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-2);
+  }
+  .field input,
+  .field textarea {
+    width: 100%;
+    padding: 0.75rem;
+    font: inherit;
+    color: var(--ink);
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+  }
+  .field input:focus,
+  .field textarea:focus {
+    outline: none;
+    border-color: var(--accent);
+  }
+  .field.is-invalid input {
+    border-color: var(--danger);
+  }
+  .field__error {
+    color: var(--danger);
+    font-size: var(--step--1);
+  }
+  .book__actions {
+    display: flex;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+  }
+  .summary {
+    padding: var(--space-4);
+    background: var(--bg-2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+  }
+  .summary dl {
+    display: grid;
+    gap: var(--space-2);
+    margin: var(--space-3) 0 0;
+  }
+  .summary dl > div {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-3);
+    border-bottom: 1px solid var(--line);
+    padding-bottom: var(--space-2);
+  }
+  .summary dt {
+    color: var(--ink-3);
+    font-size: var(--step--1);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .summary dd {
+    margin: 0;
+    text-align: right;
+  }
+  .summary dd:empty::before {
+    content: '\2014';
+    color: var(--ink-3);
+  }
+  .panel--confirmed {
+    padding: var(--space-5);
+    border: 1px solid var(--accent);
+    border-radius: var(--radius);
+  }
+  @media (min-width: 900px) {
+    .book__layout {
+      grid-template-columns: minmax(0, 1fr) 20rem;
+    }
+    .summary {
+      position: sticky;
+      top: 5rem;
+    }
+  }
+</style>
+
+<script>
+  type Day = 'monday' | 'tuesday' | 'wednesday' | 'thursday' | 'friday' | 'saturday' | 'sunday';
+  type Hours = 'closed' | { open: string; close: string };
+  interface Data {
+    locale: string;
+    days: Day[];
+    schedule: Record<Day, Hours>;
+    services: { id: string; name: string; priceGBP: number; durationMinutes: number }[];
+    barbers: { id: string; name: string; role: string; days: Day[] }[];
+    horizonDays: number;
+    minNoticeHours: number;
+    slotIntervalMinutes: number;
+    closedDates: string[];
+    busyFraction: number;
+    minutes: string;
+    ui: Record<string, string>;
+  }
+
+  const data: Data = JSON.parse(document.getElementById('book-data')!.textContent!);
+  const root = document.querySelector<HTMLElement>('[data-book]')!;
+  const STEPS = ['service', 'barber', 'date', 'time', 'details', 'confirmation'] as const;
+  type Step = (typeof STEPS)[number];
+
+  const state = {
+    step: 0,
+    service: null as Data['services'][number] | null,
+    barber: null as Data['barbers'][number] | null,
+    date: null as string | null,
+    time: null as string | null,
+    name: '',
+  };
+
+  const gbp = new Intl.NumberFormat(data.locale, { style: 'currency', currency: 'GBP', minimumFractionDigits: 0 });
+  const dateFmt = new Intl.DateTimeFormat(data.locale, { weekday: 'short', day: 'numeric', month: 'short' });
+  const longDateFmt = new Intl.DateTimeFormat(data.locale, { weekday: 'long', day: 'numeric', month: 'long' });
+
+  const q = (sel: string) => root.querySelector<HTMLElement>(sel)!;
+  const panels = STEPS.map((s) => q(`[data-panel="${s}"]`));
+  const markers = STEPS.map((s) => document.querySelector<HTMLElement>(`[data-step-marker="${s}"]`)!);
+  const backBtn = q('[data-back]') as HTMLButtonElement;
+  const nextBtn = q('[data-next]') as HTMLButtonElement;
+  const summary = q('[data-summary]');
+  const form = q('[data-form]') as HTMLFormElement;
+
+  // Weekday key for a local date. JS getDay() starts on Sunday.
+  const dayKey = (d: Date): Day => data.days[(d.getDay() + 6) % 7]!;
+  const iso = (d: Date) => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`;
+  const fromIso = (s: string) => {
+    const [y, m, d] = s.split('-').map(Number);
+    return new Date(y!, m! - 1, d!);
+  };
+  const toMinutes = (hhmm: string) => {
+    const [h, m] = hhmm.split(':').map(Number);
+    return h! * 60 + m!;
+  };
+  const toHhmm = (min: number) => `${String(Math.floor(min / 60)).padStart(2, '0')}:${String(min % 60).padStart(2, '0')}`;
+
+  // Deterministic "already booked" slots so the calendar looks lived-in.
+  const hash = (s: string) => {
+    let h = 5381;
+    for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0;
+    return Math.abs(h) % 1000;
+  };
+  const isBusy = (barberId: string, date: string, time: string) => hash(`${barberId}|${date}|${time}`) < data.busyFraction * 1000;
+
+  function dayStatus(d: Date): 'open' | 'closed' | 'off' | 'full' {
+    const key = dayKey(d);
+    if (data.schedule[key] === 'closed' || data.closedDates.includes(iso(d))) return 'closed';
+    if (state.barber && !state.barber.days.includes(key)) return 'off';
+    if (!slotsFor(iso(d)).some((s) => !s.busy)) return 'full';
+    return 'open';
+  }
+
+  function slotsFor(date: string): { time: string; busy: boolean }[] {
+    const d = fromIso(date);
+    const hours = data.schedule[dayKey(d)];
+    if (hours === 'closed' || !state.service || !state.barber) return [];
+    const open = toMinutes(hours.open);
+    const close = toMinutes(hours.close);
+    const now = new Date();
+    const earliest = iso(now) === date ? now.getHours() * 60 + now.getMinutes() + data.minNoticeHours * 60 : -Infinity;
+    const out: { time: string; busy: boolean }[] = [];
+    for (let t = open; t + state.service.durationMinutes <= close; t += data.slotIntervalMinutes) {
+      if (t < earliest) continue;
+      const time = toHhmm(t);
+      out.push({ time, busy: isBusy(state.barber.id, date, time) });
+    }
+    return out;
+  }
+
+  function choice(html: string, opts: { value: string; pressed: boolean; disabled?: boolean; compact?: boolean; label?: string }): HTMLButtonElement {
+    const b = document.createElement('button');
+    b.type = 'button';
+    b.className = `choice${opts.compact ? ' choice--compact' : ''}`;
+    b.dataset.value = opts.value;
+    b.setAttribute('aria-pressed', String(opts.pressed));
+    if (opts.disabled) b.disabled = true;
+    if (opts.label) b.setAttribute('aria-label', opts.label);
+    b.innerHTML = html;
+    return b;
+  }
+  const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;');
+
+  function renderChoices(step: Step): void {
+    const box = q(`[data-choices="${step}"]`);
+    if (step === 'service') {
+      // Rendered on the server so the first paint is complete; only sync the pressed state here.
+      for (const b of box.querySelectorAll<HTMLButtonElement>('.choice')) b.setAttribute('aria-pressed', String(b.dataset.value === state.service?.id));
+      return;
+    }
+    box.replaceChildren();
+    if (step === 'barber') {
+      for (const b of data.barbers) {
+        box.append(choice(`<span class="choice__title">${esc(b.name)}</span><span class="choice__meta">${esc(b.role)}</span>`, { value: b.id, pressed: state.barber?.id === b.id }));
+      }
+    } else if (step === 'date') {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      for (let i = 0; i < data.horizonDays; i++) {
+        const d = new Date(today);
+        d.setDate(today.getDate() + i);
+        const status = dayStatus(d);
+        const meta = status === 'closed' ? data.ui.closedDay : status === 'off' ? data.ui.dayOff : status === 'full' ? data.ui.full : '';
+        box.append(
+          choice(`<span class="choice__title">${esc(dateFmt.format(d))}</span>${meta ? `<span class="choice__meta">${esc(meta!)}</span>` : ''}`, {
+            value: iso(d),
+            pressed: state.date === iso(d),
+            disabled: status !== 'open',
+            compact: true,
+          }),
+        );
+      }
+    } else if (step === 'time') {
+      const slots = state.date ? slotsFor(state.date) : [];
+      q('[data-no-slots]').hidden = slots.some((s) => !s.busy);
+      for (const s of slots) {
+        box.append(
+          choice(`<span class="choice__title">${s.time}</span>`, {
+            value: s.time,
+            pressed: state.time === s.time,
+            disabled: s.busy,
+            compact: true,
+            label: s.busy ? `${s.time} ${data.ui.taken}` : undefined,
+          }),
+        );
+      }
+    }
+  }
+
+  root.addEventListener('click', (e) => {
+    const btn = (e.target as Element).closest<HTMLButtonElement>('.choice');
+    if (!btn || btn.disabled) return;
+    const step = STEPS[state.step];
+    const value = btn.dataset.value!;
+    if (step === 'service') state.service = data.services.find((s) => s.id === value) ?? null;
+    if (step === 'barber') {
+      state.barber = data.barbers.find((b) => b.id === value) ?? null;
+      state.date = null;
+      state.time = null;
+    }
+    if (step === 'date') {
+      state.date = value;
+      state.time = null;
+    }
+    if (step === 'time') state.time = value;
+    for (const sib of btn.parentElement!.children) sib.setAttribute('aria-pressed', String(sib === btn));
+    render();
+  });
+
+  function canAdvance(): boolean {
+    switch (STEPS[state.step]) {
+      case 'service':
+        return !!state.service;
+      case 'barber':
+        return !!state.barber;
+      case 'date':
+        return !!state.date;
+      case 'time':
+        return !!state.time;
+      default:
+        return true;
+    }
+  }
+
+  function validate(): boolean {
+    let ok = true;
+    const fields: Record<string, (v: string) => string | null> = {
+      name: (v) => (v.trim() ? null : data.ui.required!),
+      phone: (v) => (/^(\+44\s?|0)\d(\s?\d){8,10}$/.test(v.trim()) ? null : v.trim() ? data.ui.invalidPhone! : data.ui.required!),
+      email: (v) => (/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim()) ? null : v.trim() ? data.ui.invalidEmail! : data.ui.required!),
+    };
+    for (const [name, check] of Object.entries(fields)) {
+      const input = form.elements.namedItem(name) as HTMLInputElement;
+      const error = check(input.value);
+      const field = input.closest('.field')!;
+      const msg = form.querySelector<HTMLElement>(`[data-error-for="${name}"]`)!;
+      field.classList.toggle('is-invalid', !!error);
+      msg.hidden = !error;
+      msg.textContent = error ?? '';
+      input.setAttribute('aria-invalid', String(!!error));
+      if (error && ok) input.focus();
+      if (error) ok = false;
+    }
+    return ok;
+  }
+
+  function confirm(): void {
+    state.name = (form.elements.namedItem('name') as HTMLInputElement).value.trim();
+    const body = data.ui.confirmedBody!
+      .replace('{name}', state.name)
+      .replace('{service}', state.service!.name)
+      .replace('{barber}', state.barber!.name)
+      .replace('{date}', longDateFmt.format(fromIso(state.date!)))
+      .replace('{time}', state.time!);
+    q('[data-confirmed-body]').textContent = body;
+    q('[data-ref]').textContent = `HC-${Math.random().toString(36).slice(2, 8).toUpperCase()}`;
+    state.step = STEPS.indexOf('confirmation');
+    render();
+  }
+
+  function reset(): void {
+    state.step = 0;
+    state.service = null;
+    state.barber = null;
+    state.date = null;
+    state.time = null;
+    form.reset();
+    render();
+  }
+
+  nextBtn.addEventListener('click', () => {
+    const step = STEPS[state.step];
+    if (step === 'details') {
+      if (validate()) confirm();
+      return;
+    }
+    if (!canAdvance()) return;
+    state.step++;
+    render();
+  });
+  backBtn.addEventListener('click', () => {
+    if (STEPS[state.step] === 'confirmation') return reset();
+    if (state.step > 0) state.step--;
+    render();
+  });
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    if (validate()) confirm();
+  });
+
+  function render(): void {
+    const step = STEPS[state.step]!;
+    panels.forEach((p, i) => (p.hidden = i !== state.step));
+    markers.forEach((m, i) => {
+      m.toggleAttribute('aria-current', i === state.step);
+      if (i === state.step) m.setAttribute('aria-current', 'step');
+      m.classList.toggle('is-done', i < state.step);
+    });
+    if (step === 'service' || step === 'barber' || step === 'date' || step === 'time') renderChoices(step);
+
+    const confirmed = step === 'confirmation';
+    nextBtn.hidden = confirmed;
+    nextBtn.disabled = !canAdvance();
+    nextBtn.textContent = step === 'details' ? data.ui.confirm! : data.ui.next!;
+    backBtn.disabled = state.step === 0;
+    backBtn.textContent = confirmed ? data.ui.startOver! : data.ui.back!;
+
+    summary.hidden = !state.service;
+    q('[data-sum="service"]').textContent = state.service ? `${state.service.name} · ${gbp.format(state.service.priceGBP)}` : '';
+    q('[data-sum="barber"]').textContent = state.barber?.name ?? '';
+    q('[data-sum="date"]').textContent = state.date ? longDateFmt.format(fromIso(state.date)) : '';
+    q('[data-sum="time"]').textContent = state.time ?? '';
+
+    if (step === 'details' && !confirmed) (form.elements.namedItem('name') as HTMLInputElement).focus({ preventScroll: true });
+    panels[state.step]!.scrollIntoView({ block: 'nearest' });
+  }
+
+  // Deep link from a service card: /book?service=<id>
+  const preselect = new URLSearchParams(location.search).get('service');
+  const preselected = preselect ? data.services.find((s) => s.id === preselect) : null;
+  if (preselected) {
+    state.service = preselected;
+    state.step = 1;
+  }
+  render();
+</script>

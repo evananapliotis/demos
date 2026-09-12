@@ -1,0 +1,44 @@
+---
+import { site } from '../config/site.ts';
+import { DAYS } from '../config/site.schema.ts';
+import Pic from './Pic.astro';
+const { team, ui } = site;
+const daysLabel = (days: readonly string[]) => DAYS.filter((d) => days.includes(d)).map((d) => ui.dayNamesShort[d]).join(' · ');
+---
+
+<section class="section" id="team" aria-labelledby="team-heading">
+  <div class="wrap">
+    <div class="section-head">
+      <h2 id="team-heading">{team.heading}</h2>
+      <p class="lede">{team.intro}</p>
+    </div>
+    <ul class="grid grid--3">
+      {
+        team.members.map((m) => (
+          <li class="card member">
+            <Pic slot={m.image.slot} alt={m.image.alt} />
+            <div class="card__body">
+              <h3>{m.name}</h3>
+              <p class="eyebrow">{m.role}</p>
+              <p>{m.bio}</p>
+              <p class="muted member__days">{daysLabel(m.days)}</p>
+              {m.instagram && (
+                <a href={m.instagram} rel="noopener">
+                  Instagram
+                </a>
+              )}
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .member__days {
+    font-size: var(--step--1);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+</style>

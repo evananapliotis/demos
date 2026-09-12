@@ -1,0 +1,59 @@
+---
+import { site } from '../config/site.ts';
+import Pic from './Pic.astro';
+const { services, ui } = site;
+const gbp = new Intl.NumberFormat(site.seo.locale.replace('_', '-'), { style: 'currency', currency: 'GBP', minimumFractionDigits: 0 });
+---
+
+<section class="section" id="services" aria-labelledby="services-heading">
+  <div class="wrap">
+    <div class="section-head">
+      <h2 id="services-heading">{services.heading}</h2>
+      <p class="lede">{services.intro}</p>
+    </div>
+    <ul class="grid grid--3">
+      {
+        services.items.map((s) => (
+          <li class="card service">
+            <Pic slot={s.image.slot} alt={s.image.alt} />
+            <div class="card__body">
+              <div class="service__row">
+                <h3>{s.name}</h3>
+                <span class="price">{gbp.format(s.priceGBP)}</span>
+              </div>
+              <p class="muted service__meta">
+                {s.durationMinutes} {ui.minutes}
+              </p>
+              <p>{s.description}</p>
+              <a class="service__link" href={`/book?service=${s.id}`}>
+                {ui.bookThis} <span aria-hidden="true">&rarr;</span>
+              </a>
+            </div>
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .service__row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: var(--space-3);
+  }
+  .service__meta {
+    font-size: var(--step--1);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .service__link {
+    margin-top: var(--space-2);
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+</style>

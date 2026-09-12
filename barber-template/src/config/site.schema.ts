@@ -59,12 +59,15 @@ export const SiteSchema = z
     /** Micro-copy used by shared components. */
     ui: z.strictObject({
       skipToContent: text,
+      navLabel: text,
       menuOpen: text,
       menuClose: text,
-      fromPrice: text,
       minutes: text,
       bookThis: text,
+      dayNames: z.strictObject(Object.fromEntries(DAYS.map((d) => [d, text])) as Record<Day, typeof text>),
+      dayNamesShort: z.strictObject(Object.fromEntries(DAYS.map((d) => [d, text])) as Record<Day, typeof text>),
       stickyBar: z.strictObject({
+        label: text,
         call: text,
         book: text,
       }),
@@ -170,6 +173,7 @@ export const SiteSchema = z
       }),
       mapsUrl: url,
       directionsLabel: text,
+      ctaLabel: text,
       image,
       social: z.array(
         z.strictObject({
@@ -203,6 +207,7 @@ export const SiteSchema = z
         confirmation: text,
       }),
       ui: z.strictObject({
+        progress: text,
         next: text,
         back: text,
         confirm: text,
@@ -222,6 +227,9 @@ export const SiteSchema = z
         invalidPhone: text,
         noSlots: text,
         closedDay: text,
+        taken: text,
+        dayOff: text,
+        full: text,
         summary: text,
         with: text,
         at: text,
@@ -248,6 +256,8 @@ export const SiteSchema = z
       licenceLabel: text,
       usedForLabel: text,
       viewOnPexels: text,
+      /** Shown when no photo has been picked yet and placeholders are in use. */
+      empty: text,
       backHome: text,
     }),
 

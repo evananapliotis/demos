@@ -1,0 +1,81 @@
+---
+import Base from '../layouts/Base.astro';
+import { site } from '../config/site.ts';
+import creditsJson from '../config/credits.json';
+
+interface Photo {
+  id: number;
+  photographer: string;
+  photographerUrl: string;
+  photoUrl: string;
+  slots: string[];
+}
+const credits = creditsJson as { generatedAt: string; licence: { name: string; url: string }; photos: Photo[] };
+const { credits: copy } = site;
+---
+
+<Base title={copy.title} description={copy.intro}>
+  <section class="section">
+    <div class="wrap credits">
+      <div class="section-head">
+        <h1>{copy.heading}</h1>
+        <p class="lede">{copy.intro}</p>
+      </div>
+      {
+        credits.photos.length === 0 ? (
+          <p class="muted">{copy.empty}</p>
+        ) : (
+          <ul class="credits__list">
+            {credits.photos.map((p) => (
+              <li class="credits__item">
+                <div>
+                  <span class="muted">{copy.photographerLabel}</span>{' '}
+                  <a href={p.photographerUrl} rel="noopener">
+                    {p.photographer}
+                  </a>
+                </div>
+                <div>
+                  <span class="muted">{copy.usedForLabel}</span> <code>{p.slots.join(', ')}</code>
+                </div>
+                <div>
+                  <span class="muted">{copy.licenceLabel}</span>{' '}
+                  <a href={credits.licence.url} rel="noopener">
+                    {credits.licence.name}
+                  </a>
+                  {' · '}
+                  <a href={p.photoUrl} rel="noopener">
+                    {copy.viewOnPexels}
+                  </a>
+                </div>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+      <p>
+        <a href="/">&larr; {copy.backHome}</a>
+      </p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .credits {
+    display: grid;
+    gap: var(--space-5);
+  }
+  .credits__list {
+    display: grid;
+    gap: var(--space-3);
+  }
+  .credits__item {
+    display: grid;
+    gap: var(--space-1);
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid var(--line);
+  }
+  code {
+    color: var(--ink-2);
+    font-size: var(--step--1);
+  }
+</style>

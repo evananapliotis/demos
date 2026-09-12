@@ -42,12 +42,31 @@ const raw = {
 
   ui: {
     skipToContent: 'Skip to content',
-    menuOpen: 'Open menu',
-    menuClose: 'Close menu',
-    fromPrice: 'from',
+    navLabel: 'Main navigation',
+    menuOpen: 'Menu',
+    menuClose: 'Close',
     minutes: 'min',
     bookThis: 'Book this',
+    dayNames: {
+      monday: 'Monday',
+      tuesday: 'Tuesday',
+      wednesday: 'Wednesday',
+      thursday: 'Thursday',
+      friday: 'Friday',
+      saturday: 'Saturday',
+      sunday: 'Sunday',
+    },
+    dayNamesShort: {
+      monday: 'Mon',
+      tuesday: 'Tue',
+      wednesday: 'Wed',
+      thursday: 'Thu',
+      friday: 'Fri',
+      saturday: 'Sat',
+      sunday: 'Sun',
+    },
     stickyBar: {
+      label: 'Quick actions',
       call: 'Call',
       book: 'Book',
     },
@@ -217,6 +236,7 @@ const raw = {
     },
     mapsUrl: 'https://www.google.com/maps/search/?api=1&query=Kelham+Island+Sheffield',
     directionsLabel: 'Get directions',
+    ctaLabel: 'Book online',
     image: { slot: 'contact-exterior', alt: 'The Halden & Crane shopfront on a brick-terraced street' },
     social: [
       { platform: 'instagram', label: 'Instagram', url: 'https://www.instagram.com/' },
@@ -244,6 +264,7 @@ const raw = {
       confirmation: 'Confirmed',
     },
     ui: {
+      progress: 'Booking steps',
       next: 'Next',
       back: 'Back',
       confirm: 'Confirm booking',
@@ -263,6 +284,9 @@ const raw = {
       invalidPhone: 'Enter a UK mobile or landline number',
       noSlots: 'No times left that day. Try another.',
       closedDay: 'Closed',
+      taken: 'Taken',
+      dayOff: 'Day off',
+      full: 'Full',
       summary: 'Your booking',
       with: 'with',
       at: 'at',
@@ -287,6 +311,7 @@ const raw = {
     licenceLabel: 'Licence',
     usedForLabel: 'Used for',
     viewOnPexels: 'View on Pexels',
+    empty: 'No photos have been added yet. The images on this site are placeholders.',
     backHome: 'Back to the site',
   },
 

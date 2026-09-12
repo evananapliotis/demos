@@ -15,7 +15,7 @@
  * Nothing is chosen automatically. Record picks in image-picks.json, then run
  * `npm run images:grade`.
  */
-import { existsSync, readFileSync } from 'node:fs';
+import { existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { parseArgs } from 'node:util';
 import { getSearchedSlot, searchedSlots, type SearchedSlot } from '../src/config/images.ts';

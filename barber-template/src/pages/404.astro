@@ -1,0 +1,25 @@
+---
+import Base from '../layouts/Base.astro';
+import { site } from '../config/site.ts';
+const { notFound } = site;
+---
+
+<Base title={notFound.title}>
+  <section class="section">
+    <div class="wrap not-found">
+      <p class="eyebrow">404</p>
+      <h1>{notFound.heading}</h1>
+      <p class="lede">{notFound.body}</p>
+      <p><a class="btn" href="/">{notFound.homeLabel}</a></p>
+    </div>
+  </section>
+</Base>
+
+<style>
+  .not-found {
+    display: grid;
+    gap: var(--space-3);
+    min-height: 50vh;
+    align-content: center;
+  }
+</style>

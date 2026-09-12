@@ -1,0 +1,39 @@
+/* Design tokens. Warm, dark, amber. Matches the photo grade in scripts/lib/grade.ts. */
+:root {
+  --bg: #1a1714;
+  --bg-2: #221e19;
+  --bg-3: #2b2620;
+  --line: #3a332b;
+  --ink: #f1e9dc;
+  --ink-2: #c9bfae;
+  --ink-3: #958a79;
+  --accent: #d9a45b;
+  --accent-ink: #1a1714;
+  --accent-2: #b8863f;
+  --danger: #e07a5f;
+
+  --font-display: 'Bebas Neue', 'Oswald', 'Arial Narrow', Impact, sans-serif;
+  --font-body: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+
+  --step--1: clamp(0.83rem, 0.8rem + 0.15vw, 0.9rem);
+  --step-0: clamp(1rem, 0.95rem + 0.25vw, 1.125rem);
+  --step-1: clamp(1.25rem, 1.15rem + 0.5vw, 1.5rem);
+  --step-2: clamp(1.75rem, 1.5rem + 1.25vw, 2.5rem);
+  --step-3: clamp(2.5rem, 2rem + 2.5vw, 4rem);
+  --step-4: clamp(3.5rem, 2.5rem + 5vw, 6.5rem);
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 1rem;
+  --space-4: 1.5rem;
+  --space-5: 2.5rem;
+  --space-6: 4rem;
+  --space-7: 6rem;
+
+  --gutter: clamp(1rem, 4vw, 2.5rem);
+  --measure: 62ch;
+  --wrap: 72rem;
+  --radius: 6px;
+  --sticky-bar: 4.25rem;
+  --shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
+}

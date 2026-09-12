@@ -1,0 +1,44 @@
+---
+import { site } from '../config/site.ts';
+import Pic from './Pic.astro';
+const { gallery } = site;
+---
+
+<section class="section" id="gallery" aria-labelledby="gallery-heading">
+  <div class="wrap">
+    <div class="section-head">
+      <h2 id="gallery-heading">{gallery.heading}</h2>
+      <p class="lede">{gallery.intro}</p>
+    </div>
+    <ul class="gallery">
+      {
+        gallery.images.map((img) => (
+          <li>
+            <Pic slot={img.slot} alt={img.alt} />
+          </li>
+        ))
+      }
+    </ul>
+  </div>
+</section>
+
+<style>
+  .gallery {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: var(--space-2);
+  }
+  .gallery li {
+    overflow: hidden;
+    border-radius: var(--radius);
+  }
+  .gallery :global(img) {
+    width: 100%;
+  }
+  @media (min-width: 768px) {
+    .gallery {
+      grid-template-columns: repeat(3, 1fr);
+      gap: var(--space-3);
+    }
+  }
+</style>

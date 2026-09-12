@@ -1,0 +1,95 @@
+---
+import { site } from '../config/site.ts';
+import Pic from './Pic.astro';
+const { contact } = site;
+---
+
+<section class="section contact" id="contact" aria-labelledby="contact-heading">
+  <div class="contact__band">
+    <Pic slot={contact.image.slot} alt={contact.image.alt} sizes="100vw" />
+  </div>
+  <div class="wrap contact__grid">
+    <div class="section-head">
+      <h2 id="contact-heading">{contact.heading}</h2>
+      <p class="lede">{contact.intro}</p>
+    </div>
+    <div class="contact__details">
+      <address class="contact__address">
+        {contact.address.line1}<br />
+        {contact.address.line2 && <>{contact.address.line2}<br /></>}
+        {contact.address.city} {contact.address.postcode}
+      </address>
+      <ul class="contact__links">
+        <li><a href={`tel:${contact.phoneHref}`}>{contact.phoneDisplay}</a></li>
+        <li><a href={`mailto:${contact.email}`}>{contact.email}</a></li>
+        <li><a href={contact.mapsUrl} rel="noopener">{contact.directionsLabel}</a></li>
+      </ul>
+      {
+        contact.social.length > 0 && (
+          <ul class="contact__social">
+            {contact.social.map((s) => (
+              <li>
+                <a href={s.url} rel="noopener">
+                  {s.label}
+                </a>
+              </li>
+            ))}
+          </ul>
+        )
+      }
+      <a class="btn contact__cta" href="/book">{contact.ctaLabel}</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .contact {
+    padding-top: 0;
+  }
+  .contact__band {
+    margin-bottom: var(--space-6);
+    max-height: 60vh;
+    overflow: hidden;
+  }
+  .contact__band :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .contact__grid {
+    display: grid;
+    gap: var(--space-4);
+  }
+  .contact__details {
+    display: grid;
+    gap: var(--space-4);
+    align-content: start;
+  }
+  .contact__address {
+    font-style: normal;
+    font-size: var(--step-1);
+    line-height: 1.4;
+  }
+  .contact__links,
+  .contact__social {
+    display: grid;
+    gap: var(--space-2);
+  }
+  .contact__social {
+    grid-auto-flow: column;
+    justify-content: start;
+    gap: var(--space-4);
+  }
+  .contact__cta {
+    justify-self: start;
+  }
+  @media (min-width: 768px) {
+    .contact__grid {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-6);
+    }
+    .contact__grid .section-head {
+      margin-bottom: 0;
+    }
+  }
+</style>

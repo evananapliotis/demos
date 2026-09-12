@@ -10,7 +10,8 @@
     "preview": "astro preview",
     "check": "tsx scripts/check-assets.ts",
     "images:fetch": "tsx scripts/fetch-images.ts",
-    "images:grade": "tsx scripts/grade-images.ts"
+    "images:grade": "tsx scripts/grade-images.ts",
+    "images:placeholders": "tsx scripts/placeholder-images.ts"
   },
   "dependencies": {
     "astro": "^7.3.2",

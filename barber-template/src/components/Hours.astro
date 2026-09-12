@@ -1,0 +1,88 @@
+---
+import { site } from '../config/site.ts';
+import { DAYS } from '../config/site.schema.ts';
+import Pic from './Pic.astro';
+const { hours, ui } = site;
+---
+
+<section class="section" id="hours" aria-labelledby="hours-heading">
+  <div class="wrap hours">
+    <div class="hours__media">
+      <Pic slot={hours.image.slot} alt={hours.image.alt} />
+    </div>
+    <div class="hours__body">
+      <div class="section-head">
+        <h2 id="hours-heading">{hours.heading}</h2>
+      </div>
+      <table class="hours__table">
+        <tbody>
+          {
+            DAYS.map((day) => {
+              const h = hours.schedule[day];
+              return (
+                <tr class:list={[{ 'is-closed': h === 'closed' }]}>
+                  <th scope="row">{ui.dayNames[day]}</th>
+                  <td>{h === 'closed' ? hours.closedLabel : `${h.open} – ${h.close}`}</td>
+                </tr>
+              );
+            })
+          }
+        </tbody>
+      </table>
+      <p class="muted">{hours.note}</p>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hours {
+    display: grid;
+    gap: var(--space-5);
+    align-items: center;
+  }
+  .hours__media {
+    overflow: hidden;
+    border-radius: var(--radius);
+  }
+  .hours__media :global(img) {
+    width: 100%;
+  }
+  .hours__body {
+    display: grid;
+    gap: var(--space-4);
+  }
+  .hours__body .section-head {
+    margin-bottom: 0;
+  }
+  .hours__table {
+    width: 100%;
+    max-width: 28rem;
+    border-collapse: collapse;
+    font-variant-numeric: tabular-nums;
+  }
+  .hours__table th,
+  .hours__table td {
+    padding: var(--space-2) 0;
+    border-bottom: 1px solid var(--line);
+    text-align: left;
+  }
+  .hours__table th {
+    font-weight: 500;
+  }
+  .hours__table td {
+    text-align: right;
+    color: var(--ink-2);
+  }
+  .is-closed td {
+    color: var(--ink-3);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: var(--step--1);
+  }
+  @media (min-width: 768px) {
+    .hours {
+      grid-template-columns: 1fr 1fr;
+      gap: var(--space-6);
+    }
+  }
+</style>

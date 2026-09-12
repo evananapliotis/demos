@@ -1,0 +1,72 @@
+---
+import { site } from '../config/site.ts';
+import Pic from './Pic.astro';
+const { hero } = site;
+---
+
+<section class="hero" id="top">
+  <div class="hero__media">
+    <Pic slot={hero.image.slot} portraitSlot={hero.imagePortrait.slot} alt={hero.image.alt} sizes="100vw" loading="eager" fetchpriority="high" />
+  </div>
+  <div class="hero__scrim" aria-hidden="true"></div>
+  <div class="wrap hero__content">
+    <p class="eyebrow">{hero.eyebrow}</p>
+    <h1>{hero.heading}</h1>
+    <p class="lede">{hero.subheading}</p>
+    <div class="hero__ctas">
+      <a class="btn" href={hero.primaryCta.href}>{hero.primaryCta.label}</a>
+      <a class="btn btn--ghost" href={hero.secondaryCta.href}>{hero.secondaryCta.label}</a>
+    </div>
+  </div>
+</section>
+
+<style>
+  .hero {
+    position: relative;
+    display: grid;
+    align-items: end;
+    /* Leave room for the sticky bar on phones so the CTAs are never under it. */
+    min-height: clamp(520px, calc(92svh - var(--sticky-bar)), 860px);
+    isolation: isolate;
+    overflow: hidden;
+  }
+  .hero__media,
+  .hero__scrim {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
+  .hero__media :global(picture),
+  .hero__media :global(img) {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .hero__scrim {
+    background:
+      linear-gradient(to top, var(--bg) 0%, color-mix(in srgb, var(--bg) 70%, transparent) 40%, transparent 75%),
+      linear-gradient(to right, color-mix(in srgb, var(--bg) 55%, transparent), transparent 60%);
+  }
+  .hero__content {
+    display: grid;
+    gap: var(--space-3);
+    padding-block: var(--space-6) var(--space-5);
+  }
+  .hero h1 {
+    max-width: 12ch;
+  }
+  .hero__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-2);
+  }
+  @media (min-width: 768px) {
+    .hero {
+      min-height: clamp(560px, 92svh, 860px);
+    }
+    .hero__content {
+      padding-block: var(--space-7) var(--space-6);
+    }
+  }
+</style>

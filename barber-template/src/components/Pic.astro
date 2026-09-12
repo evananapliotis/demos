@@ -1,0 +1,40 @@
+---
+/**
+ * Responsive <picture> for a manifest slot. AVIF and WebP sources at every
+ * width in the manifest, width/height from the slot's aspect so nothing
+ * shifts, lazy by default. Pass portraitSlot for art direction below 768px.
+ */
+import { fallbackSrc, getSearchedSlot, outputHeight, srcset } from '../lib/img.ts';
+
+interface Props {
+  slot: string;
+  alt: string;
+  sizes?: string;
+  loading?: 'lazy' | 'eager';
+  fetchpriority?: 'high' | 'low' | 'auto';
+  class?: string;
+  portraitSlot?: string;
+}
+
+const { slot: slotId, alt, sizes, loading = 'lazy', fetchpriority, class: className, portraitSlot } = Astro.props;
+const slot = getSearchedSlot(slotId);
+const portrait = portraitSlot ? getSearchedSlot(portraitSlot) : null;
+const largest = slot.widths[slot.widths.length - 1]!;
+const sizesAttr = sizes ?? slot.sizes;
+---
+
+<picture class={className}>
+  {portrait && <source media="(max-width: 767px)" type="image/avif" srcset={srcset(portrait, 'avif')} sizes={sizesAttr} />}
+  {portrait && <source media="(max-width: 767px)" type="image/webp" srcset={srcset(portrait, 'webp')} sizes={sizesAttr} />}
+  <source type="image/avif" srcset={srcset(slot, 'avif')} sizes={sizesAttr} />
+  <source type="image/webp" srcset={srcset(slot, 'webp')} sizes={sizesAttr} />
+  <img
+    src={fallbackSrc(slot)}
+    width={largest}
+    height={outputHeight(slot, largest)}
+    alt={alt}
+    loading={loading}
+    decoding={loading === 'eager' ? 'sync' : 'async'}
+    fetchpriority={fetchpriority}
+  />
+</picture>

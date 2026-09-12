@@ -1,0 +1,27 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/Hero.astro';
+import Services from '../components/Services.astro';
+import Team from '../components/Team.astro';
+import Gallery from '../components/Gallery.astro';
+import BeforeAfter from '../components/BeforeAfter.astro';
+import Hours from '../components/Hours.astro';
+import Contact from '../components/Contact.astro';
+import { site } from '../config/site.ts';
+import { preloadFor } from '../lib/img.ts';
+
+const preload = [
+  preloadFor(site.hero.imagePortrait.slot, '100vw', '(max-width: 767px)'),
+  preloadFor(site.hero.image.slot, '100vw', '(min-width: 768px)'),
+];
+---
+
+<Base title={site.seo.defaultTitle} preload={preload}>
+  <Hero />
+  <Services />
+  <Team />
+  <Gallery />
+  <BeforeAfter />
+  <Hours />
+  <Contact />
+</Base>

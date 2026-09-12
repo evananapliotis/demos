@@ -80,6 +80,10 @@ For each pick the full-resolution original is fetched once and cached in `.candi
 
 Budgets: hero 150KB, everything else 120KB, per file. The encoder guarantees this. The social share image `public/img/og.jpg` is cut from the hero pick as a JPEG.
 
+### Placeholders
+
+`npm run images:placeholders` fills `public/img` with generated placeholder art (warm gradients, labelled by slot) and an empty `credits.json`, so the site builds and deploys before any photo has been picked. `npm run images:grade` overwrites them slot by slot as picks are made. The committed images are currently these placeholders.
+
 ### 4. Build
 
 `npm run build` runs `scripts/check-assets.ts` first. It fails the build when the config is invalid, when any image the config references is missing a width or format, when any file in `public/img` is over budget, or when `credits.json` is missing. A hand-dropped oversized photo cannot ship.

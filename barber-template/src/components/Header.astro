@@ -1,0 +1,186 @@
+---
+import { site } from '../config/site.ts';
+
+const onHome = Astro.url.pathname === '/';
+const href = (h: string) => (h.startsWith('#') && !onHome ? `/${h}` : h);
+---
+
+<header class="site-header">
+  <div class="wrap site-header__in">
+    <a class="brand" href="/">
+      <span class="brand__mark" aria-hidden="true">{site.business.shortName}</span>
+      <span class="brand__name">{site.business.name}</span>
+    </a>
+    <button
+      class="nav-toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="site-nav"
+      data-open={site.ui.menuOpen}
+      data-close={site.ui.menuClose}
+    >
+      <span class="nav-toggle__label">{site.ui.menuOpen}</span>
+      <span class="nav-toggle__icon" aria-hidden="true"><i></i><i></i><i></i></span>
+    </button>
+    <nav id="site-nav" class="site-nav" aria-label={site.ui.navLabel}>
+      <ul>
+        {
+          site.nav.map((item) => (
+            <li>
+              <a href={href(item.href)} aria-current={Astro.url.pathname === item.href ? 'page' : undefined}>
+                {item.label}
+              </a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    position: relative;
+    z-index: 20;
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+  }
+  .site-header__in {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    min-height: 4rem;
+    flex-wrap: wrap;
+  }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .brand__mark {
+    display: grid;
+    place-items: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 1px solid var(--accent);
+    border-radius: var(--radius);
+    color: var(--accent);
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    letter-spacing: 0.02em;
+  }
+  .brand__name {
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .nav-toggle {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: 2.75rem;
+    padding: 0 var(--space-3);
+    background: transparent;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    color: var(--ink);
+    cursor: pointer;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-size: var(--step--1);
+  }
+  .nav-toggle__icon {
+    display: grid;
+    gap: 4px;
+    width: 18px;
+  }
+  .nav-toggle__icon i {
+    display: block;
+    height: 2px;
+    background: currentColor;
+    transition: transform 0.2s, opacity 0.2s;
+  }
+  .nav-toggle[aria-expanded='true'] .nav-toggle__icon i:nth-child(1) {
+    transform: translateY(6px) rotate(45deg);
+  }
+  .nav-toggle[aria-expanded='true'] .nav-toggle__icon i:nth-child(2) {
+    opacity: 0;
+  }
+  .nav-toggle[aria-expanded='true'] .nav-toggle__icon i:nth-child(3) {
+    transform: translateY(-6px) rotate(-45deg);
+  }
+  .site-nav {
+    display: none;
+    flex-basis: 100%;
+    padding-block: var(--space-2) var(--space-3);
+  }
+  .site-nav.is-open {
+    display: block;
+  }
+  .site-nav ul {
+    display: grid;
+  }
+  .site-nav a {
+    display: block;
+    padding: var(--space-2) 0;
+    color: var(--ink);
+    text-decoration: none;
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    border-bottom: 1px solid var(--line);
+  }
+  .site-nav a:hover,
+  .site-nav a[aria-current='page'] {
+    color: var(--accent);
+  }
+  @media (min-width: 900px) {
+    .site-header {
+      position: sticky;
+      top: 0;
+      background: color-mix(in srgb, var(--bg) 88%, transparent);
+      backdrop-filter: blur(10px);
+    }
+    .nav-toggle {
+      display: none;
+    }
+    .site-nav {
+      display: block;
+      flex-basis: auto;
+      padding: 0;
+    }
+    .site-nav ul {
+      display: flex;
+      gap: var(--space-4);
+    }
+    .site-nav a {
+      border: 0;
+      padding: 0;
+    }
+    .site-nav li:last-child a {
+      color: var(--accent);
+    }
+  }
+</style>
+
+<script>
+  const toggle = document.querySelector<HTMLButtonElement>('.nav-toggle');
+  const nav = document.getElementById('site-nav');
+  if (toggle && nav) {
+    const label = toggle.querySelector('.nav-toggle__label')!;
+    const set = (open: boolean) => {
+      toggle.setAttribute('aria-expanded', String(open));
+      nav.classList.toggle('is-open', open);
+      label.textContent = open ? toggle.dataset.close! : toggle.dataset.open!;
+    };
+    toggle.addEventListener('click', () => set(toggle.getAttribute('aria-expanded') !== 'true'));
+    nav.addEventListener('click', (e) => {
+      if ((e.target as Element).closest('a')) set(false);
+    });
+  }
+</script>
