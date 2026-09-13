@@ -1,7 +1,7 @@
 ---
-/* 4. What is on the page, each shown with the real piece of it rather than an icon. */
+/* 4. What is on the page, each shown with the real piece of it as a small black object on a hairline grid. */
 import { COPY, mockSite } from '../../lib/home.ts';
-import Section from '../demo/Section.astro';
+import HomeSection from './HomeSection.astro';
 import Stars from '../demo/Stars.astro';
 import GoogleG from '../demo/GoogleG.astro';
 import Icons from '../demo/Icons.astro';
@@ -10,10 +10,10 @@ const m = mockSite;
 const rows = m.hoursRows ?? [];
 const items = c.items;
 ---
-<Section id="what-you-get" eyebrow="What you get" title={c.heading}>
-  <ul class="grid gap-4 md:grid-cols-2 lg:grid-cols-3" role="list">
-    <li class="lift flex flex-col rounded-xl border border-line bg-ink-2 p-5 lg:row-span-2" data-reveal>
-      <div class="relative h-56 overflow-hidden rounded-lg bg-ink lg:h-auto lg:min-h-80 lg:flex-1" aria-hidden="true" inert>
+<HomeSection id="what-you-get" label="What you get" title={c.heading}>
+  <ul class="grid gap-px border-y border-rule bg-rule md:grid-cols-2 lg:grid-cols-3" role="list">
+    <li class="flex flex-col bg-paper py-6 md:p-6 md:pl-0 lg:row-span-2" data-reveal style="--i:0">
+      <div class="object object-sm relative h-56 lg:h-auto lg:min-h-80 lg:flex-1" aria-hidden="true" inert>
         <img src={m.hero!.path} alt="" width={m.hero!.width} height={m.hero!.height} loading="lazy" decoding="async" class="absolute inset-0 h-full w-full object-cover opacity-55" />
         <div class="absolute inset-0 bg-[linear-gradient(to_bottom,rgb(14_12_10/0.2),rgb(14_12_10)_92%)]"></div>
         <div class="absolute inset-x-4 bottom-4">
@@ -26,14 +26,14 @@ const items = c.items;
         </div>
       </div>
       <div class="mt-auto pt-5">
-        <h3 class="text-[1.7rem] leading-none text-cream">{items[0]!.title}</h3>
-        <p class="mt-2 text-cream-2">{items[0]!.line}</p>
+        <h3 class="text-2xl leading-[1.1] text-print lg:text-[1.75rem]">{items[0]!.title}</h3>
+        <p class="mt-2 text-[0.9375rem] leading-normal text-print-2">{items[0]!.line}</p>
       </div>
     </li>
 
-    <li class="lift flex flex-col rounded-xl border border-line bg-ink-2 p-5" data-reveal>
+    <li class="flex flex-col bg-paper py-6 md:p-6" data-reveal style="--i:1">
       <div class="grid content-center lg:min-h-48">
-        <div class="rounded-lg border border-line bg-ink p-4" aria-hidden="true" inert>
+        <div class="object object-sm p-4" aria-hidden="true" inert>
           <p class="flex items-center gap-2 text-sm font-bold text-cream"><span class="status-dot" data-status-dot aria-hidden="true"></span><span data-open-status data-week={JSON.stringify(m.week)}>{m.openDaysLabel}</span></p>
           <table class="mt-2 w-full border-collapse text-sm" data-hours-peek>
             <tbody>
@@ -48,27 +48,27 @@ const items = c.items;
         </div>
       </div>
       <div class="mt-auto pt-5">
-        <h3 class="text-[1.7rem] leading-none text-cream">{items[1]!.title}</h3>
-        <p class="mt-2 text-cream-2">{items[1]!.line}</p>
+        <h3 class="text-2xl leading-[1.1] text-print lg:text-[1.75rem]">{items[1]!.title}</h3>
+        <p class="mt-2 text-[0.9375rem] leading-normal text-print-2">{items[1]!.line}</p>
       </div>
     </li>
 
-    <li class="lift flex flex-col rounded-xl border border-line bg-ink-2 p-5" data-reveal>
+    <li class="flex flex-col bg-paper py-6 md:p-6 md:pr-0" data-reveal style="--i:2">
       <div class="grid content-center lg:min-h-48">
-        <div class="grid grid-cols-2 gap-2 rounded-lg border border-line bg-ink p-4" aria-hidden="true" inert>
+        <div class="object object-sm grid grid-cols-2 gap-2 p-4" aria-hidden="true" inert>
           <span class="btn btn-amber min-h-11 px-2 text-[0.95rem]"><Icons name="phone" size={17} /> Call</span>
           <span class="btn btn-outline min-h-11 px-2 text-[0.95rem]"><Icons name="pin" size={17} /> Directions</span>
         </div>
       </div>
       <div class="mt-auto pt-5">
-        <h3 class="text-[1.7rem] leading-none text-cream">{items[2]!.title}</h3>
-        <p class="mt-2 text-cream-2">{items[2]!.line}</p>
+        <h3 class="text-2xl leading-[1.1] text-print lg:text-[1.75rem]">{items[2]!.title}</h3>
+        <p class="mt-2 text-[0.9375rem] leading-normal text-print-2">{items[2]!.line}</p>
       </div>
     </li>
 
-    <li class="lift flex flex-col rounded-xl border border-line bg-ink-2 p-5" data-reveal>
+    <li class="flex flex-col bg-paper py-6 md:p-6 md:pl-0 lg:pl-6" data-reveal style="--i:3">
       <div class="grid content-center lg:min-h-48">
-        <div class="rounded-lg border border-line bg-ink p-4" aria-hidden="true" inert>
+        <div class="object object-sm p-4" aria-hidden="true" inert>
           <div class="flex items-center gap-2 rounded-full bg-ink-3 px-3 py-2 text-sm text-cream lg:text-xs">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shrink-0 text-cream-2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
             <span class="truncate"><span class="text-cream-2">mybarbersite.co.uk/</span><span class="font-bold text-amber">halden-crane</span></span>
@@ -77,14 +77,14 @@ const items = c.items;
         </div>
       </div>
       <div class="mt-auto pt-5">
-        <h3 class="text-[1.7rem] leading-none text-cream">{items[3]!.title}</h3>
-        <p class="mt-2 text-cream-2">{items[3]!.line}</p>
+        <h3 class="text-2xl leading-[1.1] text-print lg:text-[1.75rem]">{items[3]!.title}</h3>
+        <p class="mt-2 text-[0.9375rem] leading-normal text-print-2">{items[3]!.line}</p>
       </div>
     </li>
 
-    <li class="lift flex flex-col rounded-xl border border-line bg-ink-2 p-5" data-reveal>
+    <li class="flex flex-col bg-paper py-6 md:p-6 md:pr-0" data-reveal style="--i:4">
       <div class="grid content-center lg:min-h-48">
-        <div class="rounded-lg border border-line bg-ink p-4" aria-hidden="true" inert>
+        <div class="object object-sm p-4" aria-hidden="true" inert>
           <span class="choice-body"><span class="font-bold text-cream">Skin fade</span><span class="text-xs font-bold uppercase tracking-[0.12em] text-amber">45 min</span></span>
           <div class="mt-2 grid grid-cols-3 gap-2">
             <span class="chip-body">9:30am</span>
@@ -94,12 +94,12 @@ const items = c.items;
         </div>
       </div>
       <div class="mt-auto pt-5">
-        <h3 class="text-[1.7rem] leading-none text-cream">{items[4]!.title}</h3>
-        <p class="mt-2 text-cream-2">{items[4]!.line}</p>
+        <h3 class="text-2xl leading-[1.1] text-print lg:text-[1.75rem]">{items[4]!.title}</h3>
+        <p class="mt-2 text-[0.9375rem] leading-normal text-print-2">{items[4]!.line}</p>
       </div>
     </li>
   </ul>
-</Section>
+</HomeSection>
 
 <script>
   import { paintOpenStatus } from '../../lib/open-status.ts';

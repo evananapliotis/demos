@@ -1,10 +1,220 @@
-/* The front page: the shop pages' system, plus the phone frame, the mockups and the small things only this page needs. */
+/*
+ * The front page's own system: paper, one serif, one grotesk, a mono for
+ * labels, one oxblood accent. It imports the shop pages' stylesheet because
+ * the mockups on this page ARE the shop pages; they keep that look inside
+ * .object frames while everything around them is set in this system.
+ */
 @import './demo.css';
+@import '@fontsource/instrument-serif/latin-400.css';
+@import '@fontsource/instrument-serif/latin-400-italic.css';
+@import '@fontsource-variable/instrument-sans/index.css';
+@import '@fontsource-variable/geist-mono/index.css';
 
-/* The sticky bar is for phones; on wider screens the header carries the buttons. */
-@media (min-width: 48rem) {
-  body { padding-bottom: 0; }
+@theme {
+  --color-paper: #f1eee7;
+  --color-paper-2: #e7e3da;
+  --color-surface: #faf8f4;
+  --color-print: #1a1815;
+  --color-print-2: #4b4740;
+  --color-print-3: #625d55;
+  --color-rule: rgb(26 24 21 / 0.14);
+  --color-rule-2: rgb(26 24 21 / 0.3);
+  --color-ox: #a3202f;
+  --color-ox-2: #7f1624;
+  --color-paper-muted: #a8a196;
+  --color-phone: #14120f;
+
+  --font-serif: 'Instrument Serif', 'IS Fallback', 'Times New Roman', Georgia, serif;
+  --font-body: 'Instrument Sans Variable', 'ISans Fallback', Arial, Helvetica, sans-serif;
+  --font-mono: 'Geist Mono Variable', 'GM Fallback', 'Courier New', monospace;
 }
+
+/* Metric-matched fallbacks so the swap to the real faces does not move a line. */
+@font-face {
+  font-family: 'IS Fallback';
+  src: local('Times New Roman'), local('Liberation Serif'), local('Georgia');
+  size-adjust: 82%;
+  ascent-override: 121%;
+  descent-override: 38%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'IS Fallback';
+  font-style: italic;
+  src: local('Times New Roman Italic'), local('Liberation Serif Italic'), local('Georgia Italic');
+  size-adjust: 82%;
+  ascent-override: 121%;
+  descent-override: 38%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'ISans Fallback';
+  src: local('Arial'), local('Liberation Sans'), local('Helvetica');
+  size-adjust: 101%;
+  ascent-override: 96%;
+  descent-override: 25%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: 'GM Fallback';
+  src: local('Courier New'), local('Liberation Mono');
+  ascent-override: 100%;
+  descent-override: 30%;
+  line-gap-override: 0%;
+}
+
+/* The page's ground and type, declared after the shop stylesheet so they win. */
+@layer base {
+  :root {
+    --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.10 0 0 0 0 0.09 0 0 0 0 0.08 0 0 0 0.045 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url%28%23n%29'/%3E%3C/svg%3E");
+  }
+  html {
+    background: var(--color-paper);
+    color: var(--color-print);
+  }
+  body {
+    font-family: var(--font-body);
+    background-image: var(--grain);
+    background-attachment: scroll;
+  }
+  @media (min-width: 48rem) {
+    body { padding-bottom: 0; }
+  }
+  ::selection {
+    background: var(--color-ox);
+    color: var(--color-paper);
+  }
+  h1, h2, h3 {
+    font-family: var(--font-serif);
+    font-weight: 400;
+    text-transform: none;
+    letter-spacing: -0.015em;
+    line-height: 1;
+    text-wrap: balance;
+  }
+  /* The accent word in a heading: the one italic, in oxblood. */
+  h1 .ac, h2 .ac, h3 .ac { color: var(--color-ox); font-style: italic; }
+  .on-ox .ac, .on-print .ac { color: inherit; font-style: italic; }
+  a:focus-visible, button:focus-visible, summary:focus-visible, [tabindex='-1']:focus-visible {
+    outline: 2px solid var(--color-ox);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+  .on-ox a:focus-visible, .on-ox button:focus-visible, .on-print a:focus-visible, .on-print button:focus-visible {
+    outline-color: var(--color-paper);
+  }
+}
+
+/* ---------- Page chrome ---------- */
+@utility cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  min-height: 3.25rem;
+  padding: 0.85rem 1.5rem;
+  border-radius: 3px;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: 1rem;
+  letter-spacing: 0.005em;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+  user-select: none;
+  transition: background-color 150ms ease, color 150ms ease, box-shadow 150ms ease;
+  &:active { transform: translateY(1px); }
+}
+@utility cta-ink {
+  background: var(--color-print);
+  color: var(--color-paper);
+  &:hover { background: var(--color-ox-2); color: var(--color-paper); }
+  .on-ox & { background: var(--color-paper); color: var(--color-ox); }
+  .on-ox &:hover { background: var(--color-surface); color: var(--color-ox-2); }
+  .on-print & { background: var(--color-paper); color: var(--color-print); }
+  .on-print &:hover { background: var(--color-surface); color: var(--color-print); }
+}
+@utility cta-line {
+  background: transparent;
+  color: var(--color-print);
+  box-shadow: inset 0 0 0 1px var(--color-print);
+  &:hover { background: var(--color-print); color: var(--color-paper); }
+  .on-ox & { color: var(--color-paper); box-shadow: inset 0 0 0 1px var(--color-paper); }
+  .on-ox &:hover { background: rgb(241 238 231 / 0.12); color: var(--color-paper); }
+  .on-print & { color: var(--color-paper); box-shadow: inset 0 0 0 1px var(--color-paper); }
+  .on-print &:hover { background: rgb(241 238 231 / 0.12); color: var(--color-paper); }
+}
+/* A mono label with a small square in front of it. */
+@utility label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-weight: 500;
+  font-size: 0.75rem;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  line-height: 1;
+  color: var(--color-print-3);
+  &::before { content: ''; width: 0.5rem; height: 0.5rem; flex: none; background: var(--color-ox); }
+  .on-ox & { color: var(--color-paper); }
+  .on-ox &::before { background: var(--color-paper); }
+}
+@utility label-ink {
+  &::before { background: var(--color-print); }
+}
+@utility folio {
+  font-family: var(--font-mono);
+  font-weight: 400;
+  font-size: 0.6875rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  line-height: 1;
+  color: var(--color-print-3);
+}
+/* Anything that shows the shop page: a rounded, shadowed black object with the shop's own type inside. */
+@utility object {
+  position: relative;
+  overflow: hidden;
+  border-radius: 1rem;
+  background: var(--color-ink);
+  color: var(--color-cream);
+  font-family: var(--font-sans);
+  color-scheme: dark;
+  box-shadow: inset 0 1px 0 rgb(244 238 228 / 0.06), 0 1px 2px rgb(26 24 21 / 0.18), 0 24px 48px -20px rgb(26 24 21 / 0.45);
+}
+@utility object-sm {
+  border-radius: 0.75rem;
+  box-shadow: inset 0 1px 0 rgb(244 238 228 / 0.06), 0 1px 2px rgb(26 24 21 / 0.14), 0 14px 28px -14px rgb(26 24 21 / 0.35);
+}
+/* The one white thing: the Google listing, a clipping next to the black object. */
+@utility clipping {
+  background: #fff;
+  border: 1px solid var(--color-rule-2);
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 2px rgb(26 24 21 / 0.08), 0 20px 40px -24px rgb(26 24 21 / 0.3);
+}
+/* A plate that sits on the paper: lifted by a hairline, never a shadow. */
+@utility plate {
+  background: var(--color-surface);
+  border: 1px solid var(--color-rule);
+  border-radius: 4px;
+}
+@utility grain {
+  &::before { content: ''; position: absolute; inset: 0; background-image: var(--grain); pointer-events: none; }
+}
+
+/* ---------- Hero choreography: transform and opacity only ---------- */
+.line-clip { display: block; overflow: hidden; padding: 0 0.06em 0.08em; margin: 0 -0.06em -0.08em; white-space: nowrap; }
+.line-clip > span { display: block; }
+@keyframes line-rise { from { transform: translateY(110%); } to { transform: none; } }
+html.js .line-clip > span { animation: line-rise 700ms cubic-bezier(0.2, 0.7, 0.2, 1) both; animation-delay: var(--d, 80ms); }
+@keyframes fade-up { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+html.js .fade-up { animation: fade-up 500ms cubic-bezier(0.2, 0.7, 0.2, 1) both; animation-delay: var(--d, 260ms); }
+@keyframes set-down { from { transform: translateY(28px); } to { transform: none; } }
+html.js .phone-enter { animation: set-down 900ms cubic-bezier(0.2, 0.7, 0.2, 1) 200ms both; }
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+html.js .desk { animation: fade 1200ms ease-out 400ms both; }
 
 /* ---------- Phone frame around the live example page ---------- */
 .phone {
@@ -13,24 +223,34 @@
   width: calc(390px * var(--scale));
   height: calc(844px * var(--scale));
   border-radius: calc(52px * var(--scale));
-  background: #1c1814;
+  background: var(--color-phone);
   box-shadow:
-    0 0 0 calc(3px * var(--scale)) #2c2620,
-    0 0 0 calc(4px * var(--scale)) rgb(244 238 228 / 0.08),
-    0 50px 90px -30px rgb(0 0 0 / 0.85),
-    0 20px 40px -20px rgb(242 169 59 / 0.25);
+    0 0 0 calc(3px * var(--scale)) #2a2622,
+    0 0 0 calc(4px * var(--scale)) rgb(26 24 21 / 0.12),
+    0 2px 4px rgb(26 24 21 / 0.2),
+    0 30px 60px -20px rgb(26 24 21 / 0.45),
+    0 80px 120px -50px rgb(26 24 21 / 0.5);
 }
 @media (min-width: 40rem) { .phone { --scale: 0.8; } }
-@media (min-width: 64rem) { .phone { --scale: 0.86; } }
+@media (min-width: 80rem) { .phone { --scale: 0.86; } }
+.desk {
+  position: absolute;
+  left: -10%;
+  right: -10%;
+  bottom: -5%;
+  height: 14%;
+  background: radial-gradient(50% 50% at 50% 50%, rgb(26 24 21 / 0.22), transparent 70%);
+  pointer-events: none;
+}
 .phone__screen {
   --s2: calc(var(--scale) * (1 - 20 / 390));
   position: absolute;
   inset: calc(10px * var(--scale));
   overflow: hidden;
   border-radius: calc(42px * var(--scale));
-  background: #0e0c0a;
+  background: var(--color-ink);
 }
-/* Everything on the screen is laid out at a real phone's 390px and scaled down together. */
+/* Everything on the screen is laid out at a real phone's 390px and scaled down together, in the shop's type. */
 .phone__bar,
 .phone__screen > iframe,
 .phone__static {
@@ -41,12 +261,15 @@
   transform: scale(var(--s2));
   transform-origin: top left;
   pointer-events: none;
+  font-family: var(--font-sans);
+  color: var(--color-cream);
+  color-scheme: dark;
 }
 .phone__bar { top: 0; height: 44px; z-index: 1; }
 .phone__screen > iframe,
 .phone__static { top: calc(44px * var(--s2)); height: 800px; }
 .phone__screen > iframe {
-  background: #0e0c0a;
+  background: var(--color-ink);
   opacity: 0;
   transition: opacity 500ms ease;
 }
@@ -63,34 +286,20 @@
   z-index: 2;
 }
 
-/* The one motion moment on load: the phone settles into place while a glow comes up behind it. */
-@keyframes phone-in {
-  from { opacity: 0; transform: translateY(44px) rotate(-3deg) scale(0.96); }
-  to { opacity: 1; transform: none; }
+/* ---------- Calmer reveals (cells of a grid arrive one after another) and a thinner progress line ---------- */
+html.js [data-reveal] {
+  transform: translateY(8px);
+  transition: opacity 420ms cubic-bezier(0.2, 0.7, 0.2, 1), transform 420ms cubic-bezier(0.2, 0.7, 0.2, 1);
+  transition-delay: calc(var(--i, 0) * 60ms);
 }
-.phone-enter { animation: phone-in 900ms cubic-bezier(0.2, 0.7, 0.2, 1) 160ms both; }
-@keyframes glow-in {
-  from { opacity: 0; transform: scale(0.8); }
-  to { opacity: 1; transform: none; }
-}
-.phone-glow {
-  position: absolute;
-  inset: -18% -30%;
-  background: radial-gradient(45% 45% at 50% 55%, rgb(242 169 59 / 0.22), transparent 72%);
-  animation: glow-in 1400ms ease-out 300ms both;
-  pointer-events: none;
-}
-@media (prefers-reduced-motion: reduce) {
-  .phone-enter, .phone-glow { animation: none; }
-  html.js [data-sticky] { transition: none; }
-}
+.progress { height: 2px; background: var(--color-ox); }
 
-/* The closing band's stripes turn slowly here rather than at the shop pages' pace, and only while on screen. */
-.cta-stripes::before { animation-duration: 5s; }
-.cta-stripes[data-paused]::before { animation-play-state: paused; }
+/* ---------- Sticky bar: slides up once the hero's own buttons have scrolled away ---------- */
+html.js [data-sticky] { transform: translateY(110%); transition: transform 300ms ease; }
+html.js [data-sticky][data-show] { transform: none; }
 
 /* ---------- Booking taster ---------- */
-/* The day row runs edge to edge of its card, whatever the card's padding. */
+/* The day row runs edge to edge of its object, whatever the padding. */
 @media (max-width: 39.99rem) {
   [data-mini-book] .days { margin-inline: -1rem; padding-inline: 1rem; }
 }
@@ -101,24 +310,17 @@
 /* Without JavaScript the taster would be three radios that do nothing. */
 html:not(.js) [data-mini-book] { display: none; }
 
-/* ---------- Sticky bar: slides up once the hero's own buttons have scrolled away ---------- */
-html.js [data-sticky] { transform: translateY(110%); transition: transform 300ms ease; }
-html.js [data-sticky][data-show] { transform: none; }
-
-/* ---------- Straight answers: the chevron points down closed, up open ---------- */
-.faq summary { list-style: none; cursor: pointer; }
+/* ---------- Straight answers ---------- */
+.faq summary { list-style: none; cursor: pointer; transition: color 150ms ease; }
 .faq summary::-webkit-details-marker { display: none; }
-.faq summary .faq__chev { transform: rotate(90deg); transition: transform 200ms ease; }
-.faq details[open] summary .faq__chev { transform: rotate(-90deg); }
-.faq details[open] summary { color: var(--color-amber); }
+.faq summary:hover, .faq details[open] summary { color: var(--color-ox); }
+.faq .faq__plus { transition: transform 200ms ease; }
+.faq details[open] .faq__plus { transform: rotate(45deg); }
 
-/* ---------- Cards lift a touch under a pointer ---------- */
-@media (hover: hover) {
-  .lift { transition: transform 200ms ease, border-color 200ms ease; }
-  .lift:hover { transform: translateY(-3px); border-color: rgb(242 169 59 / 0.5); }
+/* ---------- The exchange: the light WhatsApp the owner uses every day ---------- */
+.wa-in { background: #fff; border-radius: 0.75rem 0.75rem 0.75rem 0.125rem; box-shadow: 0 1px 0.5px rgb(11 20 26 / 0.13); }
+.wa-out { background: #d9fdd3; border-radius: 0.75rem 0.75rem 0.125rem 0.75rem; box-shadow: 0 1px 0.5px rgb(11 20 26 / 0.13); }
+
+@media (prefers-reduced-motion: reduce) {
+  html.js [data-sticky] { transition: none; }
 }
-
-/* ---------- WhatsApp mock ---------- */
-.wa { background: #0b141a; }
-.wa__in { background: #202c33; color: #e9edef; border-radius: 0.6rem 0.6rem 0.6rem 0.15rem; }
-.wa__out { background: #005c4b; color: #e9edef; border-radius: 0.6rem 0.6rem 0.15rem 0.6rem; }

@@ -1,19 +1,19 @@
 ---
-/* 3. What a customer sees today with no page, and with one. Two drawn panels, fictional shop, nothing real. */
+/* 3. What a customer sees today with no page, and with one. A white clipping beside a black object; fictional shop, nothing real. */
 import { COPY, mockSite } from '../../lib/home.ts';
-import Section from '../demo/Section.astro';
+import HomeSection from './HomeSection.astro';
 import Stars from '../demo/Stars.astro';
 import GoogleG from '../demo/GoogleG.astro';
 import Icons from '../demo/Icons.astro';
 const c = COPY.beforeAfter;
 const m = mockSite;
 ---
-<Section id="before-after" eyebrow="Before and after" title={c.heading} class="bg-ink-2">
-  <div class="grid gap-10 md:grid-cols-2 md:gap-8 lg:gap-14">
+<HomeSection id="before-after" label="Before and after" title={c.heading}>
+  <div class="grid gap-12 md:grid-cols-2 md:gap-10 lg:gap-16">
     <div class="flex flex-col" data-reveal>
-      <p class="eyebrow">{c.leftLabel}</p>
-      <p class="mb-4 mt-2 max-w-sm text-cream-2">{c.leftLine}</p>
-      <div class="mx-auto flex w-full max-w-sm flex-1 flex-col overflow-hidden rounded-xl bg-[#f8f9fa] p-4 text-[#202124] shadow-[0_30px_60px_-30px_rgb(0_0_0/0.8)] md:max-w-none" aria-hidden="true" inert>
+      <p class="label label-ink">{c.leftLabel}</p>
+      <p class="mb-5 mt-3 max-w-[22rem] text-[0.9375rem] leading-normal text-print-2">{c.leftLine}</p>
+      <div class="clipping mx-auto flex w-full max-w-sm flex-1 flex-col p-4 text-[#202124] md:max-w-none" aria-hidden="true" inert>
         <p class="flex items-center gap-2 text-xs font-bold text-[#5f6368]"><GoogleG size={14} /> Google</p>
         <p class="mt-3 text-2xl font-bold leading-tight">{m.name}</p>
         <p class="mt-1 text-sm text-[#5f6368]">Barber shop · {m.address.locality}</p>
@@ -36,9 +36,9 @@ const m = mockSite;
     </div>
 
     <div class="flex flex-col" data-reveal>
-      <p class="eyebrow">{c.rightLabel}</p>
-      <p class="mb-4 mt-2 max-w-sm text-cream-2">{c.rightLine}</p>
-      <div class="mx-auto flex w-full max-w-sm flex-1 flex-col overflow-hidden rounded-xl border border-amber/40 bg-ink shadow-[0_30px_60px_-30px_rgb(242_169_59/0.45)] md:max-w-none" aria-hidden="true" inert>
+      <p class="label">{c.rightLabel}</p>
+      <p class="mb-5 mt-3 max-w-[22rem] text-[0.9375rem] leading-normal text-print-2">{c.rightLine}</p>
+      <div class="object mx-auto flex w-full max-w-sm flex-1 flex-col md:max-w-none" aria-hidden="true" inert>
         <div class="relative h-44 shrink-0">
           <img src={m.hero!.path} alt="" width={m.hero!.width} height={m.hero!.height} loading="lazy" decoding="async" class="absolute inset-0 h-full w-full object-cover opacity-60" />
           <div class="absolute inset-0 bg-[linear-gradient(to_bottom,rgb(14_12_10/0.2),rgb(14_12_10)_95%)]"></div>
@@ -65,4 +65,4 @@ const m = mockSite;
       </div>
     </div>
   </div>
-</Section>
+</HomeSection>

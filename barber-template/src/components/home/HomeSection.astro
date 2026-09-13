@@ -1,0 +1,14 @@
+---
+/* A front-page section: hairline on top, a label, the heading, then whatever it holds. */
+interface Props { id: string; label: string; title: string; class?: string; titleClass?: string }
+const { id, label, title, class: cls = '', titleClass = '' } = Astro.props;
+---
+<section id={id} class={`relative scroll-mt-14 border-t border-rule px-5 py-16 sm:px-8 md:py-28 lg:px-12 ${cls}`} aria-labelledby={`${id}-title`}>
+  <div class="mx-auto max-w-[76rem]">
+    <div class="mb-10 md:mb-16 md:grid md:grid-cols-12 md:gap-8" data-reveal>
+      <p class="label md:col-span-3 md:pt-4">{label}</p>
+      <h2 id={`${id}-title`} class={`mt-4 text-[clamp(2.375rem,11.25vw,4.5rem)] leading-[0.98] tracking-[-0.015em] text-print md:col-span-9 md:mt-0 ${titleClass}`} set:html={title} />
+    </div>
+    <slot />
+  </div>
+</section>

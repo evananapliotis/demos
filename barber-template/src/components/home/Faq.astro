@@ -1,20 +1,19 @@
 ---
 /* 8. Straight answers. */
 import { COPY } from '../../lib/home.ts';
-import Section from '../demo/Section.astro';
-import Icons from '../demo/Icons.astro';
+import HomeSection from './HomeSection.astro';
 const c = COPY.faq;
 ---
-<Section id="answers" eyebrow="Questions" title={c.heading}>
-  <div class="faq max-w-3xl divide-y divide-line border-y border-line" data-reveal>
+<HomeSection id="answers" label="Questions" title={c.heading}>
+  <div class="faq max-w-[44rem]" data-reveal>
     {c.items.map((item) => (
-      <details class="group">
-        <summary class="flex min-h-14 items-center justify-between gap-4 py-4 text-lg font-bold text-cream hover:text-amber md:text-xl">
+      <details class="group border-t border-rule last:border-b">
+        <summary class="grid min-h-14 grid-cols-[1fr_auto] items-center gap-4 py-[1.125rem] font-serif text-xl leading-[1.25] tracking-[-0.005em] text-print lg:text-2xl">
           {item.q}
-          <Icons name="chevron" size={20} class="faq__chev shrink-0 text-amber" />
+          <span class="faq__plus font-mono text-xl leading-none text-print-3" aria-hidden="true">+</span>
         </summary>
-        <p class="max-w-2xl pb-5 text-cream-2">{item.a}</p>
+        <p class="max-w-[38rem] pb-6 text-[1.0625rem] leading-[1.55] text-print-2">{item.a}</p>
       </details>
     ))}
   </div>
-</Section>
+</HomeSection>

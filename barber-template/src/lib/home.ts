@@ -104,7 +104,7 @@ export const COPY = {
   },
   proof: ['Built in 48 hours', 'No monthly fee', 'You see it before you pay', 'Your photos, your Google rating'],
   beforeAfter: {
-    heading: 'What a new customer <span class="text-amber">sees.</span>',
+    heading: 'What a new customer <span class="ac">sees.</span>',
     leftLabel: 'Today',
     leftLine: 'Your Google listing and not much else. No prices, nowhere to book, nothing of yours to share.',
     leftRows: [['Prices', 'Not shown'], ['Book', 'Call and ask'], ['Your link', 'None']],
@@ -112,7 +112,7 @@ export const COPY = {
     rightLine: 'Photos, rating, open now. One tap to call, get directions or book.',
   },
   whatYouGet: {
-    heading: 'What <span class="text-amber">you get.</span>',
+    heading: 'What <span class="ac">you get.</span>',
     items: [
       { title: 'Your photos, your Google rating', line: 'Real photos of your shop and the rating you have already earned, front and centre.' },
       { title: 'Opening hours, with open now', line: "Shows open now when you are, so nobody turns up to a locked door." },
@@ -122,7 +122,7 @@ export const COPY = {
     ],
   },
   booking: {
-    heading: 'No-shows cost <span class="text-amber">you less.</span>',
+    heading: 'No-shows cost <span class="ac">you less.</span>',
     lines: [
       'Every booking takes a deposit up front. An empty chair costs the customer, not just you.',
       'No platform fees. Nobody takes a cut of your bookings.',
@@ -139,7 +139,7 @@ export const COPY = {
     again: 'Start again',
   },
   how: {
-    heading: 'How it <span class="text-amber">works.</span>',
+    heading: 'How it <span class="ac">works.</span>',
     steps: [
       { title: 'I build it first', line: 'I make your page from your Google listing before you pay a penny. You see it, then decide.' },
       { title: '£100 holds your slot', line: 'Like it? £100 holds your slot. Then WhatsApp me your prices and opening hours.' },
@@ -153,14 +153,14 @@ export const COPY = {
     ],
   },
   pricing: {
-    heading: "Pay once. <span class=\"text-amber\">That's it.</span>",
+    heading: "Pay once. <span class=\"ac\">That's it.</span>",
     page: { name: 'Shop page', lines: ['Your photos, prices and Google rating', 'Hours, open now, call, directions', 'Your own link to share'] },
     pageBooking: { name: 'Shop page + booking', sum: '£500 page + £400 booking', lines: ['Everything in the shop page', 'Deposit-protected online booking', 'No platform fees'] },
     note: "£100 holds your slot, balance when you're happy.",
     button: 'WhatsApp me',
   },
   faq: {
-    heading: 'Straight <span class="text-amber">answers.</span>',
+    heading: 'Straight <span class="ac">answers.</span>',
     items: [
       { q: 'Do I have to do anything?', a: "WhatsApp me your shop's name and I'll build it. Like it? Send your prices and opening hours and it's live within 48 hours." },
       { q: "What if I don't like it?", a: "You see it before you pay a penny. Not for you? Walk away, nothing owed. Want changes? Tell me and I'll make them." },
@@ -171,12 +171,12 @@ export const COPY = {
     ],
   },
   about: {
-    heading: 'Evangelos.',
+    heading: 'Evangelos<span class="ac">.</span>',
     eyebrow: "Who you're dealing with",
     lines: ["I'm Evangelos. I build every one of these myself and I answer my own phone.", 'No team, no office, just me.'],
   },
   cta: {
-    heading: 'See yours before you pay.',
+    heading: 'See yours <span class="ac">before you pay.</span>',
     line: "WhatsApp me your shop's name. I'll build it first and send you the link.",
   },
   footer: {

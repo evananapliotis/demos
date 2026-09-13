@@ -1,39 +1,40 @@
 ---
-/* 6. Three steps, and what the WhatsApp exchange looks like. */
+/* 6. Three steps, and what the exchange looks like: the light WhatsApp everyone has, framed as a plate on the page. */
 import { COPY } from '../../lib/home.ts';
-import Section from '../demo/Section.astro';
+import HomeSection from './HomeSection.astro';
+import Wa from './Wa.astro';
 const c = COPY.how;
 ---
-<Section id="how" eyebrow="How it works" title={c.heading}>
-  <div class="grid gap-10 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-14">
+<HomeSection id="how" label="How it works" title={c.heading}>
+  <div class="grid gap-12 lg:grid-cols-[minmax(0,1.1fr)_minmax(0,0.9fr)] lg:gap-16">
     <ol class="grid gap-6" role="list">
       {c.steps.map((s, i) => (
-        <li class="flex gap-5 border-t border-line pt-6" data-reveal>
-          <span class="display w-[1.3em] shrink-0 text-[2.6rem] leading-none text-amber md:text-[3.2rem]" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
+        <li class="grid grid-cols-[4.5rem_1fr] border-t border-rule pt-6 lg:grid-cols-[5.5rem_1fr]" data-reveal>
+          <span class="font-serif text-[2.5rem] italic leading-none text-ox lg:text-5xl" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
           <div>
-            <h3 class="text-[1.9rem] leading-none text-cream">{s.title}</h3>
-            <p class="mt-2 max-w-md text-cream-2">{s.line}</p>
+            <h3 class="text-2xl leading-[1.1] text-print lg:text-[1.75rem]">{s.title}</h3>
+            <p class="mt-2 max-w-[26rem] text-[0.9375rem] leading-normal text-print-2 lg:text-[1.0625rem]">{s.line}</p>
           </div>
         </li>
       ))}
     </ol>
 
-    <figure class="wa mx-auto w-full max-w-sm overflow-hidden rounded-xl border border-line" data-reveal aria-label="An example WhatsApp exchange">
-      <figcaption class="flex items-center gap-3 border-b border-[#1f2c34] bg-[#202c33] px-4 py-3 text-sm text-[#e9edef]">
-        <span class="grid h-8 w-8 place-items-center rounded-full bg-amber font-bold text-ink" aria-hidden="true">E</span>
-        <span><span class="block font-bold">Evangelos</span><span class="block text-xs text-[#8696a0]">MyBarberSite</span></span>
+    <figure class="plate mx-auto w-full max-w-sm overflow-hidden" data-reveal aria-label="An example WhatsApp exchange">
+      <figcaption class="flex items-center gap-3 border-b border-rule bg-[#f0f2f5] px-4 py-3">
+        <span class="grid h-9 w-9 place-items-center rounded-full bg-print font-serif text-lg text-paper" aria-hidden="true">E</span>
+        <span class="min-w-0"><span class="block text-[0.9375rem] font-semibold text-print">Evangelos</span><span class="folio mt-1 flex items-center gap-1.5 normal-case tracking-normal text-[#54656f]">MyBarberSite <Wa size={12} /></span></span>
       </figcaption>
-      <ul class="grid gap-2 px-3 py-4 text-[0.95rem] leading-snug" role="list">
+      <ul class="grid gap-2 bg-[#efe7dd] px-3 py-4 text-[0.9375rem] leading-[1.4] text-[#111b21]" role="list">
         {c.whatsapp.map((b) => (
-          <li class={`max-w-[85%] px-3 py-2 ${b.from === 'owner' ? 'wa__out justify-self-end' : 'wa__in justify-self-start'}`}>
+          <li class={`max-w-[85%] px-3 py-2 ${b.from === 'owner' ? 'wa-out justify-self-end' : 'wa-in justify-self-start'}`}>
             <span class="sr-only">{b.from === 'owner' ? 'You: ' : 'Evangelos: '}</span>{b.text}
           </li>
         ))}
       </ul>
-      <div class="flex items-center gap-2 border-t border-[#1f2c34] bg-[#202c33] px-3 py-2" aria-hidden="true">
-        <span class="flex-1 rounded-full bg-[#2a3942] px-4 py-2 text-sm text-[#aebac1]">Message</span>
-        <span class="grid h-9 w-9 place-items-center rounded-full bg-[#00a884] text-[#0b141a]"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M3 20l18-8L3 4v6l12 2-12 2z"/></svg></span>
+      <div class="flex items-center gap-2 border-t border-rule bg-[#f0f2f5] px-3 py-2" aria-hidden="true">
+        <span class="flex-1 rounded-full bg-white px-4 py-2 text-sm text-[#54656f]">Message</span>
+        <span class="grid h-9 w-9 place-items-center rounded-full bg-[#25d366] text-white"><svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><path d="M3 20l18-8L3 4v6l12 2-12 2z"/></svg></span>
       </div>
     </figure>
   </div>
-</Section>
+</HomeSection>

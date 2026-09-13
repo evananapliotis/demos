@@ -1,7 +1,7 @@
 ---
-/* 7. Two prices. */
+/* 7. Two prices, set as a tariff on a deeper band. */
 import { COPY, OFFER, OWNER } from '../../lib/home.ts';
-import Section from '../demo/Section.astro';
+import HomeSection from './HomeSection.astro';
 import Wa from './Wa.astro';
 const c = COPY.pricing;
 const cards = [
@@ -9,21 +9,19 @@ const cards = [
   { ...c.pageBooking, price: OFFER.page + OFFER.booking, featured: false },
 ];
 ---
-<Section id="pricing" eyebrow="Pricing" title={c.heading} class="bg-ink-2">
+<HomeSection id="pricing" label="Pricing" title={c.heading} class="bg-paper-2">
   <div class="grid gap-4 md:grid-cols-2 md:gap-6">
     {cards.map((card) => (
-      <div class={`lift flex flex-col rounded-xl border p-6 md:p-8 ${card.featured ? 'border-amber/60 bg-ink' : 'border-line bg-ink'}`} data-reveal>
-        <h3 class="text-[1.9rem] leading-none text-cream">{card.name}</h3>
-        {card.sum && <p class="mt-2 text-sm text-cream-2">{card.sum}</p>}
-        <p class="mt-4 flex items-baseline gap-2"><span class="display text-[4.5rem] leading-none text-amber">£{card.price}</span><span class="text-sm font-bold uppercase tracking-[0.14em] text-cream-2">one-off</span></p>
-        <ul class="mt-6 grid gap-2 text-cream/90" role="list">
-          {card.lines.map((l) => (
-            <li class="flex items-start gap-3"><span class="mt-[0.45rem] inline-block h-[2px] w-4 shrink-0 bg-amber" aria-hidden="true"></span>{l}</li>
-          ))}
+      <div class={`flex flex-col rounded-[4px] border p-6 md:p-10 ${card.featured ? 'on-print border-print bg-print text-paper' : 'border-rule-2 bg-surface text-print'}`} data-reveal>
+        <h3 class="text-[1.75rem] leading-[1.1] lg:text-[2rem]">{card.name}</h3>
+        {card.sum && <p class="folio mt-2 normal-case tracking-[0.04em]">{card.sum}</p>}
+        <p class="mt-5 flex items-baseline gap-3"><span class="font-serif text-[5rem] leading-[0.9] tracking-[-0.03em] lg:text-[7rem]">£{card.price}</span><span class={`folio ${card.featured ? 'text-paper-muted' : ''}`}>one-off</span></p>
+        <ul class={`mt-6 divide-y border-y text-[1.0625rem] ${card.featured ? 'divide-paper/15 border-paper/15' : 'divide-rule border-rule'}`} role="list">
+          {card.lines.map((l) => <li class="py-3">{l}</li>)}
         </ul>
-        <a href={OWNER.whatsapp} target="_blank" rel="noopener" class={`btn mt-8 ${card.featured ? 'btn-amber' : 'btn-outline'}`}><Wa size={18} /> {c.button}</a>
+        <a href={OWNER.whatsapp} target="_blank" rel="noopener" class={`cta mt-8 ${card.featured ? 'cta-ink' : 'cta-line'}`}><Wa size={18} /> {c.button}</a>
       </div>
     ))}
   </div>
-  <p class="mt-6 flex items-center gap-3 text-cream-2" data-reveal><span class="inline-block h-[2px] w-6 shrink-0 bg-amber" aria-hidden="true"></span>{c.note}</p>
-</Section>
+  <p class="mt-6 flex items-center gap-3 font-medium text-print" data-reveal><span class="inline-block h-px w-6 shrink-0 bg-ox" aria-hidden="true"></span>{c.note}</p>
+</HomeSection>

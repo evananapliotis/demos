@@ -4,39 +4,31 @@ import Icons from '../demo/Icons.astro';
 import Wa from './Wa.astro';
 import Header from './Header.astro';
 import PhoneMock from './PhoneMock.astro';
-/** Each word keeps its letters together so the line wraps between words, never inside one. */
-const words = (line: string, offset: number) => {
-  let i = offset;
-  return line.split(' ').map((word) => ({ word, letters: [...word].map((ch) => ({ ch, i: i++ })) }));
-};
 const [line1, line2] = COPY.hero.headline;
 ---
-<header id="home" class="relative isolate overflow-hidden bg-ink px-5 sm:px-8 lg:px-12">
-  <div class="absolute inset-0 -z-10 bg-[radial-gradient(70%_50%_at_100%_0%,rgb(242_169_59/0.14),transparent_60%)]" aria-hidden="true"></div>
+<header id="home" class="relative px-5 sm:px-8 lg:px-12">
   <Header />
-  <div class="relative mx-auto grid w-full max-w-5xl gap-8 pb-16 pt-8 md:pt-12 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-16 lg:pb-20 lg:pt-14">
-    <div class="relative z-10">
-      <p class="eyebrow rise">{COPY.hero.eyebrow}</p>
-      <h1 class="mt-4 text-[clamp(3.75rem,17vw,9.5rem)] text-cream lg:text-[7.5rem] xl:text-[8.5rem]" aria-label={`${line1} ${line2}`}>
-        <span class="letters block" aria-hidden="true">
-          {words(line1!, 0).map((w, wi) => (<>{wi > 0 && ' '}<span class="word">{w.letters.map(({ ch, i }) => <span class="letter" style={`--i:${i}`}>{ch}</span>)}</span></>))}
-        </span>
-        <span class="letters block text-amber" aria-hidden="true">
-          {words(line2!, line1!.length).map((w, wi) => (<>{wi > 0 && ' '}<span class="word">{w.letters.map(({ ch, i }) => <span class="letter" style={`--i:${i}`}>{ch}</span>)}</span></>))}
-        </span>
+  <div class="relative mx-auto grid w-full max-w-[76rem] gap-12 pb-16 pt-10 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-20 lg:pb-20 lg:pt-16">
+    <div>
+      <p class="label fade-up" style="--d:0ms">{COPY.hero.eyebrow}</p>
+      <h1 class="mt-5 text-[clamp(3.5rem,21vw,6rem)] leading-[0.9] tracking-[-0.02em] text-print lg:text-[7.5rem] xl:text-[9.5rem]" aria-label={`${line1} ${line2}`}>
+        <span class="line-clip" aria-hidden="true"><span style="--d:80ms">{line1}</span></span>
+        <span class="line-clip italic text-ox" aria-hidden="true"><span style="--d:170ms">{line2}</span></span>
       </h1>
-      <p class="rise mt-5 max-w-md text-lg leading-snug text-cream/85 md:text-2xl" style="animation-delay:120ms">{COPY.hero.support}</p>
-      <div class="rise mt-6 grid grid-cols-1 gap-3 sm:flex sm:flex-wrap" style="animation-delay:180ms" data-hero-cta>
-        <a href={OWNER.whatsapp} target="_blank" rel="noopener" class="btn btn-amber"><Wa size={19} /> WhatsApp me</a>
-        <a href={telHref} class="btn btn-outline"><Icons name="phone" size={19} /> Call {OWNER.phone.display}</a>
+      <p class="fade-up mt-6 max-w-[21rem] text-lg leading-[1.45] text-print-2 lg:max-w-[28rem] lg:text-[1.375rem]" style="--d:260ms">{COPY.hero.support}</p>
+      <div class="fade-up mt-7 grid grid-cols-1 gap-2.5 sm:flex sm:flex-wrap sm:gap-3" style="--d:320ms" data-hero-cta>
+        <a href={OWNER.whatsapp} target="_blank" rel="noopener" class="cta cta-ink"><Wa size={18} /> WhatsApp me</a>
+        <a href={telHref} class="cta cta-line"><Icons name="phone" size={18} /> Call {OWNER.phone.display}</a>
       </div>
-      <p class="rise mt-6 flex items-center gap-2 text-sm text-cream-2" style="animation-delay:240ms"><span class="inline-block h-[2px] w-6 bg-amber" aria-hidden="true"></span>{COPY.hero.under}</p>
-      <p class="rise mt-2 text-sm text-cream-2" style="animation-delay:280ms">{COPY.hero.sent}</p>
+      <p class="fade-up mt-6 flex items-center gap-3 text-[0.9375rem] font-medium text-print" style="--d:380ms"><span class="inline-block h-px w-6 shrink-0 bg-ox" aria-hidden="true"></span>{COPY.hero.under}</p>
+      <p class="fade-up mt-2 text-[0.8125rem] text-print-3" style="--d:420ms">{COPY.hero.sent}</p>
     </div>
     <div class="relative flex flex-col items-center lg:items-end">
-      <div class="phone-glow" aria-hidden="true"></div>
-      <PhoneMock />
-      <p class="relative mt-5 max-w-xs text-center text-xs leading-snug text-cream-2 lg:text-right">{COPY.hero.example}</p>
+      <div class="relative">
+        <div class="desk" aria-hidden="true"></div>
+        <PhoneMock />
+      </div>
+      <p class="mt-5 max-w-[18rem] text-center text-[0.8125rem] leading-snug text-print-3 lg:max-w-[20rem] lg:text-right">{COPY.hero.example}</p>
     </div>
   </div>
 </header>
