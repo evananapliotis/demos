@@ -4,7 +4,7 @@
  * faces. JPEG under 290KB so WhatsApp shows it. Rendered at build time by
  * src/pages/[slug]/og.jpg.ts.
  */
-import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -82,19 +82,20 @@ export async function renderOg(site: DemoSite): Promise<Buffer> {
  * number, on the same dark ground as the page.
  */
 export async function renderHomeOg(): Promise<Buffer> {
-  // The front page's own system: paper, Instrument Serif with the second line in oxblood italic, a mono label.
+  // The front page's share image in the brand: paper, the lockup from public/brand, navy type with the second line in copper.
+  const lockup = readFileSync(fileURLToPath(new URL('public/brand/lockup.svg', root)), 'utf8')
+    .replace(/^<svg[^>]*viewBox="([^"]+)"[^>]*>/, (_m, vb: string) => `<svg x="80" y="72" height="56" viewBox="${vb}">`);
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
-  <rect width="1200" height="630" fill="#f1eee7"/>
-  <rect x="0" y="0" width="1200" height="2" fill="rgb(26,24,21)" fill-opacity="0.14"/>
-  <rect x="80" y="104" width="12" height="12" fill="#a3202f"/>
-  <text x="104" y="115" font-family="Geist Mono" font-weight="500" font-size="20" letter-spacing="2.4" fill="#625d55">FOR UK BARBERS</text>
-  <text x="76" y="318" font-family="Instrument Serif" font-size="196" letter-spacing="-4" fill="#1a1815">Get seen.</text>
-  <text x="76" y="476" font-family="Instrument Serif" font-style="italic" font-size="196" letter-spacing="-4" fill="#a3202f">Get booked.</text>
-  <text x="80" y="548" font-family="Instrument Sans" font-weight="400" font-size="30" fill="#4b4740">Your shop online, built first. £500 one-off, no monthly fee, live in 48 hours.</text>
-  <rect x="80" y="583" width="24" height="1.5" fill="#a3202f"/>
-  <text x="116" y="590" font-family="Geist Mono" font-weight="500" font-size="19" letter-spacing="1.5" fill="#625d55">MYBARBERSITE.CO.UK  ·  07546 685660</text>
+  <rect width="1200" height="630" fill="#f4efe6"/>
+  <rect x="0" y="0" width="1200" height="2" fill="rgb(15,29,51)" fill-opacity="0.14"/>
+  ${lockup}
+  <text x="76" y="330" font-family="Instrument Serif" font-size="196" letter-spacing="-4" fill="#0f1d33">Get seen.</text>
+  <text x="76" y="488" font-family="Instrument Serif" font-style="italic" font-size="196" letter-spacing="-4" fill="#b8623a">Get booked.</text>
+  <text x="80" y="556" font-family="Instrument Sans" font-weight="400" font-size="30" fill="#46506a">Your shop online, built first. £500 one-off, no monthly fee, live in 48 hours.</text>
+  <rect x="80" y="589" width="24" height="2" fill="#b8623a"/>
+  <text x="116" y="596" font-family="Geist Mono" font-weight="500" font-size="19" letter-spacing="1.5" fill="#5a6379">MYBARBERSITE.CO.UK  ·  07546 685660</text>
 </svg>`;
-  const composed = await sharp({ create: { width: 1200, height: 630, channels: 3, background: '#f1eee7' } })
+  const composed = await sharp({ create: { width: 1200, height: 630, channels: 3, background: '#f4efe6' } })
     .composite([{ input: Buffer.from(svg) }])
     .png()
     .toBuffer();

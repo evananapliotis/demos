@@ -12,6 +12,7 @@
     "check": "tsx scripts/check-assets.ts",
     "images:fetch": "tsx scripts/fetch-images.ts",
     "images:grade": "tsx scripts/grade-images.ts",
+    "brand": "node scripts/brand.mjs",
     "images:placeholders": "tsx scripts/placeholder-images.ts",
     "photos": "node scripts/fetch-photos.mjs"
   },
@@ -22,6 +23,7 @@
     "@fontsource-variable/plus-jakarta-sans": "^5.3.0",
     "@fontsource/instrument-serif": "^5.3.0",
     "astro": "^7.3.2",
+    "opentype.js": "^2.0.0",
     "zod": "^4.6.2"
   },
   "devDependencies": {

@@ -1,17 +1,17 @@
 ---
-/* 10. The closing ask: the one colour plate on the page. */
+/* 10. The closing ask: a navy plate with the shop behind it. */
 import { COPY, OFFER, OWNER, telHref } from '../../lib/home.ts';
 import Icons from '../demo/Icons.astro';
 import Wa from './Wa.astro';
 const c = COPY.cta;
 ---
-<section class="on-ox grain relative isolate overflow-hidden border-t border-paper/25 bg-ox px-5 py-24 text-paper sm:px-8 md:py-40 lg:px-12" aria-labelledby="cta-title">
+<section class="on-navy grain relative isolate overflow-hidden border-t border-paper/25 bg-navy px-5 py-24 text-paper sm:px-8 md:py-40 lg:px-12" aria-labelledby="cta-title">
   <!-- The shop, in oxblood: a grey photo multiplied into the plate, darker where the words sit. -->
   <picture aria-hidden="true">
     <source type="image/avif" srcset="/img/about-shop-640.avif 640w, /img/about-shop-1024.avif 1024w" sizes="100vw" />
-    <img src="/img/about-shop-1024.webp" srcset="/img/about-shop-640.webp 640w, /img/about-shop-1024.webp 1024w" sizes="100vw" alt="" width="1024" height="683" loading="lazy" decoding="async" class="absolute inset-0 -z-10 h-full w-full object-cover object-[62%_45%] opacity-70 grayscale mix-blend-multiply" />
+    <img src="/img/about-shop-1024.webp" srcset="/img/about-shop-640.webp 640w, /img/about-shop-1024.webp 1024w" sizes="100vw" alt="" width="1024" height="683" loading="lazy" decoding="async" class="absolute inset-0 -z-10 h-full w-full object-cover object-[62%_45%] opacity-55 grayscale mix-blend-luminosity" />
   </picture>
-  <div class="absolute inset-0 -z-10 bg-[linear-gradient(to_right,rgb(163_32_47/0.75),rgb(163_32_47/0.35)_60%,rgb(163_32_47/0.1))] md:bg-[linear-gradient(to_right,rgb(163_32_47/0.7),rgb(163_32_47/0.25)_55%,rgb(163_32_47/0))]" aria-hidden="true"></div>
+  <div class="absolute inset-0 -z-10 bg-[linear-gradient(to_right,rgb(15_29_51/0.8),rgb(15_29_51/0.45)_60%,rgb(15_29_51/0.15))] md:bg-[linear-gradient(to_right,rgb(15_29_51/0.75),rgb(15_29_51/0.3)_55%,rgb(15_29_51/0.05))]" aria-hidden="true"></div>
   <div class="relative mx-auto max-w-[76rem]" data-reveal>
     <p class="label">£{OFFER.page} one-off <span aria-hidden="true">·</span> No monthly fee</p>
     <h2 id="cta-title" class="mt-5 text-[clamp(3rem,14vw,8rem)] leading-[0.92] tracking-[-0.02em] text-paper" set:html={c.heading} />

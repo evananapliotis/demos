@@ -13,10 +13,10 @@ const config = { week: SHOP.week, seed: SHOP.slug, services };
 <HomeSection id="booking" label="Online booking" title={c.heading}>
   <div class="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:items-start lg:gap-16">
     <div data-reveal>
-      <div class="space-y-5 text-lg leading-[1.45] text-print-2 lg:text-[1.375rem]">
+      <div class="space-y-5 text-lg leading-[1.45] text-navy-2 lg:text-[1.375rem]">
         {c.lines.map((l) => <p>{l}</p>)}
       </div>
-      <p class="mt-7 font-serif text-[1.75rem] leading-[1.1] tracking-[-0.01em] text-print lg:text-[2.25rem]">{c.price}</p>
+      <p class="mt-7 font-serif text-[1.75rem] leading-[1.1] tracking-[-0.01em] text-navy lg:text-[2.25rem]">{c.price}</p>
       <a href={OWNER.whatsappBooking} target="_blank" rel="noopener" class="cta cta-ink mt-7 w-full sm:w-auto"><Wa size={18} /> {c.button}</a>
     </div>
 

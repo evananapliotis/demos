@@ -3,13 +3,14 @@
 import { COPY, OWNER, telHref } from '../../lib/home.ts';
 import Icons from '../demo/Icons.astro';
 import Wa from './Wa.astro';
+import Logo from './Logo.astro';
 const year = new Date().getFullYear();
 ---
-<footer class="on-print overflow-hidden bg-print px-5 pb-10 pt-12 text-paper sm:px-8 lg:px-12 lg:pb-12 lg:pt-16">
+<footer class="on-navy overflow-hidden bg-navy px-5 pb-10 pt-12 text-paper sm:px-8 lg:px-12 lg:pb-12 lg:pt-16">
   <div class="mx-auto max-w-[76rem]">
     <p class="mb-8 hidden whitespace-nowrap font-serif md:block text-[clamp(3rem,19.3vw,17.4rem)] leading-none tracking-[-0.02em] text-paper/[0.07]" aria-hidden="true" data-reveal>MyBarberSite</p>
     <div class="grid gap-8 md:grid-cols-12 md:items-start md:gap-8">
-      <p class="font-serif text-2xl leading-none tracking-[-0.01em] md:col-span-3">My<i>Barber</i>Site</p>
+      <p class="inline-flex items-center gap-3 font-serif text-2xl leading-none tracking-[-0.01em] md:col-span-3"><Logo size={26} class="shrink-0" /><span>My<i>Barber</i>Site</span></p>
       <div class="divide-y divide-paper/15 border-y border-paper/15 md:col-span-4 md:col-start-4">
         <a href={telHref} class="flex min-h-12 items-center gap-3 font-medium tabular-nums hover:text-paper-muted"><Icons name="phone" size={18} /> {OWNER.phone.display}</a>
         <a href={OWNER.whatsapp} target="_blank" rel="noopener" class="flex min-h-12 items-center gap-3 font-medium hover:text-paper-muted"><Wa size={18} /> WhatsApp</a>

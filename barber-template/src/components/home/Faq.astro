@@ -9,11 +9,11 @@ const c = COPY.faq;
   <div class="faq max-w-[44rem] lg:col-span-7 lg:col-start-4 lg:max-w-none" data-reveal>
     {c.items.map((item) => (
       <details class="group border-t border-rule">
-        <summary class="grid min-h-14 grid-cols-[1fr_auto] items-center gap-4 py-[1.125rem] font-serif text-xl leading-[1.25] tracking-[-0.005em] text-print lg:text-2xl">
+        <summary class="grid min-h-14 grid-cols-[1fr_auto] items-center gap-4 py-[1.125rem] font-serif text-xl leading-[1.25] tracking-[-0.005em] text-navy lg:text-2xl">
           {item.q}
-          <span class="faq__plus font-mono text-xl leading-none text-print-3" aria-hidden="true">+</span>
+          <span class="faq__plus font-mono text-xl leading-none text-navy-3" aria-hidden="true">+</span>
         </summary>
-        <p class="max-w-[38rem] pb-6 text-[1.0625rem] leading-[1.55] text-print-2">{item.a}</p>
+        <p class="max-w-[38rem] pb-6 text-[1.0625rem] leading-[1.55] text-navy-2">{item.a}</p>
       </details>
     ))}
   </div>

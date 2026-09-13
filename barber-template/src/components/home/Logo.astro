@@ -1,0 +1,8 @@
+---
+/* The MyBarberSite mark: three bars leaning like a barber pole's stripe. Same geometry as public/brand/mark.svg. */
+interface Props { size?: number; class?: string; outer?: string; middle?: string }
+const { size = 24, class: cls = '', outer = 'currentColor', middle = 'var(--color-copper)' } = Astro.props;
+---
+<svg width={size} height={size} viewBox="0 0 100 100" class={cls} aria-hidden="true" focusable="false">
+  <g transform="rotate(-22 50 50)"><rect x="17" y="17" width="16" height="66" rx="8" fill={outer} /><rect x="42" y="17" width="16" height="66" rx="8" fill={middle} /><rect x="67" y="17" width="16" height="66" rx="8" fill={outer} /></g>
+</svg>

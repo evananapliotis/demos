@@ -1,7 +1,8 @@
 /*
- * The front page's own system: paper, one serif, one grotesk, a mono for
- * labels, one oxblood accent. The showcase shop shown inside its mockups has
- * a system of its own (showcase.css), kept inside .object frames.
+ * The front page's own system, in the MyBarberSite brand palette: warm
+ * off-white paper, deep navy for type, buttons and plates, one copper accent;
+ * one serif, one grotesk, a mono for labels. The showcase shop shown inside
+ * its mockups has a system of its own (showcase.css), kept inside .object frames.
  */
 @import 'tailwindcss';
 @import './showcase.css';
@@ -11,18 +12,18 @@
 @import '@fontsource-variable/geist-mono/index.css';
 
 @theme {
-  --color-paper: #f1eee7;
-  --color-paper-2: #e7e3da;
-  --color-surface: #faf8f4;
-  --color-print: #1a1815;
-  --color-print-2: #4b4740;
-  --color-print-3: #625d55;
-  --color-rule: rgb(26 24 21 / 0.14);
-  --color-rule-2: rgb(26 24 21 / 0.3);
-  --color-ox: #a3202f;
-  --color-ox-2: #7f1624;
-  --color-paper-muted: #a8a196;
-  --color-phone: #14120f;
+  --color-paper: #f4efe6;
+  --color-paper-2: #ebe4d6;
+  --color-surface: #faf7f1;
+  --color-navy: #0f1d33;
+  --color-navy-2: #46506a;
+  --color-navy-3: #5a6379;
+  --color-rule: rgb(15 29 51 / 0.14);
+  --color-rule-2: rgb(15 29 51 / 0.3);
+  --color-copper: #b8623a;
+  --color-copper-2: #8f4a29;
+  --color-paper-muted: #a9b0c2;
+  --color-phone: #262932;
 
   --font-serif: 'Instrument Serif', 'IS Fallback', 'Times New Roman', Georgia, serif;
   --font-body: 'Instrument Sans Variable', 'ISans Fallback', Arial, Helvetica, sans-serif;
@@ -66,11 +67,11 @@
 /* The page's ground and type, declared after the shop stylesheet so they win. */
 @layer base {
   :root {
-    --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.10 0 0 0 0 0.09 0 0 0 0 0.08 0 0 0 0.045 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url%28%23n%29'/%3E%3C/svg%3E");
+    --grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 0.06 0 0 0 0 0.11 0 0 0 0 0.20 0 0 0 0.045 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url%28%23n%29'/%3E%3C/svg%3E");
   }
   html {
     background: var(--color-paper);
-    color: var(--color-print);
+    color: var(--color-navy);
     scroll-behavior: smooth;
     -webkit-text-size-adjust: 100%;
     overflow-x: clip;
@@ -89,7 +90,7 @@
     body { padding-bottom: 0; }
   }
   ::selection {
-    background: var(--color-ox);
+    background: var(--color-copper);
     color: var(--color-paper);
   }
   h1, h2, h3 {
@@ -100,15 +101,15 @@
     line-height: 1;
     text-wrap: balance;
   }
-  /* The accent word in a heading: the one italic, in oxblood. */
-  h1 .ac, h2 .ac, h3 .ac { color: var(--color-ox); font-style: italic; }
-  .on-ox .ac, .on-print .ac { color: inherit; font-style: italic; }
+  /* The accent word in a heading: the one italic, in copper. */
+  h1 .ac, h2 .ac, h3 .ac { color: var(--color-copper); font-style: italic; }
+  .on-navy .ac, .on-navy .ac { color: inherit; font-style: italic; }
   a:focus-visible, button:focus-visible, summary:focus-visible, [tabindex='-1']:focus-visible {
-    outline: 2px solid var(--color-ox);
+    outline: 2px solid var(--color-copper-2);
     outline-offset: 3px;
     border-radius: 2px;
   }
-  .on-ox a:focus-visible, .on-ox button:focus-visible, .on-print a:focus-visible, .on-print button:focus-visible {
+  .on-navy a:focus-visible, .on-navy button:focus-visible {
     outline-color: var(--color-paper);
   }
   /* Inside a showcase object, focus is the showcase's moss. */
@@ -142,25 +143,21 @@
   &:active { transform: translateY(1px); }
 }
 @utility cta-ink {
-  background: var(--color-print);
+  background: var(--color-navy);
   color: var(--color-paper);
-  &:hover { background: var(--color-ox-2); color: var(--color-paper); }
-  .on-ox & { background: var(--color-paper); color: var(--color-ox); }
-  .on-ox &:hover { background: var(--color-surface); color: var(--color-ox-2); }
-  .on-print & { background: var(--color-paper); color: var(--color-print); }
-  .on-print &:hover { background: var(--color-surface); color: var(--color-print); }
-  .on-paper & { background: var(--color-print); color: var(--color-paper); }
-  .on-paper &:hover { background: var(--color-ox-2); color: var(--color-paper); }
+  &:hover { background: var(--color-copper-2); color: var(--color-paper); }
+  .on-navy & { background: var(--color-paper); color: var(--color-navy); }
+  .on-navy &:hover { background: var(--color-surface); color: var(--color-copper-2); }
+  .on-paper & { background: var(--color-navy); color: var(--color-paper); }
+  .on-paper &:hover { background: var(--color-copper-2); color: var(--color-paper); }
 }
 @utility cta-line {
   background: transparent;
-  color: var(--color-print);
-  box-shadow: inset 0 0 0 1px var(--color-print);
-  &:hover { background: var(--color-print); color: var(--color-paper); }
-  .on-ox & { color: var(--color-paper); box-shadow: inset 0 0 0 1px var(--color-paper); }
-  .on-ox &:hover { background: rgb(241 238 231 / 0.12); color: var(--color-paper); }
-  .on-print & { color: var(--color-paper); box-shadow: inset 0 0 0 1px var(--color-paper); }
-  .on-print &:hover { background: rgb(241 238 231 / 0.12); color: var(--color-paper); }
+  color: var(--color-navy);
+  box-shadow: inset 0 0 0 1px var(--color-navy);
+  &:hover { background: var(--color-navy); color: var(--color-paper); }
+  .on-navy & { color: var(--color-paper); box-shadow: inset 0 0 0 1px var(--color-paper); }
+  .on-navy &:hover { background: rgb(244 239 230 / 0.12); color: var(--color-paper); }
 }
 /* A mono label with a small square in front of it. */
 @utility label {
@@ -173,15 +170,13 @@
   letter-spacing: 0.12em;
   text-transform: uppercase;
   line-height: 1;
-  color: var(--color-print-3);
-  &::before { content: ''; width: 0.5rem; height: 0.5rem; flex: none; background: var(--color-ox); }
-  .on-ox & { color: var(--color-paper); }
-  .on-ox &::before { background: var(--color-paper); }
-  .on-print & { color: var(--color-paper-muted); }
-  .on-print &::before { background: var(--color-paper); }
+  color: var(--color-navy-3);
+  &::before { content: ''; width: 0.5rem; height: 0.5rem; flex: none; background: var(--color-copper); }
+  .on-navy & { color: var(--color-paper-muted); }
+  .on-navy &::before { background: var(--color-copper); }
 }
 @utility label-ink {
-  &::before { background: var(--color-print); }
+  &::before { background: var(--color-navy); }
 }
 @utility folio {
   font-family: var(--font-mono);
@@ -190,7 +185,7 @@
   letter-spacing: 0.08em;
   text-transform: uppercase;
   line-height: 1;
-  color: var(--color-print-3);
+  color: var(--color-navy-3);
 }
 /* Anything that shows the showcase shop: a rounded, shadowed linen object in the shop's own type. */
 @utility object {
@@ -203,18 +198,18 @@
   font-family: var(--font-sc-text);
   color-scheme: light;
   border: 1px solid var(--color-rule-2);
-  box-shadow: 0 1px 2px rgb(26 24 21 / 0.08), 0 24px 48px -20px rgb(26 24 21 / 0.35);
+  box-shadow: 0 1px 2px rgb(15 29 51 / 0.08), 0 24px 48px -20px rgb(15 29 51 / 0.35);
 }
 @utility object-sm {
   border-radius: 1rem;
-  box-shadow: 0 1px 2px rgb(26 24 21 / 0.08), 0 14px 28px -14px rgb(26 24 21 / 0.3);
+  box-shadow: 0 1px 2px rgb(15 29 51 / 0.08), 0 14px 28px -14px rgb(15 29 51 / 0.3);
 }
 /* The one white thing: the Google listing, a clipping next to the black object. */
 @utility clipping {
   background: #fff;
   border: 1px solid var(--color-rule-2);
   border-radius: 0.75rem;
-  box-shadow: 0 1px 2px rgb(26 24 21 / 0.08), 0 20px 40px -24px rgb(26 24 21 / 0.3);
+  box-shadow: 0 1px 2px rgb(15 29 51 / 0.08), 0 20px 40px -24px rgb(15 29 51 / 0.3);
 }
 /* A plate that sits on the paper: lifted by a hairline, never a shadow. */
 @utility plate {
@@ -247,11 +242,11 @@ html.js .desk { animation: fade 1200ms ease-out 400ms both; }
   border-radius: calc(52px * var(--scale));
   background: var(--color-phone);
   box-shadow:
-    0 0 0 2px #2a2622,
-    0 0 0 3px rgb(26 24 21 / 0.12),
-    0 2px 4px rgb(26 24 21 / 0.2),
-    0 30px 60px -20px rgb(26 24 21 / 0.45),
-    0 80px 120px -50px rgb(26 24 21 / 0.5);
+    0 0 0 2px #3b3f4b,
+    0 0 0 3px rgb(15 29 51 / 0.14),
+    0 2px 4px rgb(15 29 51 / 0.2),
+    0 30px 60px -20px rgb(15 29 51 / 0.45),
+    0 80px 120px -50px rgb(15 29 51 / 0.5);
 }
 @media (min-width: 22.5rem) { .phone { --scale: 0.8; } }
 @media (min-width: 24rem) { .phone { --scale: 0.86; } }
@@ -261,7 +256,7 @@ html.js .desk { animation: fade 1200ms ease-out 400ms both; }
   right: -10%;
   bottom: -5%;
   height: 14%;
-  background: radial-gradient(50% 50% at 50% 50%, rgb(26 24 21 / 0.22), transparent 70%);
+  background: radial-gradient(50% 50% at 50% 50%, rgb(15 29 51 / 0.22), transparent 70%);
   pointer-events: none;
 }
 .phone__screen {
@@ -315,7 +310,7 @@ html.js [data-reveal].is-in { opacity: 1; transform: none; }
   left: 0;
   height: 2px;
   width: 100%;
-  background: var(--color-ox);
+  background: var(--color-copper);
   transform-origin: left;
   transform: scaleX(0);
   z-index: 60;
@@ -341,7 +336,7 @@ html:not(.js) [data-mini-book] { display: none; }
 /* ---------- Straight answers ---------- */
 .faq summary { list-style: none; cursor: pointer; transition: color 150ms ease; }
 .faq summary::-webkit-details-marker { display: none; }
-.faq summary:hover, .faq details[open] summary { color: var(--color-ox); }
+.faq summary:hover, .faq details[open] summary { color: var(--color-copper-2); }
 .faq .faq__plus { transition: transform 200ms ease; }
 .faq details[open] .faq__plus { transform: rotate(45deg); }
 

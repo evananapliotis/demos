@@ -10,7 +10,7 @@ const cards = [
   { ...c.pageBooking, price: OFFER.page + OFFER.booking, featured: false },
 ];
 ---
-<HomeSection id="pricing" label="Pricing" title={c.heading} class="on-print overflow-hidden bg-print text-paper" band>
+<HomeSection id="pricing" label="Pricing" title={c.heading} class="on-navy overflow-hidden bg-navy text-paper" band>
   <div slot="bg" class="absolute inset-0" aria-hidden="true">
     <picture>
       <source srcset={SHOP.photos[1]!.avif} type="image/avif" />
@@ -20,10 +20,10 @@ const cards = [
   </div>
   <div class="grid gap-4 md:grid-cols-2 md:gap-6">
     {cards.map((card) => (
-      <div class={`flex flex-col rounded-[4px] p-6 md:p-10 ${card.featured ? 'on-paper border border-surface bg-surface text-print' : 'border border-paper/30 text-paper'}`} data-reveal>
+      <div class={`flex flex-col rounded-[4px] p-6 md:p-10 ${card.featured ? 'on-paper border border-surface bg-surface text-navy' : 'border border-paper/30 text-paper'}`} data-reveal>
         <h3 class="text-[1.75rem] leading-[1.1] lg:text-[2rem]">{card.name}</h3>
         <p class={`folio mt-2 min-h-[0.6875rem] normal-case tracking-[0.04em] ${card.featured ? '' : 'text-paper-muted'}`}>{card.sum}</p>
-        <p class="mt-5 flex items-baseline gap-3"><span class="font-serif text-[5rem] leading-[0.9] tracking-[-0.03em] lg:text-[7rem]">£{card.price}</span><span class={`folio ${card.featured ? 'text-print-3' : 'text-paper-muted'}`}>one-off</span></p>
+        <p class="mt-5 flex items-baseline gap-3"><span class="font-serif text-[5rem] leading-[0.9] tracking-[-0.03em] lg:text-[7rem]">£{card.price}</span><span class={`folio ${card.featured ? 'text-navy-3' : 'text-paper-muted'}`}>one-off</span></p>
         <ul class={`mb-8 mt-6 divide-y border-y text-[1.0625rem] ${card.featured ? 'divide-rule border-rule' : 'divide-paper/15 border-paper/15'}`} role="list">
           {card.lines.map((l) => <li class="py-3">{l}</li>)}
         </ul>
@@ -31,5 +31,5 @@ const cards = [
       </div>
     ))}
   </div>
-  <p class="mt-6 flex items-start gap-3 font-medium text-paper" data-reveal><span class="mt-[0.8em] inline-block h-[1.5px] w-6 shrink-0 bg-ox" aria-hidden="true"></span>{c.note}</p>
+  <p class="mt-6 flex items-start gap-3 font-medium text-paper" data-reveal><span class="mt-[0.8em] inline-block h-[1.5px] w-6 shrink-0 bg-copper" aria-hidden="true"></span>{c.note}</p>
 </HomeSection>
