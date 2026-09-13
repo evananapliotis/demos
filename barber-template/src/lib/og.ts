@@ -66,7 +66,8 @@ export async function renderOg(site: DemoSite): Promise<Buffer> {
   const base = hasHero
     ? sharp(heroFile!).rotate().resize(1200, 630, { fit: 'cover', position: 'centre' }).modulate({ brightness: 0.9, saturation: 0.95 })
     : sharp({ create: { width: 1200, height: 630, channels: 3, background: '#0e0c0a' } });
-  const composed = await base.composite([{ input: Buffer.from(svg) }]).toBuffer();
+  // PNG in between: a created (photo-less) base has no input format for toBuffer() to fall back on.
+  const composed = await base.composite([{ input: Buffer.from(svg) }]).png().toBuffer();
   // WhatsApp only shows preview images under ~300 KB.
   let quality = 84;
   for (;;) {

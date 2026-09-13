@@ -1,6 +1,6 @@
 /**
- * Fetch up to six Google Places photos for every listing in
- * src/data/barbers-5.json.
+ * Fetch up to eight Google Places photos for every listing in
+ * src/data/barbers.json, as 1400px JPEGs.
  *
  *   npm run photos                    every listing
  *   npm run photos -- --slug a,b      only these slugs
@@ -8,32 +8,37 @@
  *
  * Per listing: Places API (New) Text Search for the shop name, biased to a
  * 500m circle around the listing's lat/lng, takes the top result's place id;
- * Place Details with a `photos` field mask; then the Place Photo endpoint at
- * maxWidthPx=1600 for the first six photos, saved to
- * public/photos/<slug>-1.jpg … <slug>-6.jpg.
+ * Place Details with a `photos` field mask; then the Place Photo endpoint for
+ * the first eight photos. Each download is resized to at most 1400px on its
+ * long edge and saved as a JPEG at quality 80, at
+ * public/photos/<slug>-1.jpg … <slug>-8.jpg, so the repo stays small and the
+ * pages can serve the files as they are.
  *
- * Existing files are kept: a listing with all six on disk makes no API calls
- * at all, and one with fewer only re-checks the place and downloads what is
- * missing. Each entry gets `photos`, the root-absolute paths of its files
- * (what an <img src> on the site needs). Author attributions, which Google's
- * terms require alongside a displayed photo, go to src/data/photo-credits.json
- * keyed by that path.
+ * Existing files are kept: a listing with all eight on disk makes no API
+ * calls at all, and one with fewer only re-checks the place and downloads
+ * what is missing. Each entry gets `photos`, the root-absolute paths of its
+ * files (what an <img src> on the site needs). Author attributions, which
+ * Google's terms require alongside a displayed photo, go to
+ * src/data/photo-credits.json keyed by that path.
  *
  * Needs GOOGLE_PLACES_KEY in .env (this directory or the repo root, see
  * .env.example) with "Places API (New)" enabled on the key.
  */
-import { existsSync, mkdirSync, readFileSync, statSync, writeFileSync } from 'node:fs';
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from 'node:fs';
 import { basename, relative, resolve } from 'node:path';
 import { parseArgs } from 'node:util';
 import { config as loadDotenv } from 'dotenv';
+import sharp from 'sharp';
 
 const PROJECT_ROOT = resolve(import.meta.dirname, '..');
-const DATA_FILE = resolve(PROJECT_ROOT, 'src', 'data', 'barbers-5.json');
+const DATA_FILE = resolve(PROJECT_ROOT, 'src', 'data', 'barbers.json');
 const CREDITS_FILE = resolve(PROJECT_ROOT, 'src', 'data', 'photo-credits.json');
 const PHOTOS_DIR = resolve(PROJECT_ROOT, 'public', 'photos');
 const PUBLIC_PATH = '/photos';
-const MAX_PHOTOS = 6;
-const MAX_WIDTH_PX = 1600;
+const MAX_PHOTOS = 8;
+/** Longest edge of a saved photo, and the JPEG quality it is saved at. */
+const MAX_EDGE_PX = 1400;
+const JPEG_QUALITY = 80;
 const BIAS_RADIUS_M = 500;
 const API = 'https://places.googleapis.com/v1';
 
@@ -104,13 +109,22 @@ async function listPhotos(placeId) {
   return data.photos ?? [];
 }
 
-/** The photo endpoint answers with a redirect to the image; fetch follows it. */
+/**
+ * The photo endpoint answers with a redirect to the image; fetch follows it.
+ * The image is asked for at the saved size, then resized (never enlarged)
+ * and re-encoded so every file on disk follows the same rule.
+ */
 async function downloadPhoto(photoName, file) {
-  const res = await fetch(`${API}/${photoName}/media?maxWidthPx=${MAX_WIDTH_PX}&key=${encodeURIComponent(KEY)}`);
+  const res = await fetch(`${API}/${photoName}/media?maxWidthPx=${MAX_EDGE_PX}&maxHeightPx=${MAX_EDGE_PX}&key=${encodeURIComponent(KEY)}`);
   if (!res.ok) throw new Error(`GET ${photoName}/media -> HTTP ${res.status}: ${errorMessage(await res.text())}`);
   const type = res.headers.get('content-type') ?? '';
   if (!type.startsWith('image/')) throw new Error(`GET ${photoName}/media returned ${type || 'no content-type'}, not an image`);
-  writeFileSync(file, Buffer.from(await res.arrayBuffer()));
+  const info = await sharp(Buffer.from(await res.arrayBuffer()))
+    .rotate()
+    .resize({ width: MAX_EDGE_PX, height: MAX_EDGE_PX, fit: 'inside', withoutEnlargement: true })
+    .jpeg({ quality: JPEG_QUALITY, mozjpeg: true })
+    .toFile(file);
+  return { width: info.width, height: info.height, size: info.size };
 }
 
 const shops = JSON.parse(readFileSync(DATA_FILE, 'utf8'));
@@ -153,8 +167,8 @@ for (const shop of shops) {
       if (!args.force && existsSync(file)) {
         console.log(`  ${basename(file)} exists, skipped`);
       } else {
-        await downloadPhoto(photo.name, file);
-        console.log(`  ${basename(file)} ${kb(statSync(file).size)} (source ${photo.widthPx}x${photo.heightPx})`);
+        const saved = await downloadPhoto(photo.name, file);
+        console.log(`  ${basename(file)} ${saved.width}x${saved.height} ${kb(saved.size)} (source ${photo.widthPx}x${photo.heightPx})`);
       }
       paths.push(pathFor(n));
       credits[pathFor(n)] = {

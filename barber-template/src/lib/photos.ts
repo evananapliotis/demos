@@ -1,21 +1,39 @@
 /**
- * The listing photos in public/photos, fetched by scripts/fetch-photos.mjs.
- * They live in public/ so the script can write them without touching code,
- * and are imported here so astro:assets can resize them and emit WebP with a
- * responsive srcset. A path with no file behind it is simply not shown.
- * Author attributions come from src/data/photo-credits.json, keyed by path.
+ * The listing photos in public/photos, fetched by scripts/fetch-photos.mjs
+ * as 1400px JPEGs. They are served as they are, straight from public/, so a
+ * build never resizes or copies them; only their dimensions are read here,
+ * for width and height attributes so nothing shifts while a photo loads. A
+ * path with no file behind it is simply not shown. Author attributions come
+ * from src/data/photo-credits.json, keyed by path.
  */
-import type { ImageMetadata } from 'astro';
+import { existsSync, readFileSync, readdirSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { imageMetadata } from 'astro/assets/utils';
+import { root } from 'astro:config/server';
 import rawCredits from '../data/photo-credits.json';
 
-const files = import.meta.glob<{ default: ImageMetadata }>('/public/photos/*.{jpg,jpeg,png,webp,avif}', { eager: true });
+export interface PhotoSize {
+  width: number;
+  height: number;
+}
 
-const byPath = new Map<string, ImageMetadata>();
-for (const [path, mod] of Object.entries(files)) byPath.set(path.replace(/^\/public/, ''), mod.default);
+const dir = fileURLToPath(new URL('public/photos/', root));
+const sizes = new Map<string, PhotoSize>();
+if (existsSync(dir)) {
+  for (const file of readdirSync(dir)) {
+    if (!/\.(jpe?g|png|webp|avif)$/i.test(file)) continue;
+    try {
+      const m = await imageMetadata(new Uint8Array(readFileSync(dir + file)), file);
+      sizes.set(`/photos/${file}`, { width: m.width, height: m.height });
+    } catch {
+      /* not a readable image: left out */
+    }
+  }
+}
 
-/** Metadata for a root-absolute path such as "/photos/<slug>-1.jpg", or null when the file is missing. */
-export function photoFor(publicPath: string): ImageMetadata | null {
-  return byPath.get(publicPath) ?? null;
+/** Dimensions for a root-absolute path such as "/photos/<slug>-1.jpg", or null when the file is missing. */
+export function photoFor(publicPath: string): PhotoSize | null {
+  return sizes.get(publicPath) ?? null;
 }
 
 export interface PhotoAuthor {

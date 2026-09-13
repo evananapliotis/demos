@@ -1,7 +1,7 @@
 /**
  * Listings behind /demo/[slug].
  *
- * src/data/barbers-5.json is an Outscraper export of Google Business
+ * src/data/barbers.json is an Outscraper export of Google Business
  * listings, one object per shop, plus the `photos` paths that
  * scripts/fetch-photos.mjs writes. Every entry is validated here so a bad or
  * missing field fails the build naming the entry and the key, in the same
@@ -11,7 +11,7 @@
  */
 import { z } from 'zod';
 import { DAYS, type Day } from '../config/site.schema.ts';
-import raw from '../data/barbers-5.json';
+import raw from '../data/barbers.json';
 
 /** Day labels as the export spells them, Monday first. Index-aligned with DAYS. */
 export const DAY_LABELS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] as const;
@@ -72,10 +72,10 @@ export type Shop = z.output<typeof ShopSchema>;
 
 function parseShops(input: unknown): Shop[] {
   const result = z.array(ShopSchema).min(1).safeParse(input);
-  if (!result.success) throw new Error(`src/data/barbers-5.json is invalid:\n\n${z.prettifyError(result.error)}\n`);
+  if (!result.success) throw new Error(`src/data/barbers.json is invalid:\n\n${z.prettifyError(result.error)}\n`);
   const slugs = result.data.map((s) => s.slug);
   const dupes = slugs.filter((s, i) => slugs.indexOf(s) !== i);
-  if (dupes.length) throw new Error(`src/data/barbers-5.json has duplicate slugs: ${[...new Set(dupes)].join(', ')}`);
+  if (dupes.length) throw new Error(`src/data/barbers.json has duplicate slugs: ${[...new Set(dupes)].join(', ')}`);
   return result.data;
 }
 

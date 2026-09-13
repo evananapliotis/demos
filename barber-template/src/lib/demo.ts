@@ -2,7 +2,6 @@
  * Everything a /demo/[slug] page shows, derived from one listing. Nothing here
  * adds facts: it formats what the listing has and leaves out what it lacks.
  */
-import type { ImageMetadata } from 'astro';
 import { DAYS, type Day } from '../config/site.schema.ts';
 import { creditFor, photoFor, type PhotoAuthor } from './photos.ts';
 import { hoursList, kindOf, phoneDisplay, reviewsPerScore, telHref, toSchedule, trueAttributes, type Shop } from './shops.ts';
@@ -14,8 +13,12 @@ const ROADS: Record<string, string> = {
   Ter: 'Terrace', Gdns: 'Gardens', Pk: 'Park', Cl: 'Close', Ct: 'Court', Grn: 'Green', Hl: 'Hill', Mkt: 'Market', Pde: 'Parade',
   Bvd: 'Boulevard', Blvd: 'Boulevard', Hwy: 'Highway', Wy: 'Way',
 };
-/** "91 Balham High Rd" -> "91 Balham High Road". */
-export const expandRoad = (street: string) => street.split(' ').map((w) => ROADS[w] ?? w).join(' ');
+/** "91 Balham High Rd" -> "91 Balham High Road". A trailing comma ("Globe Rd, Harpley Square") stays where it is. */
+export const expandRoad = (street: string) =>
+  street
+    .split(' ')
+    .map((w) => w.replace(/^([A-Za-z]+)([,.]?)$/, (_, word: string, tail: string) => `${ROADS[word] ?? word}${tail}`))
+    .join(' ');
 /** "91 Balham High Rd" -> "Balham High Road": the road without the building number. */
 export const roadName = (street: string) => expandRoad(street.replace(/^\d+[a-z]?(?:-\d+[a-z]?)?\s+/i, '').replace(/^(unit|shop|flat)\s+\S+,?\s+/i, ''));
 
@@ -73,8 +76,10 @@ const listJoin = (items: string[]) => (items.length <= 1 ? items.join('') : `${i
 export const escapeHtml = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;');
 
 export interface Photo {
+  /** Root-absolute, served straight from public/photos. */
   path: string;
-  image: ImageMetadata;
+  width: number;
+  height: number;
   alt: string;
   authors: PhotoAuthor[];
 }
@@ -169,7 +174,7 @@ export function derive(shop: Shop) {
   const found = shop.photos.filter((p) => photoFor(p));
   const photos: Photo[] = found.map((path, i) => ({
     path,
-    image: photoFor(path)!,
+    ...photoFor(path)!,
     alt: `${name}, ${shop.city}: photo ${i + 1} of ${found.length} from the Google listing`,
     authors: creditFor(path)?.authors ?? [],
   }));

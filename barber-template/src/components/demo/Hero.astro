@@ -1,5 +1,4 @@
 ---
-import { Image } from 'astro:assets';
 import type { DemoSite } from '../../lib/demo.ts';
 import Icons from './Icons.astro';
 import Stars from './Stars.astro';
@@ -25,17 +24,15 @@ const nav = [
 <header id="top" class="relative isolate flex min-h-[100svh] flex-col overflow-hidden bg-ink">
   {
     hero && (
-      <Image
-        src={hero.image}
+      <img
+        src={hero.path}
         alt={hero.alt}
-        widths={[480, 768, 1080, 1440]}
-        sizes="100vw"
-        layout="full-width"
-        format="webp"
-        quality={70}
+        width={hero.width}
+        height={hero.height}
         loading="eager"
         fetchpriority="high"
-        class={`hero-photo absolute inset-0 -z-20 !h-full !w-full object-cover object-center opacity-45 ${hero.image.width < 1000 ? 'blur-[2px]' : ''}`}
+        decoding="async"
+        class={`hero-photo absolute inset-0 -z-20 h-full w-full object-cover object-center opacity-45 ${hero.width < 1000 ? 'blur-[2px]' : ''}`}
       />
     )
   }

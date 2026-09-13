@@ -1,18 +1,16 @@
 ---
-/* 02. The listing's photos: swipe track on phones, grid from md up, tap for a full-size lightbox. Credited to their Google Maps authors. */
-import { Image, getImage } from 'astro:assets';
+/* 02. The listing's photos, served straight from public/photos: swipe track on phones, grid from md up, tap for a full-size lightbox. Credited to their Google Maps authors. */
 import type { DemoSite } from '../../lib/demo.ts';
 import Section from './Section.astro';
 import Icons from './Icons.astro';
 interface Props { site: DemoSite; index?: string }
 const { site, index } = Astro.props;
 const photos = site.photos;
-// Full-size versions for the lightbox (never upscaled beyond the original).
-const full = await Promise.all(photos.map((p) => getImage({ src: p.image, width: 1400, format: 'webp', quality: 78, layout: 'none' })));
-const slides = photos.map((p, i) => ({
-  src: full[i]!.src,
-  w: Number(full[i]!.attributes.width),
-  h: Number(full[i]!.attributes.height),
+// The lightbox shows the same files; they are already at most 1400px.
+const slides = photos.map((p) => ({
+  src: p.path,
+  w: p.width,
+  h: p.height,
   alt: p.alt,
   credit: p.authors[0] ? { name: p.authors[0].name, uri: p.authors[0].uri } : null,
 }));
@@ -24,13 +22,11 @@ const slides = photos.map((p, i) => ({
         {photos.map((p, i) => (
           <li class="overflow-hidden rounded-md bg-ink-3">
             <button type="button" class="gallery-open group block w-full cursor-zoom-in" data-index={i} aria-label={`Open photo ${i + 1} of ${photos.length} full size`}>
-              <Image
-                src={p.image}
+              <img
+                src={p.path}
                 alt={p.alt}
-                widths={[360, 640, 960]}
-                sizes="(min-width: 768px) 33vw, 82vw"
-                format="webp"
-                quality={72}
+                width={p.width}
+                height={p.height}
                 loading="lazy"
                 decoding="async"
                 class="aspect-[4/5] h-auto w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"

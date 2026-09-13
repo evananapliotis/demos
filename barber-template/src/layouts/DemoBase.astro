@@ -11,8 +11,10 @@ interface Props {
   site: DemoSite;
   title: string;
   description: string;
+  /** The shop page preloads its hero photo; inner pages do not. */
+  preloadHero?: boolean;
 }
-const { site, title, description } = Astro.props;
+const { site, title, description, preloadHero = false } = Astro.props;
 const pageUrl = new URL(Astro.url.pathname, Astro.site).href.replace(/\/$/, '');
 /** Rendered by src/pages/demo/[slug]/og.jpg.ts; the booking page shares the shop page's. */
 const ogImage = new URL(`/demo/${site.slug}/og.jpg`, Astro.site).href;
@@ -33,6 +35,7 @@ const ratingAlt = site.google.rating != null ? `Rated ${site.google.rating.toFix
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <meta name="robots" content="noindex,nofollow" />
     <link rel="preload" as="font" type="font/woff2" href={displayWoff2} crossorigin />
+    {preloadHero && site.hero && <link rel="preload" as="image" href={site.hero.path} fetchpriority="high" />}
 
     <meta property="og:type" content="business.business" />
     <meta property="og:site_name" content={site.name} />

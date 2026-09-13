@@ -1,6 +1,6 @@
 ---
 /**
- * One demo page per listing in src/data/barbers-5.json, at /demo/<slug>.
+ * One demo page per listing in src/data/barbers.json, at /demo/<slug>.
  *
  * The HAWAR BARBER one-page structure with the listing's content: hero on the
  * first photo, a trust strip and ticker of listing facts, 01 Prices, 02 The
@@ -40,7 +40,7 @@ const next = () => String(++n).padStart(2, '0');
 const idx = { prices: next(), gallery: site.photos.length ? next() : undefined, about: next(), findUs: next() };
 ---
 
-<DemoBase site={site} title={title} description={site.description}>
+<DemoBase site={site} title={title} description={site.description} preloadHero>
   <Hero site={site} />
   <TrustStrip site={site} />
   <Ticker site={site} />
