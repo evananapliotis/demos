@@ -1,0 +1,455 @@
+---
+/**
+ * One demo page per listing in src/data/barbers-5.json, at /demo/<slug>.
+ *
+ * Built on the Halden & Crane template: same tokens, type and components'
+ * layout, with the content coming from the listing instead of site.ts. The
+ * hero shows the listing's photo (street view when that is missing or fails
+ * to load), then name, rating, address and a call button; below it the hours
+ * as a Monday-to-Sunday list, contact details, and the booking flow with the
+ * shop's name in the copy. Every page is noindex: these are demos, not the
+ * shops' sites.
+ */
+import '../../styles/global.css';
+import { site } from '../../config/site.ts';
+import DemoBooking from '../../components/DemoBooking.astro';
+import { bookingSchedule, hoursList, initials, kindOf, mapsUrl, shops, telHref, type Shop } from '../../lib/shops.ts';
+
+export function getStaticPaths() {
+  return shops.map((shop) => ({ params: { slug: shop.slug }, props: { shop } }));
+}
+
+interface Props {
+  shop: Shop;
+}
+
+const { shop } = Astro.props;
+const lang = site.seo.locale.replace('_', '-');
+const number = new Intl.NumberFormat(lang);
+
+const kind = kindOf(shop);
+const mark = initials(shop.name);
+const tel = telHref(shop.phone);
+const heroSrc = shop.photo ?? shop.street_view!;
+const heroFallback = shop.street_view && shop.street_view !== heroSrc ? shop.street_view : undefined;
+const hours = hoursList(shop.hours);
+const schedule = bookingSchedule(shop.hours);
+const reviewsText = `${number.format(shop.reviews)} ${shop.reviews === 1 ? 'review' : 'reviews'}`;
+const ratingText = shop.rating != null ? shop.rating.toFixed(1) : null;
+const addressLine1 = shop.street ?? shop.address.split(',')[0]!;
+
+const title = `${shop.name} | ${kind} in ${shop.city}`;
+const description = `${shop.name}, ${kind.toLowerCase()} at ${shop.address}. ${ratingText ? `Rated ${ratingText} from ${reviewsText}` : reviewsText} on Google. Call ${shop.phone} or book online.`;
+const year = new Date().getFullYear();
+---
+
+<!doctype html>
+<html lang={lang}>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title}</title>
+    <meta name="description" content={description} />
+    <meta name="robots" content="noindex" />
+    <meta name="theme-color" content={site.seo.themeColour} />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="preload" as="font" href="/fonts/bebas-neue-latin.woff2" type="font/woff2" crossorigin />
+    <link rel="preload" as="image" href={heroSrc} fetchpriority="high" referrerpolicy="no-referrer" />
+  </head>
+  <body>
+    <a class="skip-link" href="#main">{site.ui.skipToContent}</a>
+
+    <header class="site-header">
+      <div class="wrap site-header__in">
+        <a class="brand" href="#top">
+          <span class="brand__mark" aria-hidden="true">{mark}</span>
+          <span class="brand__name">{shop.name}</span>
+        </a>
+        <nav class="site-nav" aria-label="Page navigation">
+          <ul>
+            <li><a href="#hours">Hours</a></li>
+            <li><a href="#contact">Contact</a></li>
+            <li><a href="#book">Book</a></li>
+          </ul>
+        </nav>
+      </div>
+    </header>
+
+    <main id="main">
+      <section class="hero" id="top">
+        <div class="hero__media">
+          <img
+            id="hero-photo"
+            src={heroSrc}
+            data-fallback={heroFallback}
+            alt={`${shop.name}, ${shop.address}`}
+            width="800"
+            height="500"
+            loading="eager"
+            decoding="sync"
+            fetchpriority="high"
+            referrerpolicy="no-referrer"
+          />
+          <script is:inline>
+            // Street view stands in when the listing photo fails to load, including one that failed before this ran.
+            (function () {
+              const img = document.getElementById('hero-photo');
+              if (!(img instanceof HTMLImageElement) || !img.dataset.fallback) return;
+              const swap = () => {
+                img.removeEventListener('error', swap);
+                img.src = img.dataset.fallback || '';
+              };
+              if (img.complete && img.naturalWidth === 0) swap();
+              else img.addEventListener('error', swap);
+            })();
+          </script>
+        </div>
+        <div class="hero__scrim" aria-hidden="true"></div>
+        <div class="wrap hero__content">
+          <p class="eyebrow">{kind} · {shop.city}</p>
+          <h1>{shop.name}</h1>
+          <p class="rating">
+            {
+              ratingText ? (
+                <>
+                  <span class="sr-only">Rated </span>
+                  {ratingText}
+                  <span aria-hidden="true"> ★</span>
+                  <span class="sr-only"> out of 5</span> from {reviewsText}
+                </>
+              ) : (
+                <>Not yet rated · {reviewsText}</>
+              )
+            }
+          </p>
+          <p class="lede hero__address">{shop.address}</p>
+          <div class="hero__ctas">
+            <a class="btn" href={tel}>Call now</a>
+            <a class="btn btn--ghost" href="#book">Book online</a>
+          </div>
+        </div>
+      </section>
+
+      <section class="section" id="hours" aria-labelledby="hours-heading">
+        <div class="wrap info">
+          <div class="info__col">
+            <div class="section-head">
+              <h2 id="hours-heading">Opening hours</h2>
+            </div>
+            {
+              hours ? (
+                <dl class="hours-list">
+                  {hours.map((h) => (
+                    <div class:list={['hours-list__row', { 'is-closed': h.closed }]}>
+                      <dt>{h.day}</dt>
+                      <dd>{h.text}</dd>
+                    </div>
+                  ))}
+                </dl>
+              ) : (
+                <p class="muted">Opening hours are not listed for this shop. Call to check.</p>
+              )
+            }
+          </div>
+          <div class="info__col" id="contact">
+            <div class="section-head">
+              <h2 id="contact-heading">Find us</h2>
+            </div>
+            <address class="contact__address">
+              {addressLine1}<br />
+              {shop.city} {shop.postcode}
+            </address>
+            <ul class="contact__links">
+              <li><a href={tel}>{shop.phone}</a></li>
+              <li><a href={mapsUrl(shop)} rel="noopener">Get directions</a></li>
+              {shop.reviews_link && <li><a href={shop.reviews_link} rel="noopener">Read reviews on Google</a></li>}
+            </ul>
+            <a class="btn contact__cta" href={tel}>Call now</a>
+          </div>
+        </div>
+      </section>
+
+      <DemoBooking shop={shop} schedule={schedule} />
+    </main>
+
+    <footer class="site-footer">
+      <div class="wrap site-footer__in">
+        <p class="sample-label">Demo site for {shop.name}, built from public listing data. Not the shop's official website.</p>
+        <div class="site-footer__row">
+          <p class="muted">&copy; {year} {shop.name}</p>
+          <p class="muted"><a href="/">Built on the Halden &amp; Crane template</a></p>
+        </div>
+      </div>
+    </footer>
+
+    <nav class="sticky-bar" aria-label={site.ui.stickyBar.label}>
+      <a class="sticky-bar__btn sticky-bar__btn--call" href={tel}>
+        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M22 16.9v3a2 2 0 0 1-2.2 2 19.8 19.8 0 0 1-8.6-3.1 19.5 19.5 0 0 1-6-6A19.8 19.8 0 0 1 2.1 4.2 2 2 0 0 1 4.1 2h3a2 2 0 0 1 2 1.7c.1.9.4 1.9.7 2.8a2 2 0 0 1-.5 2.1L8 9.9a16 16 0 0 0 6 6l1.3-1.3a2 2 0 0 1 2.1-.4c.9.3 1.9.6 2.8.7a2 2 0 0 1 1.8 2z" />
+        </svg>
+        <span>{site.ui.stickyBar.call}</span>
+      </a>
+      <a class="sticky-bar__btn sticky-bar__btn--book" href="#book">
+        <svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="3" y="4" width="18" height="18" rx="2" /><path d="M16 2v4M8 2v4M3 10h18" />
+        </svg>
+        <span>{site.ui.stickyBar.book}</span>
+      </a>
+    </nav>
+  </body>
+</html>
+
+<style>
+  /* Header */
+  .site-header {
+    position: relative;
+    z-index: 20;
+    background: var(--bg);
+    border-bottom: 1px solid var(--line);
+  }
+  .site-header__in {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    min-height: 4rem;
+    padding-block: var(--space-2);
+    flex-wrap: wrap;
+  }
+  .brand {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    color: var(--ink);
+    text-decoration: none;
+  }
+  .brand__mark {
+    display: grid;
+    place-items: center;
+    flex: none;
+    min-width: 2.5rem;
+    height: 2.5rem;
+    padding-inline: 0.4rem;
+    border: 1px solid var(--accent);
+    border-radius: var(--radius);
+    color: var(--accent);
+    font-family: var(--font-display);
+    font-size: 1.1rem;
+    letter-spacing: 0.02em;
+  }
+  .brand__name {
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .site-nav ul {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3) var(--space-4);
+  }
+  .site-nav a {
+    color: var(--ink);
+    text-decoration: none;
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+  }
+  .site-nav a:hover,
+  .site-nav li:last-child a {
+    color: var(--accent);
+  }
+  @media (min-width: 900px) {
+    .site-header {
+      position: sticky;
+      top: 0;
+      background: color-mix(in srgb, var(--bg) 88%, transparent);
+      backdrop-filter: blur(10px);
+    }
+  }
+
+  /* Hero */
+  .hero {
+    position: relative;
+    display: grid;
+    align-items: end;
+    /* Leave room for the sticky bar on phones so the CTAs are never under it. */
+    min-height: clamp(520px, calc(92svh - var(--sticky-bar)), 860px);
+    isolation: isolate;
+    overflow: hidden;
+  }
+  .hero__media,
+  .hero__scrim {
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+  }
+  .hero__media img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .hero__scrim {
+    background:
+      linear-gradient(to top, var(--bg) 0%, color-mix(in srgb, var(--bg) 70%, transparent) 40%, transparent 75%),
+      linear-gradient(to right, color-mix(in srgb, var(--bg) 55%, transparent), transparent 60%);
+  }
+  .hero__content {
+    display: grid;
+    gap: var(--space-3);
+    padding-block: var(--space-6) var(--space-5);
+  }
+  .hero h1 {
+    max-width: 16ch;
+    overflow-wrap: anywhere;
+  }
+  .rating {
+    font-family: var(--font-display);
+    font-size: var(--step-2);
+    letter-spacing: 0.04em;
+    color: var(--accent);
+  }
+  .hero__address {
+    color: var(--ink);
+  }
+  .hero__ctas {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-2);
+  }
+  @media (min-width: 768px) {
+    .hero {
+      min-height: clamp(560px, 92svh, 860px);
+    }
+    .hero__content {
+      padding-block: var(--space-7) var(--space-6);
+    }
+  }
+
+  /* Hours and contact */
+  .info {
+    display: grid;
+    gap: var(--space-6);
+  }
+  .info__col {
+    display: grid;
+    gap: var(--space-4);
+    align-content: start;
+    scroll-margin-top: 4rem;
+  }
+  .info__col .section-head {
+    margin-bottom: 0;
+  }
+  .hours-list {
+    display: grid;
+    width: 100%;
+    max-width: 28rem;
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+  }
+  .hours-list__row {
+    display: flex;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: var(--space-2) 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .hours-list dt {
+    font-weight: 500;
+  }
+  .hours-list dd {
+    margin: 0;
+    color: var(--ink-2);
+    text-align: right;
+  }
+  .is-closed dd {
+    color: var(--ink-3);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-size: var(--step--1);
+  }
+  .contact__address {
+    font-style: normal;
+    font-size: var(--step-1);
+    line-height: 1.4;
+  }
+  .contact__links {
+    display: grid;
+    gap: var(--space-2);
+  }
+  .contact__cta {
+    justify-self: start;
+  }
+  @media (min-width: 768px) {
+    .info {
+      grid-template-columns: 1fr 1fr;
+    }
+  }
+
+  /* Footer */
+  .site-footer {
+    border-top: 1px solid var(--line);
+    padding-block: var(--space-5);
+    font-size: var(--step--1);
+  }
+  .site-footer__in {
+    display: grid;
+    gap: var(--space-3);
+  }
+  .sample-label {
+    display: inline-block;
+    max-width: none;
+    padding: var(--space-2) var(--space-3);
+    border: 1px dashed var(--accent);
+    border-radius: var(--radius);
+    color: var(--accent);
+    letter-spacing: 0.04em;
+    justify-self: start;
+  }
+  .site-footer__row {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: var(--space-3);
+  }
+
+  /* Sticky bar, phones only */
+  .sticky-bar {
+    position: fixed;
+    inset: auto 0 0 0;
+    z-index: 50;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: var(--line);
+    border-top: 1px solid var(--line);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+  .sticky-bar__btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: var(--space-2);
+    min-height: calc(var(--sticky-bar) - 1px);
+    font-family: var(--font-display);
+    font-size: var(--step-1);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-decoration: none;
+  }
+  .sticky-bar__btn--call {
+    background: var(--bg-3);
+    color: var(--ink);
+  }
+  .sticky-bar__btn--book {
+    background: var(--accent);
+    color: var(--accent-ink);
+  }
+  @media (min-width: 768px) {
+    .sticky-bar {
+      display: none;
+    }
+  }
+</style>

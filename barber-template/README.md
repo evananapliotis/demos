@@ -92,6 +92,10 @@ Image URLs carry a content hash as a query string (`/img/hero-1024.avif?v=…`),
 
 One page with anchor sections (`/`), plus `/book` (front-end only booking flow, marked as a demo) and `404`. Photo provenance is kept in `src/config/credits.json` but not rendered.
 
+### Demo pages, `/demo/<slug>`
+
+`src/pages/demo/[slug].astro` builds one page per entry in `src/data/barbers-5.json`, an export of Google Business listings. Each page is the template's look with the listing's content: the listing photo as the hero (street view stands in when the photo is missing or fails to load), name, rating and review count, address, a Monday-to-Sunday hours list, a call button, and the booking flow with the shop's name in the copy. The pages carry `<meta name="robots" content="noindex">`. Entries are validated by `src/lib/shops.ts` at build time; add more listings to the JSON and they get pages too.
+
 ## Deploy
 
 Static output, no adapter. Two routes, pick one:

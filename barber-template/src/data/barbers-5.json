@@ -1,0 +1,232 @@
+[
+  {
+    "slug": "jacksons-for-hair",
+    "name": "Jacksons for Hair",
+    "phone": "+44 20 8675 7999",
+    "address": "91 Balham High Rd, London SW12 9AP",
+    "street": "91 Balham High Rd",
+    "city": "London",
+    "postcode": "SW12 9AP",
+    "rating": 4.8,
+    "reviews": 1087,
+    "hours": {
+      "Monday": [
+        "9am-8pm"
+      ],
+      "Tuesday": [
+        "9am-8pm"
+      ],
+      "Wednesday": [
+        "9am-8pm"
+      ],
+      "Thursday": [
+        "9am-8pm"
+      ],
+      "Friday": [
+        "9am-8pm"
+      ],
+      "Saturday": [
+        "9am-7pm"
+      ],
+      "Sunday": [
+        "10am-5pm"
+      ]
+    },
+    "photo": "https://lh3.googleusercontent.com/gps-cs-s/AHRPTWmSaHmhLz9A9hYOYc_F4YGj6stDhF7nzelcQE6Df0QT-z4MjrrHra-Ehjxvpi4tHu3-qam_znhtjqUrYekHUUOcrcyHfrVUjEhWs2XOCmuzNRK_pskUXGo20BPMO6eT-ViXTNHg=w800-h500-k-no",
+    "logo": "https://lh4.googleusercontent.com/-ZwwB6xK9_cY/AAAAAAAAAAI/AAAAAAAAAAA/nNHNVWdqLZI/s44-p-k-no-ns-nd/photo.jpg",
+    "street_view": "https://lh3.googleusercontent.com/gps-cs-s/AHRPTWmSaHmhLz9A9hYOYc_F4YGj6stDhF7nzelcQE6Df0QT-z4MjrrHra-Ehjxvpi4tHu3-qam_znhtjqUrYekHUUOcrcyHfrVUjEhWs2XOCmuzNRK_pskUXGo20BPMO6eT-ViXTNHg=w1600-h1000-k-no",
+    "photos_count": 220,
+    "booking_link": "https://www.treatwell.co.uk/place/jacksons-for-hair/?utm_source=google&utm_medium=rwg&rwg_token=AE37R_jC75QRdjQ8IW3I2ELjtMkqqd-ao6PwEi73BTkxpWJTXzqEdXh6-Lwua-rSNIfuae2miWkBXlb7qDX26tScSbA9A_DGwA%3D%3D",
+    "website": "https://www.treatwell.co.uk/place/jacksons-for-hair/",
+    "description": null,
+    "reviews_link": "https://search.google.com/local/reviews?placeid=ChIJ94_mPs8FdkgRAHtBLV0D7Zo&q=*&authuser=0&hl=en&gl=GB",
+    "lat": 51.4455156,
+    "lng": -0.1504617,
+    "tier": 1,
+    "subtypes": "Barber shop, Anaesthetist, Beautician, Beauty Salon, Facial spa, Laser hair removal service, Nail salon, Hairdresser, Waxing Hair-Removal Service"
+  },
+  {
+    "slug": "hm-barbers",
+    "name": "HM Barbers",
+    "phone": "+44 7459 731258",
+    "address": "382 Kingsland Rd, London E8 4AA",
+    "street": "382 Kingsland Rd",
+    "city": "London",
+    "postcode": "E8 4AA",
+    "rating": 4.9,
+    "reviews": 805,
+    "hours": {
+      "Monday": [
+        "9am-8pm"
+      ],
+      "Tuesday": [
+        "9am-8pm"
+      ],
+      "Wednesday": [
+        "9am-8pm"
+      ],
+      "Thursday": [
+        "9am-8pm"
+      ],
+      "Friday": [
+        "9am-8pm"
+      ],
+      "Saturday": [
+        "9am-8pm"
+      ],
+      "Sunday": [
+        "10am-7pm"
+      ]
+    },
+    "photo": "https://lh3.googleusercontent.com/gps-cs-s/AHRPTWloOpX4npzWnDPf3ModWjBTAWWizQl76eRzODNpqOif7DLY4F4-sByTm_cOWKt6cllbSO-q5uaF6ZU6AMS3gSsyGqTJXk-4ww3ETX0cHepUQAOsoXiQg4MD1jbzOImaTizZK4qw=w800-h500-k-no",
+    "logo": "https://lh5.googleusercontent.com/-5TIYhrn8oKg/AAAAAAAAAAI/AAAAAAAAAAA/3FcQUmQhJII/s44-p-k-no-ns-nd/photo.jpg",
+    "street_view": "https://lh3.googleusercontent.com/gps-cs-s/AHRPTWloOpX4npzWnDPf3ModWjBTAWWizQl76eRzODNpqOif7DLY4F4-sByTm_cOWKt6cllbSO-q5uaF6ZU6AMS3gSsyGqTJXk-4ww3ETX0cHepUQAOsoXiQg4MD1jbzOImaTizZK4qw=w1600-h1000-k-no",
+    "photos_count": 2350,
+    "booking_link": "https://www.fresha.com/book-now/hm-barbers-jv033qge/all-offer?id=1173363&pId=1112970&rwg_token=AE37R_gvXu7hrdn0L-ZJ6Ni4YleEiscdP4acZ7NhbZoFkmXZORVV1nx66dujhSqlP3gwnYhHR0OMNgCMjUFMEBBAqlCwxUVEaAUoABoFQsgNspkxkb3JREs%3D",
+    "website": "https://www.fresha.com/book-now/hm-barbers-jv033qge/all-offer%3Fshare%3Dtrue%26pId%3D1112970",
+    "description": null,
+    "reviews_link": "https://search.google.com/local/reviews?placeid=ChIJX6OmMqYddkgRjiXB1ccRrYk&q=*&authuser=0&hl=en&gl=GB",
+    "lat": 51.5410755,
+    "lng": -0.0759982,
+    "tier": 1,
+    "subtypes": "Barber shop, Barber Supply Shop, Beauty Salon, Health and beauty shop, Hairdresser"
+  },
+  {
+    "slug": "nandj-cutz",
+    "name": "N&J cutz",
+    "phone": "+44 7446 665519",
+    "address": "117a Far Gosford St, Coventry CV1 5EA",
+    "street": "117a Far Gosford St",
+    "city": "Coventry",
+    "postcode": "CV1 5EA",
+    "rating": 4.9,
+    "reviews": 729,
+    "hours": {
+      "Monday": [
+        "9:30am-7pm"
+      ],
+      "Tuesday": [
+        "9:30am-7pm"
+      ],
+      "Wednesday": [
+        "9:30am-7pm"
+      ],
+      "Thursday": [
+        "9:30am-7pm"
+      ],
+      "Friday": [
+        "9:30am-7pm"
+      ],
+      "Saturday": [
+        "9:30am-7pm"
+      ],
+      "Sunday": [
+        "9:30am-7pm"
+      ]
+    },
+    "photo": "https://lh3.googleusercontent.com/gps-cs-s/AHRPTWlALB-jC25A6KpCvIj2B8E4rWufZwzyQnzJ90kPAJl8xo-wTo047b4JhLvJiBRJ0rmPsPLpl_DYWNYn7QVdbaemo0ERlQHsUFYPmbaOLjXpsLm5w8SENyoA1sPYds9nSfVL0lLvrA=w800-h500-k-no",
+    "logo": "https://lh4.googleusercontent.com/-PloTkEzamSU/AAAAAAAAAAI/AAAAAAAAAAA/gxecoOVfiD0/s44-p-k-no-ns-nd/photo.jpg",
+    "street_view": "https://lh3.googleusercontent.com/gps-cs-s/AHRPTWlALB-jC25A6KpCvIj2B8E4rWufZwzyQnzJ90kPAJl8xo-wTo047b4JhLvJiBRJ0rmPsPLpl_DYWNYn7QVdbaemo0ERlQHsUFYPmbaOLjXpsLm5w8SENyoA1sPYds9nSfVL0lLvrA=w1600-h1000-k-no",
+    "photos_count": 18,
+    "booking_link": "https://www.fresha.com/book-now/n-j-cutz-flc2bvg0/all-offer?id=1129550&pId=1071161&rwg_token=AE37R_i093bgxm26R5XEo7_QC6JKkfg_tKrMwMtZWMFVePHFsqIJrKZdjP0ymVBGZx-zZvre8GEBDgNh3I_X_407GRjt8how9FQWfZArSkhRwQ-DupBwY-A%3D",
+    "website": "https://instagram.com/nj.cutz%3Futm_medium%3Dcopy_link",
+    "description": null,
+    "reviews_link": "https://search.google.com/local/reviews?placeid=ChIJP3Civ2pLd0gR4EpFVrDbBug&q=*&authuser=0&hl=en&gl=GB",
+    "lat": 52.4077934,
+    "lng": -1.4950299,
+    "tier": 1,
+    "subtypes": "Barber shop"
+  },
+  {
+    "slug": "gentlemans-fade-barberstm-aldgate-east",
+    "name": "Gentlemans Fade Barbers™️ | Aldgate East",
+    "phone": "+44 7862 727615",
+    "address": "15 Christian St, London E1 1SE",
+    "street": "15 Christian St",
+    "city": "London",
+    "postcode": "E1 1SE",
+    "rating": 4.9,
+    "reviews": 724,
+    "hours": {
+      "Monday": [
+        "12-8pm"
+      ],
+      "Tuesday": [
+        "12-8pm"
+      ],
+      "Wednesday": [
+        "12-8pm"
+      ],
+      "Thursday": [
+        "12-8pm"
+      ],
+      "Friday": [
+        "10am-8pm"
+      ],
+      "Saturday": [
+        "10am-8pm"
+      ],
+      "Sunday": [
+        "10am-6pm"
+      ]
+    },
+    "photo": "https://lh3.googleusercontent.com/gps-cs-s/AHRPTWmyKFPU07P2FNCqBSr2KEqoyhzJGC2xVjNvbtE4GOYv0qZARDXsoCV_Rv6yBZh1RaqJlZl2jHrvZtgsAd5PhJlvuLissXmDGLRErEhaYJxcI2535AQqaZBKnzxUGDkKdWiW0DQkvmlINnV0=w800-h500-k-no",
+    "logo": "https://lh4.googleusercontent.com/-qkzo9gcXPKE/AAAAAAAAAAI/AAAAAAAAAAA/qrx9Qes1Ww0/s44-p-k-no-ns-nd/photo.jpg",
+    "street_view": "https://lh3.googleusercontent.com/gps-cs-s/AHRPTWmyKFPU07P2FNCqBSr2KEqoyhzJGC2xVjNvbtE4GOYv0qZARDXsoCV_Rv6yBZh1RaqJlZl2jHrvZtgsAd5PhJlvuLissXmDGLRErEhaYJxcI2535AQqaZBKnzxUGDkKdWiW0DQkvmlINnV0=w1600-h1000-k-no",
+    "photos_count": 854,
+    "booking_link": "https://gentlemansfade.mytreatwell.co.uk/",
+    "website": "https://gentlemansfade.mytreatwell.co.uk/",
+    "description": null,
+    "reviews_link": "https://search.google.com/local/reviews?placeid=ChIJg4kPenoDdkgRlHpp18a7uv4&q=*&authuser=0&hl=en&gl=GB",
+    "lat": 51.5118486,
+    "lng": -0.06418109999999999,
+    "tier": 1,
+    "subtypes": "Barber shop, Stylist"
+  },
+  {
+    "slug": "what-the-barber",
+    "name": "What the…!! Barber",
+    "phone": "+44 20 7247 6542",
+    "address": "228 Shoreditch High St, London E1 6PJ",
+    "street": "228 Shoreditch High St",
+    "city": "London",
+    "postcode": "E1 6PJ",
+    "rating": 4.9,
+    "reviews": 576,
+    "hours": {
+      "Monday": [
+        "9:30am-7:30pm"
+      ],
+      "Tuesday": [
+        "9:30am-7:30pm"
+      ],
+      "Wednesday": [
+        "9:30am-7:30pm"
+      ],
+      "Thursday": [
+        "9:30am-7:30pm"
+      ],
+      "Friday": [
+        "9:30am-7:30pm"
+      ],
+      "Saturday": [
+        "10am-5pm"
+      ],
+      "Sunday": [
+        "10am-5pm"
+      ]
+    },
+    "photo": "https://lh3.googleusercontent.com/gps-cs-s/AHRPTWkUKGuOwKWPPX1dSU_2M-R-Q_5kaQ3j8qJbLT6Hy9GwBdlQd4n7cB9Pmm6UQifLbg_9Od3sYmc_7_2svOWaKAkLJfjvMFNhFgN1XZDwEysSaXogdtSNZ-HCL_svRZ5p4ieU7VuI1A=w800-h500-k-no",
+    "logo": "https://lh6.googleusercontent.com/-ICbifuh_dYk/AAAAAAAAAAI/AAAAAAAAAAA/hUS_u5bBIsg/s44-p-k-no-ns-nd/photo.jpg",
+    "street_view": "https://lh3.googleusercontent.com/gps-cs-s/AHRPTWkUKGuOwKWPPX1dSU_2M-R-Q_5kaQ3j8qJbLT6Hy9GwBdlQd4n7cB9Pmm6UQifLbg_9Od3sYmc_7_2svOWaKAkLJfjvMFNhFgN1XZDwEysSaXogdtSNZ-HCL_svRZ5p4ieU7VuI1A=w1600-h1000-k-no",
+    "photos_count": 113,
+    "booking_link": "https://www.instagram.com/what_the_barber?igsh=dXI2MW9tMWkwYWQ=",
+    "website": "https://whatthebarber.mytreatwell.co.uk/",
+    "description": null,
+    "reviews_link": "https://search.google.com/local/reviews?placeid=ChIJk900a9oddkgRkz5PGiF4QQg&q=*&authuser=0&hl=en&gl=GB",
+    "lat": 51.5224169,
+    "lng": -0.07824439999999999,
+    "tier": 1,
+    "subtypes": "Barber shop, Beauty Salon"
+  }
+]
