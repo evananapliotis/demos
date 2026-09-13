@@ -149,6 +149,8 @@
   .on-ox &:hover { background: var(--color-surface); color: var(--color-ox-2); }
   .on-print & { background: var(--color-paper); color: var(--color-print); }
   .on-print &:hover { background: var(--color-surface); color: var(--color-print); }
+  .on-paper & { background: var(--color-print); color: var(--color-paper); }
+  .on-paper &:hover { background: var(--color-ox-2); color: var(--color-paper); }
 }
 @utility cta-line {
   background: transparent;
@@ -175,6 +177,8 @@
   &::before { content: ''; width: 0.5rem; height: 0.5rem; flex: none; background: var(--color-ox); }
   .on-ox & { color: var(--color-paper); }
   .on-ox &::before { background: var(--color-paper); }
+  .on-print & { color: var(--color-paper-muted); }
+  .on-print &::before { background: var(--color-paper); }
 }
 @utility label-ink {
   &::before { background: var(--color-print); }
@@ -191,6 +195,7 @@
 /* Anything that shows the showcase shop: a rounded, shadowed linen object in the shop's own type. */
 @utility object {
   position: relative;
+  min-width: 0;
   overflow: clip; /* clips the corners without becoming a scroll container, so scrollIntoView inside it moves the page */
   border-radius: 1.25rem;
   background: var(--color-linen);
@@ -248,9 +253,8 @@ html.js .desk { animation: fade 1200ms ease-out 400ms both; }
     0 30px 60px -20px rgb(26 24 21 / 0.45),
     0 80px 120px -50px rgb(26 24 21 / 0.5);
 }
-@media (min-width: 22.5rem) { .phone { --scale: 0.76; } }
-@media (min-width: 24rem) { .phone { --scale: 0.8; } }
-@media (min-width: 80rem) { .phone { --scale: 0.86; } }
+@media (min-width: 22.5rem) { .phone { --scale: 0.8; } }
+@media (min-width: 24rem) { .phone { --scale: 0.86; } }
 .desk {
   position: absolute;
   left: -10%;

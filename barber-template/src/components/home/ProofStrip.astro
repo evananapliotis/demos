@@ -1,12 +1,12 @@
 ---
-/* 2. The offer in four lines: a contents strip between two hairlines. */
+/* 2. The offer in four lines, on an oxblood band that the phone above stands in. */
 import { COPY } from '../../lib/home.ts';
 ---
-<section class="border-y border-rule bg-paper-2 bg-[image:var(--grain)] px-5 sm:px-8 lg:px-12" aria-label="The offer in four lines">
-  <ul class="mx-auto grid max-w-[76rem] grid-cols-2 gap-px bg-rule md:grid-cols-4" role="list">
+<section class="on-ox bg-ox px-5 pt-36 text-paper sm:px-8 lg:px-12 lg:pt-0" aria-label="The offer in four lines">
+  <ul class="mx-auto grid max-w-[76rem] grid-cols-2 gap-px bg-paper/25 md:grid-cols-4" role="list">
     {COPY.proof.map((p) => (
-      <li class="bg-paper-2 px-4 py-[1.125rem] max-md:odd:pl-0 sm:px-6 md:first:pl-0 lg:px-7 lg:py-6">
-        <span class="block font-serif text-xl leading-[1.2] tracking-[-0.005em] text-print lg:text-[1.375rem]">{p}</span>
+      <li class="bg-ox px-4 py-[1.125rem] max-md:odd:pl-0 sm:px-6 md:first:pl-0 lg:px-7 lg:py-6">
+        <span class="block font-serif text-xl leading-[1.2] tracking-[-0.005em] text-paper lg:text-[1.375rem]">{p}</span>
       </li>
     ))}
   </ul>
