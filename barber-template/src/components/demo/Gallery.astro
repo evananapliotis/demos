@@ -1,0 +1,188 @@
+---
+/* 02. The listing's photos: swipe track on phones, grid from md up, tap for a full-size lightbox. Credited to their Google Maps authors. */
+import { Image, getImage } from 'astro:assets';
+import type { DemoSite } from '../../lib/demo.ts';
+import Section from './Section.astro';
+import Icons from './Icons.astro';
+interface Props { site: DemoSite; index?: string }
+const { site, index } = Astro.props;
+const photos = site.photos;
+// Full-size versions for the lightbox (never upscaled beyond the original).
+const full = await Promise.all(photos.map((p) => getImage({ src: p.image, width: 1400, format: 'webp', quality: 78, layout: 'none' })));
+const slides = photos.map((p, i) => ({
+  src: full[i]!.src,
+  w: Number(full[i]!.attributes.width),
+  h: Number(full[i]!.attributes.height),
+  alt: p.alt,
+  credit: p.authors[0] ? { name: p.authors[0].name, uri: p.authors[0].uri } : null,
+}));
+---
+{
+  photos.length > 0 && (
+    <Section id="gallery" index={index} eyebrow="The work" title="Fresh from the <span class='text-amber'>chair.</span>" class="bg-ink-2">
+      <ul class="gallery-track" role="list" aria-label="Photos from the shop's Google listing">
+        {photos.map((p, i) => (
+          <li class="overflow-hidden rounded-md bg-ink-3">
+            <button type="button" class="gallery-open group block w-full cursor-zoom-in" data-index={i} aria-label={`Open photo ${i + 1} of ${photos.length} full size`}>
+              <Image
+                src={p.image}
+                alt={p.alt}
+                widths={[360, 640, 960]}
+                sizes="(min-width: 768px) 33vw, 82vw"
+                format="webp"
+                quality={72}
+                loading="lazy"
+                decoding="async"
+                class="aspect-[4/5] h-auto w-full object-cover transition-transform duration-700 ease-out group-hover:scale-[1.04]"
+              />
+            </button>
+          </li>
+        ))}
+      </ul>
+      <p class="mt-4 flex items-center justify-between gap-4 text-sm text-cream-2"><span>Tap a photo to see it full size.<span class="md:hidden"> Swipe for more.</span></span><span class="tabular-nums font-bold text-cream md:hidden" data-gallery-pos aria-live="polite">1 / {photos.length}</span></p>
+      <p class="mt-2 text-xs text-cream-2" data-photo-credits>
+        Photos from the shop’s Google listing{site.authors.length > 0 && <>, by {site.authors.map((a, i) => <>{i > 0 && ', '}{a.uri ? <a href={a.uri} target="_blank" rel="noopener" class="underline underline-offset-2 hover:text-amber">{a.name}</a> : a.name}</>)}</>}.
+      </p>
+
+      <dialog class="lightbox" data-lightbox data-photos={JSON.stringify(slides)} aria-label="Photo viewer">
+        <div class="lb-bar">
+          <p class="lb-count text-sm font-bold text-cream-2" data-lb-count aria-live="polite"></p>
+          <button type="button" class="lb-btn" data-lb-close aria-label="Close photo viewer"><Icons name="close" size={22} /></button>
+        </div>
+        <ul class="lb-track" data-lb-track role="list"></ul>
+        <button type="button" class="lb-btn lb-prev" data-lb-prev aria-label="Previous photo"><Icons name="chevron" size={24} class="rotate-180" /></button>
+        <button type="button" class="lb-btn lb-next" data-lb-next aria-label="Next photo"><Icons name="chevron" size={24} /></button>
+        <p class="lb-caption" data-lb-caption></p>
+      </dialog>
+    </Section>
+  )
+}
+
+<script>
+  // "3 / 6" under the swipe track on phones.
+  {
+    const track = document.querySelector<HTMLElement>('.gallery-track');
+    const pos = document.querySelector<HTMLElement>('[data-gallery-pos]');
+    if (track && pos) {
+      const total = track.children.length;
+      let raf = 0;
+      track.addEventListener('scroll', () => {
+        if (raf) return;
+        raf = requestAnimationFrame(() => {
+          raf = 0;
+          const item = track.children[0] as HTMLElement;
+          const stride = item.offsetWidth + parseFloat(getComputedStyle(track).columnGap || getComputedStyle(track).gap || '12');
+          pos.textContent = `${Math.min(total, Math.round(track.scrollLeft / stride) + 1)} / ${total}`;
+        });
+      }, { passive: true });
+    }
+  }
+
+  // Lightbox: tap a gallery photo to see it full size; swipe (or arrow keys / buttons) between photos.
+  // Slides are created on first open, and only the current photo and its neighbours are fetched.
+  // Android's back button closes it (a history entry is pushed on open).
+  const dlg = document.querySelector<HTMLDialogElement>('[data-lightbox]');
+  if (dlg && typeof dlg.showModal === 'function') {
+    type Slide = { src: string; w: number; h: number; alt: string; credit: { name: string; uri: string } | null };
+    const photos = JSON.parse(dlg.dataset.photos || '[]') as Slide[];
+    const track = dlg.querySelector<HTMLElement>('[data-lb-track]')!;
+    const count = dlg.querySelector<HTMLElement>('[data-lb-count]')!;
+    const caption = dlg.querySelector<HTMLElement>('[data-lb-caption]')!;
+    const prev = dlg.querySelector<HTMLButtonElement>('[data-lb-prev]')!;
+    const next = dlg.querySelector<HTMLButtonElement>('[data-lb-next]')!;
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let built = false;
+    let opener: HTMLElement | null = null;
+    let current = 0;
+
+    const build = () => {
+      if (built) return;
+      built = true;
+      for (const p of photos) {
+        const li = document.createElement('li');
+        const img = document.createElement('img');
+        img.dataset.src = p.src;
+        img.alt = p.alt;
+        img.width = p.w;
+        img.height = p.h;
+        img.decoding = 'async';
+        li.append(img);
+        track.append(li);
+      }
+    };
+    const ensure = (i: number) => {
+      for (const k of [i - 1, i, i + 1]) {
+        const img = track.children[k]?.querySelector('img');
+        if (img && !img.getAttribute('src') && img.dataset.src) img.src = img.dataset.src;
+      }
+    };
+    const paint = () => {
+      count.textContent = `${current + 1} / ${photos.length}`;
+      caption.replaceChildren();
+      const p = photos[current];
+      if (p) {
+        caption.append(`Photo ${current + 1} of ${photos.length}`);
+        if (p.credit?.name) {
+          caption.append(' · by ');
+          if (p.credit.uri) {
+            const a = document.createElement('a');
+            a.href = p.credit.uri;
+            a.target = '_blank';
+            a.rel = 'noopener';
+            a.textContent = p.credit.name;
+            caption.append(a);
+          } else caption.append(p.credit.name);
+          caption.append(' on Google Maps');
+        }
+      }
+      prev.disabled = current === 0;
+      next.disabled = current === photos.length - 1;
+      ensure(current);
+    };
+    const goTo = (i: number, smooth = !reduced) => {
+      current = Math.max(0, Math.min(photos.length - 1, i));
+      track.scrollTo({ left: current * track.clientWidth, behavior: smooth ? 'smooth' : 'instant' });
+      paint();
+    };
+    const open = (i: number, from: HTMLElement) => {
+      build();
+      opener = from;
+      dlg.showModal();
+      document.documentElement.classList.add('lb-open');
+      history.pushState({ lightbox: true }, '');
+      requestAnimationFrame(() => goTo(i, false));
+    };
+    const close = () => {
+      if (history.state?.lightbox) history.back();
+      else dlg.close();
+    };
+
+    for (const b of document.querySelectorAll<HTMLElement>('.gallery-open')) b.addEventListener('click', () => open(Number(b.dataset.index) || 0, b));
+    dlg.querySelector('[data-lb-close]')!.addEventListener('click', close);
+    prev.addEventListener('click', () => goTo(current - 1));
+    next.addEventListener('click', () => goTo(current + 1));
+    dlg.addEventListener('click', (e) => {
+      const t = e.target as HTMLElement;
+      if (t === dlg || t === track || t.tagName === 'LI') close();
+    });
+    dlg.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight') goTo(current + 1);
+      if (e.key === 'ArrowLeft') goTo(current - 1);
+    });
+    dlg.addEventListener('close', () => {
+      document.documentElement.classList.remove('lb-open');
+      if (history.state?.lightbox) history.back();
+      opener?.focus();
+    });
+    addEventListener('popstate', () => { if (dlg.open) dlg.close(); });
+    let raf = 0;
+    track.addEventListener('scroll', () => {
+      if (raf) return;
+      raf = requestAnimationFrame(() => {
+        raf = 0;
+        const i = Math.round(track.scrollLeft / Math.max(1, track.clientWidth));
+        if (i !== current) { current = i; paint(); }
+      });
+    }, { passive: true });
+  }
+</script>

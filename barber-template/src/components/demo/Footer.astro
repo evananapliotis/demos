@@ -1,0 +1,35 @@
+---
+import type { DemoSite } from '../../lib/demo.ts';
+import Icons from './Icons.astro';
+interface Props { site: DemoSite }
+const { site } = Astro.props;
+const year = new Date().getFullYear();
+/** The outlined wordmark shrinks with the name so it stays on one line. */
+const wordmark = `clamp(2rem, ${Math.min(10.6, 96 / (0.42 * Math.max(site.name.length, 1))).toFixed(1)}vw, 9.5rem)`;
+const links = [
+  { href: '#prices', label: 'Prices' },
+  ...(site.photos.length ? [{ href: '#gallery', label: 'The work' }] : []),
+  { href: '#reviews', label: 'Reviews' },
+  { href: '#find-us', label: 'Find us' },
+];
+---
+<footer class="overflow-hidden border-t border-line px-5 pb-8 pt-12 sm:px-8 lg:px-12">
+  <p class="text-outline mx-auto mb-10 max-w-5xl whitespace-nowrap leading-none opacity-40" style={`font-size:${wordmark}`} aria-hidden="true" data-reveal>{site.name}</p>
+  <div class="mx-auto flex max-w-5xl flex-col gap-8 md:flex-row md:items-end md:justify-between">
+    <div>
+      <p class="display text-3xl text-cream">{site.name}</p>
+      <p class="mt-2 text-cream-2"><a href={site.directionsUrl} target="_blank" rel="noopener" class="inline-flex min-h-12 items-center hover:text-amber">{site.fullAddress}</a></p>
+      <p><a href={site.telHref} class="inline-flex min-h-12 items-center font-bold text-cream hover:text-amber">{site.phone.display}</a></p>
+    </div>
+    <nav aria-label="Footer">
+      <ul class="flex flex-wrap gap-x-5 gap-y-1 text-sm font-bold text-cream-2" role="list">
+        {links.map((l) => (
+          <li><a href={l.href} class="inline-flex min-h-12 min-w-12 items-center hover:text-amber">{l.label}</a></li>
+        ))}
+        <li><a href={site.listingUrl} target="_blank" rel="noopener" class="inline-flex min-h-12 items-center gap-1.5 hover:text-amber">Google <Icons name="external" size={13} /></a></li>
+      </ul>
+    </nav>
+  </div>
+  <p class="mx-auto mt-8 max-w-5xl text-xs text-cream-2">Demo site for {site.name}, built from the shop’s public Google listing. Not the shop’s official website. Photos and reviews belong to their authors.</p>
+  <p class="mx-auto mt-2 max-w-5xl text-xs text-cream-2">© {year} {site.name}, {site.fullAddress}.</p>
+</footer>

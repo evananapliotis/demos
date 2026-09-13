@@ -1,0 +1,20 @@
+---
+/* Thin monochrome ticker of listing facts. Decorative: hidden from assistive tech, still under reduced motion. */
+import type { DemoSite } from '../../lib/demo.ts';
+interface Props { site: DemoSite }
+const { site } = Astro.props;
+---
+<div class="ticker border-b border-line bg-ink" aria-hidden="true">
+  <div class="ticker-track py-3">
+    {[0, 1].map(() => (
+      <div class="flex shrink-0 items-center">
+        {site.ticker.map((w, i) => (
+          <span class="flex items-center">
+            <span class={`display px-5 text-[1.35rem] leading-none tracking-wide whitespace-nowrap ${i % 2 ? 'text-outline' : 'text-amber'}`}>{w}</span>
+            <span class="inline-block h-4 w-[5px] rounded-sm stripe-amber" />
+          </span>
+        ))}
+      </div>
+    ))}
+  </div>
+</div>
