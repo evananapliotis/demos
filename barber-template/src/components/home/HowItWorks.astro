@@ -13,16 +13,16 @@ const c = COPY.how;
           <span class="font-serif text-[2.5rem] italic leading-none text-ox lg:text-5xl" aria-hidden="true">{String(i + 1).padStart(2, '0')}</span>
           <div>
             <h3 class="text-2xl leading-[1.1] text-print lg:text-[1.75rem]">{s.title}</h3>
-            <p class="mt-2 max-w-[26rem] text-[0.9375rem] leading-normal text-print-2 lg:text-[1.0625rem]">{s.line}</p>
+            <p class="mt-2 max-w-[26rem] text-base leading-normal text-print-2 lg:text-[1.0625rem]">{s.line}</p>
           </div>
         </li>
       ))}
     </ol>
 
-    <figure class="plate mx-auto w-full max-w-sm overflow-hidden" data-reveal aria-label="An example WhatsApp exchange">
+    <figure class="plate mx-auto w-full max-w-sm overflow-hidden lg:mr-0" data-reveal aria-label="An example WhatsApp exchange">
       <figcaption class="flex items-center gap-3 border-b border-rule bg-[#f0f2f5] px-4 py-3">
         <span class="grid h-9 w-9 place-items-center rounded-full bg-print font-serif text-lg text-paper" aria-hidden="true">E</span>
-        <span class="min-w-0"><span class="block text-[0.9375rem] font-semibold text-print">Evangelos</span><span class="folio mt-1 flex items-center gap-1.5 normal-case tracking-normal text-[#54656f]">MyBarberSite <Wa size={12} /></span></span>
+        <span class="min-w-0"><span class="block text-[0.9375rem] font-semibold text-print">Evangelos</span><span class="mt-0.5 flex items-center gap-1.5 text-xs text-[#54656f]">MyBarberSite <Wa size={12} /></span></span>
       </figcaption>
       <ul class="grid gap-2 bg-[#efe7dd] px-3 py-4 text-[0.9375rem] leading-[1.4] text-[#111b21]" role="list">
         {c.whatsapp.map((b) => (

@@ -76,6 +76,8 @@
     font-family: var(--font-body);
     background-image: var(--grain);
     background-attachment: scroll;
+    /* exactly the sticky bar's height, so the ink footer meets its top hairline */
+    padding-bottom: calc(3.625rem + max(0.625rem, env(safe-area-inset-bottom)));
   }
   @media (min-width: 48rem) {
     body { padding-bottom: 0; }
@@ -102,6 +104,10 @@
   }
   .on-ox a:focus-visible, .on-ox button:focus-visible, .on-print a:focus-visible, .on-print button:focus-visible {
     outline-color: var(--color-paper);
+  }
+  /* Inside a shop-page object, focus looks like the shop pages' (the oxblood ring would be 2.6:1 on ink). */
+  .object a:focus-visible, .object button:focus-visible {
+    outline: 3px solid var(--color-amber-2);
   }
 }
 
@@ -175,7 +181,7 @@
 /* Anything that shows the shop page: a rounded, shadowed black object with the shop's own type inside. */
 @utility object {
   position: relative;
-  overflow: hidden;
+  overflow: clip; /* clips the corners without becoming a scroll container, so scrollIntoView inside it moves the page */
   border-radius: 1rem;
   background: var(--color-ink);
   color: var(--color-cream);
@@ -197,7 +203,7 @@
 /* A plate that sits on the paper: lifted by a hairline, never a shadow. */
 @utility plate {
   background: var(--color-surface);
-  border: 1px solid var(--color-rule);
+  border: 1px solid var(--color-rule-2);
   border-radius: 4px;
 }
 @utility grain {
@@ -225,13 +231,14 @@ html.js .desk { animation: fade 1200ms ease-out 400ms both; }
   border-radius: calc(52px * var(--scale));
   background: var(--color-phone);
   box-shadow:
-    0 0 0 calc(3px * var(--scale)) #2a2622,
-    0 0 0 calc(4px * var(--scale)) rgb(26 24 21 / 0.12),
+    0 0 0 2px #2a2622,
+    0 0 0 3px rgb(26 24 21 / 0.12),
     0 2px 4px rgb(26 24 21 / 0.2),
     0 30px 60px -20px rgb(26 24 21 / 0.45),
     0 80px 120px -50px rgb(26 24 21 / 0.5);
 }
-@media (min-width: 40rem) { .phone { --scale: 0.8; } }
+@media (min-width: 22.5rem) { .phone { --scale: 0.76; } }
+@media (min-width: 24rem) { .phone { --scale: 0.8; } }
 @media (min-width: 80rem) { .phone { --scale: 0.86; } }
 .desk {
   position: absolute;
@@ -301,7 +308,7 @@ html.js [data-sticky][data-show] { transform: none; }
 /* ---------- Booking taster ---------- */
 /* The day row runs edge to edge of its object, whatever the padding. */
 @media (max-width: 39.99rem) {
-  [data-mini-book] .days { margin-inline: -1rem; padding-inline: 1rem; }
+  [data-mini-book] .days { margin-inline: -1rem; padding-inline: 1rem; mask-image: linear-gradient(to right, #000 calc(100% - 2.5rem), transparent); }
 }
 /* Each step scrolls into view clear of the sticky bar. */
 @media (max-width: 47.99rem) {

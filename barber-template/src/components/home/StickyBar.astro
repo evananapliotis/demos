@@ -12,13 +12,17 @@ import Wa from './Wa.astro';
 </div>
 
 <script>
+  // Hidden while any of the page's own WhatsApp/Call button groups is on screen (the hero's and the closing plate's).
   const bar = document.querySelector<HTMLElement>('[data-sticky]');
-  const cta = document.querySelector('[data-hero-cta]');
-  if (bar && cta) {
-    new IntersectionObserver(([e]) => {
-      if (e?.isIntersecting) delete bar.dataset.show;
+  const groups = document.querySelectorAll('[data-hero-cta]');
+  if (bar && groups.length) {
+    const onScreen = new Set<Element>();
+    const io = new IntersectionObserver((entries) => {
+      for (const e of entries) e.isIntersecting ? onScreen.add(e.target) : onScreen.delete(e.target);
+      if (onScreen.size) delete bar.dataset.show;
       else bar.dataset.show = '';
-    }).observe(cta);
+    });
+    groups.forEach((g) => io.observe(g));
   } else if (bar) {
     bar.dataset.show = '';
   }

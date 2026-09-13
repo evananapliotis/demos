@@ -1,13 +1,13 @@
 ---
-/* A front-page section: hairline on top, a label, the heading, then whatever it holds. */
-interface Props { id: string; label: string; title: string; class?: string; titleClass?: string }
-const { id, label, title, class: cls = '', titleClass = '' } = Astro.props;
+/* A front-page section: a hairline on the rail, a label, the heading, then whatever it holds. A band (own ground) carries its rule full-bleed instead. */
+interface Props { id: string; label: string; title: string; class?: string; titleClass?: string; band?: boolean }
+const { id, label, title, class: cls = '', titleClass = '', band = false } = Astro.props;
 ---
-<section id={id} class={`relative scroll-mt-14 border-t border-rule px-5 py-16 sm:px-8 md:py-28 lg:px-12 ${cls}`} aria-labelledby={`${id}-title`}>
-  <div class="mx-auto max-w-[76rem]">
-    <div class="mb-10 md:mb-16 md:grid md:grid-cols-12 md:gap-8" data-reveal>
-      <p class="label md:col-span-3 md:pt-4">{label}</p>
-      <h2 id={`${id}-title`} class={`mt-4 text-[clamp(2.375rem,11.25vw,4.5rem)] leading-[0.98] tracking-[-0.015em] text-print md:col-span-9 md:mt-0 ${titleClass}`} set:html={title} />
+<section id={id} class={`relative scroll-mt-14 px-5 pb-16 sm:px-8 md:pb-28 lg:px-12 ${band ? 'border-t border-rule pt-16 md:pt-28' : ''} ${cls}`} aria-labelledby={`${id}-title`}>
+  <div class={`mx-auto max-w-[76rem] ${band ? '' : 'border-t border-rule pt-16 md:pt-28'}`}>
+    <div class="mb-10 md:mb-16 md:grid md:grid-cols-12 md:items-baseline md:gap-8" data-reveal>
+      <p class="label md:col-span-3">{label}</p>
+      <h2 id={`${id}-title`} class={`mt-4 text-[clamp(2.375rem,11.25vw,4.5rem)] leading-[0.98] tracking-[-0.015em] text-print md:col-span-9 md:mt-0 lg:text-[5.5rem] ${titleClass}`} set:html={title} />
     </div>
     <slot />
   </div>

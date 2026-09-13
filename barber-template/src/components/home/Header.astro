@@ -10,14 +10,14 @@ const links = [
 ];
 ---
 <nav class="relative z-20 mx-auto flex h-16 max-w-[76rem] items-center justify-between gap-3 border-b border-rule lg:h-[4.5rem]" aria-label="Primary">
-  <a href="/" class="font-serif text-[1.375rem] leading-none tracking-[-0.01em] text-print lg:text-2xl" aria-label="MyBarberSite home">My<i>Barber</i>Site</a>
+  <a href="/" class="inline-flex min-h-11 items-center font-serif text-[1.375rem] leading-none tracking-[-0.01em] text-print lg:text-2xl" aria-label="MyBarberSite home">My<i>Barber</i>Site</a>
   <ul class="flex shrink-0 items-center gap-1" role="list">
     {links.map((l) => (
       <li class="hidden md:block"><a href={l.href} class="inline-flex min-h-11 items-center px-3 text-[0.9375rem] font-medium text-print-2 underline-offset-[0.2em] hover:text-print hover:underline">{l.label}</a></li>
     ))}
     <li class="hidden md:block md:pl-2"><a href={OWNER.whatsapp} target="_blank" rel="noopener" class="cta cta-line min-h-11 px-4 text-[0.9375rem]"><Wa size={16} /> WhatsApp me</a></li>
     <li class="md:hidden">
-      <a href={telHref} class="grid h-11 w-11 place-items-center rounded-full bg-print text-paper hover:bg-ox-2" aria-label={`Call ${OWNER.phone.display}`}><Icons name="phone" size={20} /></a>
+      <a href={telHref} class="grid h-11 w-11 place-items-center rounded-[3px] bg-print text-paper hover:bg-ox-2" aria-label={`Call ${OWNER.phone.display}`}><Icons name="phone" size={20} /></a>
     </li>
   </ul>
 </nav>

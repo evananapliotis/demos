@@ -9,8 +9,8 @@ const c = COPY.cta;
   <div class="relative mx-auto max-w-[76rem]" data-reveal>
     <p class="label">£{OFFER.page} one-off <span aria-hidden="true">·</span> No monthly fee</p>
     <h2 id="cta-title" class="mt-5 text-[clamp(3rem,14vw,8rem)] leading-[0.92] tracking-[-0.02em] text-paper" set:html={c.heading} />
-    <p class="mt-6 max-w-[30rem] text-lg leading-[1.45] lg:text-[1.375rem]">{c.line}</p>
-    <div class="mt-10 grid grid-cols-1 gap-3 sm:flex sm:flex-wrap">
+    <p class="mt-6 max-w-[30rem] text-lg leading-[1.45] [text-wrap:pretty] lg:text-[1.375rem]">{c.line}</p>
+    <div class="mt-10 grid grid-cols-1 gap-3 sm:flex sm:flex-wrap" data-hero-cta>
       <a href={OWNER.whatsapp} target="_blank" rel="noopener" class="cta cta-ink"><Wa size={18} /> WhatsApp me</a>
       <a href={telHref} class="cta cta-line"><Icons name="phone" size={18} /> Call {OWNER.phone.display}</a>
     </div>
