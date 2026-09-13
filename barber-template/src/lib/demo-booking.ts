@@ -1,5 +1,5 @@
 /**
- * Booking rules for /demo/<slug>/book. Pure functions over a listing's week
+ * Booking rules for /<slug>/book. Pure functions over a listing's week
  * table: no DOM, no network. The demo has no database, so "taken" times are
  * a stable pattern seeded by the shop, enough to make the calendar look
  * lived-in, and a booking is confirmed on screen only.

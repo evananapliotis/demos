@@ -2,7 +2,7 @@
  * The link-preview image for a /demo page (1200x630): the listing's first
  * photo behind the name, address, rating and review count, in the page's own
  * faces. JPEG under 290KB so WhatsApp shows it. Rendered at build time by
- * src/pages/demo/[slug]/og.jpg.ts.
+ * src/pages/[slug]/og.jpg.ts.
  */
 import { existsSync, mkdirSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';

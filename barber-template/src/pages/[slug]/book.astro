@@ -1,17 +1,17 @@
 ---
 /**
- * /demo/<slug>/book: the HAWAR BARBER booking page for a listing, front-end
+ * /<slug>/book: the HAWAR BARBER booking page for a listing, front-end
  * only. Service, day, time, then name and phone, confirmed on screen. The
  * days and times come from the listing's opening hours and the six standard
  * services; nothing is sent anywhere, and the confirmation says so.
  */
-import DemoBase from '../../../layouts/DemoBase.astro';
-import PageHeader from '../../../components/demo/PageHeader.astro';
-import StickyBar from '../../../components/demo/StickyBar.astro';
-import Icons from '../../../components/demo/Icons.astro';
-import { derive } from '../../../lib/demo.ts';
-import { EXAMPLE_PHONE, RULES, SERVICES } from '../../../lib/demo-booking.ts';
-import { shops, type Shop } from '../../../lib/shops.ts';
+import DemoBase from '../../layouts/DemoBase.astro';
+import PageHeader from '../../components/demo/PageHeader.astro';
+import StickyBar from '../../components/demo/StickyBar.astro';
+import Icons from '../../components/demo/Icons.astro';
+import { derive } from '../../lib/demo.ts';
+import { EXAMPLE_PHONE, RULES, SERVICES } from '../../lib/demo-booking.ts';
+import { shops, type Shop } from '../../lib/shops.ts';
 
 export function getStaticPaths() {
   return shops.map((shop) => ({ params: { slug: shop.slug }, props: { shop } }));
@@ -123,8 +123,8 @@ const config = {
 </DemoBase>
 
 <script>
-  import { addDays, fmtDayLong, fmtTime, toMin, zonedToUtc } from '../../../lib/time.ts';
-  import { availability, validateDetails, type BookingRules, type Day, type Service, type Week } from '../../../lib/demo-booking.ts';
+  import { addDays, fmtDayLong, fmtTime, toMin, zonedToUtc } from '../../lib/time.ts';
+  import { availability, validateDetails, type BookingRules, type Day, type Service, type Week } from '../../lib/demo-booking.ts';
 
   type Cfg = { services: Service[]; phone: string; tel: string; name: string; address: string; week: Week | null; rules: BookingRules; seed: string; home: string };
 
@@ -231,7 +231,7 @@ const config = {
       paintSummary();
     });
 
-    // Deep link: /demo/<slug>/book?service=skin-fade
+    // Deep link: /<slug>/book?service=skin-fade
     const pre = new URLSearchParams(location.search).get('service');
     const preInput = pre ? form.querySelector<HTMLInputElement>(`input[name="service"][value="${CSS.escape(pre)}"]`) : null;
     if (preInput) {

@@ -1,12 +1,18 @@
 import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
-import { site } from './src/config/site.ts';
 
-// Static output, no adapter. Cloudflare Pages serves dist/ as-is:
+// Static output, no adapter. Cloudflare serves dist/ as-is:
 //   root directory: barber-template, build command: npm run build, output: dist
 export default defineConfig({
-  site: site.seo.siteUrl,
+  // The live domain: canonical links and link-preview images are built on it.
+  site: 'https://mybarbersite.co.uk',
   output: 'static',
+  // The barber pages moved from /demo/<slug> to /<slug>. These produce a
+  // meta-refresh page per old path; public/_redirects gives Cloudflare a 301.
+  redirects: {
+    '/demo/[slug]': '/[slug]',
+    '/demo/[slug]/book': '/[slug]/book',
+  },
   compressHTML: true,
   build: {
     inlineStylesheets: 'always',

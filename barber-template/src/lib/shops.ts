@@ -1,5 +1,5 @@
 /**
- * Listings behind /demo/[slug].
+ * Listings behind /[slug].
  *
  * src/data/barbers.json is an Outscraper export of Google Business
  * listings, one object per shop, plus the `photos` paths that

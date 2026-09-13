@@ -1,5 +1,5 @@
 /**
- * Everything a /demo/[slug] page shows, derived from one listing. Nothing here
+ * Everything a /[slug] page shows, derived from one listing. Nothing here
  * adds facts: it formats what the listing has and leaves out what it lacks.
  */
 import { DAYS, type Day } from '../config/site.schema.ts';
@@ -190,8 +190,8 @@ export function derive(shop: Shop) {
   return {
     slug: shop.slug,
     /** This shop's page and its booking page. */
-    home: `/demo/${shop.slug}`,
-    bookHref: `/demo/${shop.slug}/book`,
+    home: `/${shop.slug}`,
+    bookHref: `/${shop.slug}/book`,
     name,
     nameLines: lines,
     h1Size,

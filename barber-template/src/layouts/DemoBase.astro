@@ -1,6 +1,6 @@
 ---
 /**
- * Document shell for a /demo/[slug] page. Every page is a demo built from a
+ * Document shell for a /[slug] page. Every page is a demo built from a
  * public listing, so it is noindex and says so in the footer.
  */
 import '../styles/demo.css';
@@ -16,8 +16,8 @@ interface Props {
 }
 const { site, title, description, preloadHero = false } = Astro.props;
 const pageUrl = new URL(Astro.url.pathname, Astro.site).href.replace(/\/$/, '');
-/** Rendered by src/pages/demo/[slug]/og.jpg.ts; the booking page shares the shop page's. */
-const ogImage = new URL(`/demo/${site.slug}/og.jpg`, Astro.site).href;
+/** Rendered by src/pages/[slug]/og.jpg.ts; the booking page shares the shop page's. */
+const ogImage = new URL(`/${site.slug}/og.jpg`, Astro.site).href;
 const ld = jsonLd(site, pageUrl, ogImage);
 const ratingAlt = site.google.rating != null ? `Rated ${site.google.rating.toFixed(1)} from ${site.google.reviewsText}.` : `${site.google.reviewsText}.`;
 ---

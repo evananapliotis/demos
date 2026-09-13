@@ -1,0 +1,2 @@
+# The barber pages moved from /demo/<slug> to /<slug>. Cloudflare answers these before looking for a file.
+/demo/* /:splat 301

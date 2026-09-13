@@ -1,25 +1,31 @@
 ---
-import Base from '../layouts/Base.astro';
-import Hero from '../components/Hero.astro';
-import Services from '../components/Services.astro';
-import Team from '../components/Team.astro';
-import Gallery from '../components/Gallery.astro';
-import Hours from '../components/Hours.astro';
-import Contact from '../components/Contact.astro';
-import { site } from '../config/site.ts';
-import { preloadFor } from '../lib/img.ts';
-
-const preload = [
-  preloadFor(site.hero.imagePortrait.slot, '100vw', '(max-width: 767px)'),
-  preloadFor(site.hero.image.slot, '100vw', '(min-width: 768px)'),
-];
+/**
+ * The front door of mybarbersite.co.uk: a placeholder until MyBarberSite has
+ * a page of its own. The barbers' pages live at /<slug>.
+ */
+import '../styles/demo.css';
+const phone = { display: '07546 685660', tel: '+447546685660' };
 ---
 
-<Base title={site.seo.defaultTitle} preload={preload}>
-  <Hero />
-  <Services />
-  <Team />
-  <Gallery />
-  <Hours />
-  <Contact />
-</Base>
+<!doctype html>
+<html lang="en-GB" class="bg-ink">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>MyBarberSite</title>
+    <meta name="description" content="Websites and online booking for barbers." />
+    <link rel="canonical" href={new URL('/', Astro.site).href} />
+    <meta name="theme-color" content="#0e0c0a" />
+    <meta name="color-scheme" content="dark" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+  </head>
+  <body class="bg-ink text-cream antialiased">
+    <main class="flex min-h-[100svh] flex-col justify-center px-5 py-16 sm:px-8 lg:px-12">
+      <div class="mx-auto w-full max-w-5xl">
+        <h1 class="text-[clamp(3rem,14vw,8rem)] text-cream">My<span class="text-amber">Barber</span>Site</h1>
+        <p class="mt-4 max-w-md text-lg text-cream/85 md:text-2xl">Websites and online booking for barbers.</p>
+        <p class="mt-8"><a href={`tel:${phone.tel}`} class="btn btn-amber">Call {phone.display}</a></p>
+      </div>
+    </main>
+  </body>
+</html>

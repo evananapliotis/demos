@@ -1,11 +1,11 @@
 /**
- * /demo/<slug>/og.jpg: the link-preview image for each demo page, rendered
+ * /<slug>/og.jpg: the link-preview image for each demo page, rendered
  * at build time from the listing's first photo, name, address and rating.
  */
 import type { APIRoute } from 'astro';
-import { derive } from '../../../lib/demo.ts';
-import { renderOg } from '../../../lib/og.ts';
-import { shops, type Shop } from '../../../lib/shops.ts';
+import { derive } from '../../lib/demo.ts';
+import { renderOg } from '../../lib/og.ts';
+import { shops, type Shop } from '../../lib/shops.ts';
 
 export function getStaticPaths() {
   return shops.map((shop) => ({ params: { slug: shop.slug }, props: { shop } }));

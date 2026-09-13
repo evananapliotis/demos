@@ -1,6 +1,6 @@
 ---
 /**
- * One demo page per listing in src/data/barbers.json, at /demo/<slug>.
+ * One demo page per listing in src/data/barbers.json, at /<slug>.
  *
  * The HAWAR BARBER one-page structure with the listing's content: hero on the
  * first photo, a trust strip and ticker of listing facts, 01 Prices, 02 The
@@ -9,20 +9,20 @@
  * bar. Every value comes from src/lib/demo.ts, derived from the listing;
  * nothing on the page belongs to one shop. Each page is noindex.
  */
-import DemoBase from '../../layouts/DemoBase.astro';
-import { derive } from '../../lib/demo.ts';
-import { shops, type Shop } from '../../lib/shops.ts';
-import Hero from '../../components/demo/Hero.astro';
-import TrustStrip from '../../components/demo/TrustStrip.astro';
-import Ticker from '../../components/demo/Ticker.astro';
-import Prices from '../../components/demo/Prices.astro';
-import Gallery from '../../components/demo/Gallery.astro';
-import Reviews from '../../components/demo/Reviews.astro';
-import About from '../../components/demo/About.astro';
-import FindUs from '../../components/demo/FindUs.astro';
-import FinalCta from '../../components/demo/FinalCta.astro';
-import Footer from '../../components/demo/Footer.astro';
-import StickyBar from '../../components/demo/StickyBar.astro';
+import DemoBase from '../layouts/DemoBase.astro';
+import { derive } from '../lib/demo.ts';
+import { shops, type Shop } from '../lib/shops.ts';
+import Hero from '../components/demo/Hero.astro';
+import TrustStrip from '../components/demo/TrustStrip.astro';
+import Ticker from '../components/demo/Ticker.astro';
+import Prices from '../components/demo/Prices.astro';
+import Gallery from '../components/demo/Gallery.astro';
+import Reviews from '../components/demo/Reviews.astro';
+import About from '../components/demo/About.astro';
+import FindUs from '../components/demo/FindUs.astro';
+import FinalCta from '../components/demo/FinalCta.astro';
+import Footer from '../components/demo/Footer.astro';
+import StickyBar from '../components/demo/StickyBar.astro';
 
 export function getStaticPaths() {
   return shops.map((shop) => ({ params: { slug: shop.slug }, props: { shop } }));
