@@ -1,0 +1,124 @@
+/* The front page: the shop pages' system, plus the phone frame, the mockups and the small things only this page needs. */
+@import './demo.css';
+
+/* The sticky bar is for phones; on wider screens the header carries the buttons. */
+@media (min-width: 48rem) {
+  body { padding-bottom: 0; }
+}
+
+/* ---------- Phone frame around the live example page ---------- */
+.phone {
+  --scale: 0.7;
+  position: relative;
+  width: calc(390px * var(--scale));
+  height: calc(844px * var(--scale));
+  border-radius: calc(52px * var(--scale));
+  background: #1c1814;
+  box-shadow:
+    0 0 0 calc(3px * var(--scale)) #2c2620,
+    0 0 0 calc(4px * var(--scale)) rgb(244 238 228 / 0.08),
+    0 50px 90px -30px rgb(0 0 0 / 0.85),
+    0 20px 40px -20px rgb(242 169 59 / 0.25);
+}
+@media (min-width: 40rem) { .phone { --scale: 0.8; } }
+@media (min-width: 64rem) { .phone { --scale: 0.86; } }
+.phone__screen {
+  --s2: calc(var(--scale) * (1 - 20 / 390));
+  position: absolute;
+  inset: calc(10px * var(--scale));
+  overflow: hidden;
+  border-radius: calc(42px * var(--scale));
+  background: #0e0c0a;
+}
+/* Everything on the screen is laid out at a real phone's 390px and scaled down together. */
+.phone__bar,
+.phone__screen > iframe,
+.phone__static {
+  position: absolute;
+  left: 0;
+  width: 390px;
+  border: 0;
+  transform: scale(var(--s2));
+  transform-origin: top left;
+  pointer-events: none;
+}
+.phone__bar { top: 0; height: 44px; z-index: 1; }
+.phone__screen > iframe,
+.phone__static { top: calc(44px * var(--s2)); height: 800px; }
+.phone__screen > iframe {
+  background: #0e0c0a;
+  opacity: 0;
+  transition: opacity 500ms ease;
+}
+.phone__screen > iframe.is-ready { opacity: 1; }
+.phone__notch {
+  position: absolute;
+  top: calc(20px * var(--scale));
+  left: 50%;
+  transform: translateX(-50%);
+  width: calc(118px * var(--scale));
+  height: calc(32px * var(--scale));
+  border-radius: 999px;
+  background: #000;
+  z-index: 2;
+}
+
+/* The one motion moment on load: the phone settles into place while a glow comes up behind it. */
+@keyframes phone-in {
+  from { opacity: 0; transform: translateY(44px) rotate(-3deg) scale(0.96); }
+  to { opacity: 1; transform: none; }
+}
+.phone-enter { animation: phone-in 900ms cubic-bezier(0.2, 0.7, 0.2, 1) 160ms both; }
+@keyframes glow-in {
+  from { opacity: 0; transform: scale(0.8); }
+  to { opacity: 1; transform: none; }
+}
+.phone-glow {
+  position: absolute;
+  inset: -18% -30%;
+  background: radial-gradient(45% 45% at 50% 55%, rgb(242 169 59 / 0.22), transparent 72%);
+  animation: glow-in 1400ms ease-out 300ms both;
+  pointer-events: none;
+}
+@media (prefers-reduced-motion: reduce) {
+  .phone-enter, .phone-glow { animation: none; }
+  html.js [data-sticky] { transition: none; }
+}
+
+/* The closing band's stripes turn slowly here rather than at the shop pages' pace, and only while on screen. */
+.cta-stripes::before { animation-duration: 5s; }
+.cta-stripes[data-paused]::before { animation-play-state: paused; }
+
+/* ---------- Booking taster ---------- */
+/* The day row runs edge to edge of its card, whatever the card's padding. */
+@media (max-width: 39.99rem) {
+  [data-mini-book] .days { margin-inline: -1rem; padding-inline: 1rem; }
+}
+/* Each step scrolls into view clear of the sticky bar. */
+@media (max-width: 47.99rem) {
+  [data-mb-step], [data-mb-done] { scroll-margin-bottom: 6rem; }
+}
+/* Without JavaScript the taster would be three radios that do nothing. */
+html:not(.js) [data-mini-book] { display: none; }
+
+/* ---------- Sticky bar: slides up once the hero's own buttons have scrolled away ---------- */
+html.js [data-sticky] { transform: translateY(110%); transition: transform 300ms ease; }
+html.js [data-sticky][data-show] { transform: none; }
+
+/* ---------- Straight answers: the chevron points down closed, up open ---------- */
+.faq summary { list-style: none; cursor: pointer; }
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary .faq__chev { transform: rotate(90deg); transition: transform 200ms ease; }
+.faq details[open] summary .faq__chev { transform: rotate(-90deg); }
+.faq details[open] summary { color: var(--color-amber); }
+
+/* ---------- Cards lift a touch under a pointer ---------- */
+@media (hover: hover) {
+  .lift { transition: transform 200ms ease, border-color 200ms ease; }
+  .lift:hover { transform: translateY(-3px); border-color: rgb(242 169 59 / 0.5); }
+}
+
+/* ---------- WhatsApp mock ---------- */
+.wa { background: #0b141a; }
+.wa__in { background: #202c33; color: #e9edef; border-radius: 0.6rem 0.6rem 0.6rem 0.15rem; }
+.wa__out { background: #005c4b; color: #e9edef; border-radius: 0.6rem 0.6rem 0.15rem 0.6rem; }

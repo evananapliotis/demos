@@ -1,0 +1,48 @@
+---
+/**
+ * A whole shop page from a DemoSite: the HAWAR BARBER one-page structure with
+ * the listing's content. Used by /[slug] for every listing and by /example
+ * for the fictional shop shown on the front page.
+ */
+import DemoBase from '../../layouts/DemoBase.astro';
+import type { DemoSite } from '../../lib/demo.ts';
+import Hero from './Hero.astro';
+import TrustStrip from './TrustStrip.astro';
+import Ticker from './Ticker.astro';
+import Prices from './Prices.astro';
+import Gallery from './Gallery.astro';
+import Reviews from './Reviews.astro';
+import About from './About.astro';
+import FindUs from './FindUs.astro';
+import FinalCta from './FinalCta.astro';
+import Footer from './Footer.astro';
+import StickyBar from './StickyBar.astro';
+
+interface Props {
+  site: DemoSite;
+  /** Leave the footer off (the front page's example shop shows the page without it). */
+  footer?: boolean;
+}
+const { site, footer = true } = Astro.props;
+const title = `${site.name} | ${site.kind}, ${site.roadName}, ${site.address.locality}`;
+// Section numerals only count sections that render.
+let n = 0;
+const next = () => String(++n).padStart(2, '0');
+const idx = { prices: next(), gallery: site.photos.length ? next() : undefined, about: next(), findUs: next() };
+---
+
+<DemoBase site={site} title={title} description={site.description} preloadHero>
+  <Hero site={site} />
+  <TrustStrip site={site} />
+  <Ticker site={site} />
+  <main id="main">
+    <Prices site={site} index={idx.prices} />
+    <Gallery site={site} index={idx.gallery} />
+    <Reviews site={site} />
+    <About site={site} index={idx.about} />
+    <FindUs site={site} index={idx.findUs} />
+    <FinalCta site={site} />
+  </main>
+  {footer && <Footer site={site} />}
+  <StickyBar site={site} />
+</DemoBase>

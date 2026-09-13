@@ -1,0 +1,28 @@
+---
+import { OWNER, telHref } from '../../lib/home.ts';
+import Icons from '../demo/Icons.astro';
+import Wa from './Wa.astro';
+const links = [
+  { href: '#what-you-get', label: 'What you get' },
+  { href: '#booking', label: 'Booking' },
+  { href: '#pricing', label: 'Pricing' },
+  { href: '#answers', label: 'Answers' },
+];
+---
+<nav class="relative z-20 mx-auto flex max-w-5xl items-center justify-between gap-3 pt-4" aria-label="Primary">
+  <a href="/" class="display inline-flex min-h-11 items-center gap-2 text-[1.35rem] tracking-wide text-cream" aria-label="MyBarberSite home">
+    <span class="inline-block h-6 w-[7px] shrink-0 rounded-sm stripe-amber" aria-hidden="true"></span>
+    My<span class="text-amber">Barber</span>Site
+  </a>
+  <ul class="flex shrink-0 items-center gap-1 text-sm font-bold" role="list">
+    {links.map((l) => (
+      <li class="hidden md:block"><a href={l.href} class="inline-flex min-h-11 items-center px-3 text-cream-2 hover:text-amber">{l.label}</a></li>
+    ))}
+    <li class="hidden md:block"><a href={OWNER.whatsapp} target="_blank" rel="noopener" class="btn btn-outline min-h-11 px-4 text-[0.95rem]"><Wa size={17} /> WhatsApp me</a></li>
+    <li class="md:hidden">
+      <a href={telHref} class="inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-md px-3 text-amber hover:text-amber-2" aria-label={`Call ${OWNER.phone.display}`}>
+        <Icons name="phone" size={20} /><span class="hidden sm:inline">{OWNER.phone.display}</span>
+      </a>
+    </li>
+  </ul>
+</nav>

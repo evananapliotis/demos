@@ -1,0 +1,131 @@
+---
+/**
+ * A phone showing the example shop page, live. The screen starts as a still of
+ * the page's first view, laid out with the same classes and sizes the page uses
+ * at 390px so nothing moves when the real page (/example, built from the same
+ * components as every listing's page) loads into it after the front page has
+ * finished. It then scrolls the way a thumb would: rest, flick, rest.
+ * Decorative: hidden from assistive tech, never focusable.
+ */
+import { mockSite, MOCK_H1_PX } from '../../lib/home.ts';
+import Stars from '../demo/Stars.astro';
+import GoogleG from '../demo/GoogleG.astro';
+import Icons from '../demo/Icons.astro';
+const [first, second] = mockSite.nameLines;
+const hero = mockSite.hero!;
+const avif = hero.path.replace(/\.webp$/, '.avif');
+---
+<div class="phone phone-enter" data-phone aria-hidden="true" inert>
+  <div class="phone__screen">
+    <div class="phone__bar flex items-end justify-between px-8 pb-2 text-[15px] font-bold text-cream">
+      <span class="tabular-nums">9:41</span>
+      <span class="inline-flex items-center gap-1.5" aria-hidden="true">
+        <svg width="17" height="12" viewBox="0 0 17 12" fill="currentColor"><rect x="0" y="8" width="3" height="4" rx="0.8"/><rect x="4.5" y="6" width="3" height="6" rx="0.8"/><rect x="9" y="3.5" width="3" height="8.5" rx="0.8"/><rect x="13.5" y="0" width="3" height="12" rx="0.8"/></svg>
+        <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><path d="M8 9.6a1.6 1.6 0 1 1 0 3.2 1.6 1.6 0 0 1 0-3.2zM8 6c1.6 0 3 .6 4.1 1.6l-1.5 1.5A3.9 3.9 0 0 0 8 8.2c-1 0-1.9.4-2.6.9L3.9 7.6C5 6.6 6.4 6 8 6zm0-3.4c2.5 0 4.8 1 6.5 2.6l-1.5 1.5A7.1 7.1 0 0 0 8 4.7c-1.9 0-3.7.8-5 2L1.5 5.2A9.2 9.2 0 0 1 8 2.6z"/></svg>
+        <svg width="27" height="13" viewBox="0 0 27 13" fill="none" stroke="currentColor"><rect x="0.5" y="0.5" width="23" height="12" rx="3.5" opacity="0.4"/><rect x="2" y="2" width="20" height="9" rx="2" fill="currentColor" stroke="none"/><path d="M25 4.5v4a2 2 0 0 0 0-4z" fill="currentColor" stroke="none" opacity="0.4"/></svg>
+      </span>
+    </div>
+    <!-- The still: the page's own hero markup at its 390px layout, without the responsive variants (the phone is 390px wide whatever the visitor's screen). -->
+    <div class="phone__static">
+      <div class="relative flex h-[800px] w-[390px] flex-col overflow-hidden bg-ink">
+        <picture>
+          <source srcset={avif} type="image/avif" />
+          <img src={hero.path} alt="" width={hero.width} height={hero.height} loading="eager" fetchpriority="high" decoding="async" class="absolute inset-0 h-full w-full object-cover object-center opacity-45 blur-[2px]" />
+        </picture>
+        <div class="absolute inset-0 bg-[linear-gradient(to_bottom,rgb(14_12_10/0.85),rgb(14_12_10/0.35)_22%,rgb(14_12_10/0.55)_50%,rgb(14_12_10)_78%),radial-gradient(90%_60%_at_100%_0%,rgb(242_169_59/0.12),transparent_60%)]"></div>
+        <div class="relative z-20 flex items-center justify-between gap-3 px-5 pt-4" data-still-nav>
+          <span class="display inline-flex min-h-11 min-w-0 items-center gap-2 text-[1.35rem] tracking-wide text-cream"><span class="inline-block h-6 w-[7px] shrink-0 rounded-sm stripe-amber"></span><span class="truncate">{mockSite.name}</span></span>
+          <span class="inline-flex min-h-11 min-w-11 items-center justify-center rounded-md px-3 text-amber"><Icons name="phone" size={20} /></span>
+        </div>
+        <div class="relative flex w-full flex-1 flex-col px-5 pb-8 pt-2">
+          <div class="relative z-10 mt-auto">
+            <p class="eyebrow">{mockSite.kind} · {mockSite.address.locality}</p>
+            <p class="display mt-3 text-cream" style={`font-size:${MOCK_H1_PX}px`} data-still-name><span class="letters block">{first}</span>{second && <span class="letters block text-amber">{second}</span>}</p>
+            <span class="relative mt-5 inline-flex min-h-12 flex-wrap items-center gap-x-3 gap-y-1 overflow-hidden rounded-md border border-cream/20 bg-ink-2/80 px-3.5 py-2 text-base font-bold text-cream" data-still-badge>
+              <span class="inline-flex items-center gap-2.5"><span class="display text-2xl leading-none text-amber">{mockSite.google.rating!.toFixed(1)}</span><Stars rating={mockSite.google.rating!} class="text-amber" size={15} /></span>
+              <span class="inline-flex items-center gap-1.5 whitespace-nowrap">{mockSite.google.reviewsText} <GoogleG size={16} /></span>
+            </span>
+            <p class="mt-4 max-w-md text-lg leading-snug text-cream/85" data-still-tagline>{mockSite.tagline}</p>
+            <div class="mt-6 grid grid-cols-1 gap-3">
+              <span class="btn btn-amber"><Icons name="calendar" size={19} /> Book online</span>
+              <span class="btn btn-outline"><Icons name="phone" size={19} /> Call {mockSite.phone.display}</span>
+            </div>
+            <p class="mt-6 flex flex-col items-start gap-y-1 text-sm text-cream-2" data-still-address>
+              <span class="inline-flex min-h-6 items-center gap-1.5"><Icons name="pin" size={14} class="text-amber" /> {mockSite.address.street}, {mockSite.address.postcode}</span>
+              <span class="inline-flex min-h-6 items-center gap-1.5"><span class="status-dot" data-status-dot aria-hidden="true"></span> <span data-open-status>{mockSite.openDaysLabel}</span></span>
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="phone__notch"></div>
+</div>
+
+<script>
+  const phone = document.querySelector<HTMLElement>('[data-phone]');
+  if (phone) {
+    const screen = phone.querySelector<HTMLElement>('.phone__screen')!;
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const saveData = (navigator as Navigator & { connection?: { saveData?: boolean } }).connection?.saveData === true;
+
+    // Scroll the example page the way a thumb would: rest, flick down most of a screen, rest; one glide back to the top.
+    // Frames only run while the phone is on screen and the tab is visible.
+    const drive = (frame: HTMLIFrameElement) => {
+      const doc = frame.contentDocument!;
+      doc.documentElement.style.scrollBehavior = 'auto';
+      const el = doc.scrollingElement ?? doc.documentElement;
+      const ease = (t: number) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+      let raf = 0;
+      let last = 0;
+      let y = 0;
+      let restUntil = 0;
+      let move: { from: number; to: number; start: number; ms: number } | null = null;
+      const tick = (t: number) => {
+        raf = requestAnimationFrame(tick);
+        const dt = last ? t - last : 0;
+        last = t;
+        if (document.hidden) {
+          if (move) move.start += dt; else restUntil += dt;
+          return;
+        }
+        if (move) {
+          const p = Math.min(1, (t - move.start) / move.ms);
+          y = move.from + (move.to - move.from) * ease(p);
+          el.scrollTop = y;
+          if (p >= 1) { move = null; restUntil = t + (y === 0 ? 2800 : 2200); }
+          return;
+        }
+        if (t < restUntil) return;
+        const max = el.scrollHeight - el.clientHeight;
+        move = y >= max - 1 ? { from: y, to: 0, start: t, ms: 900 } : { from: y, to: Math.min(max, y + el.clientHeight * 0.8), start: t, ms: 650 };
+      };
+      const start = () => { if (!raf) { last = 0; restUntil = performance.now() + 2200; raf = requestAnimationFrame(tick); } };
+      const stop = () => { cancelAnimationFrame(raf); raf = 0; };
+      new IntersectionObserver(([e]) => (e?.isIntersecting ? start() : stop()), { threshold: 0.15 }).observe(phone);
+    };
+
+    const mount = () => {
+      const frame = document.createElement('iframe');
+      frame.src = '/example';
+      frame.title = 'An example shop page';
+      frame.setAttribute('aria-hidden', 'true');
+      frame.tabIndex = -1;
+      frame.addEventListener('load', () => {
+        // Only swap the still for the live page when the page really rendered in here; a blocked or failed frame is dropped.
+        let ok = false;
+        try { ok = !!frame.contentDocument?.querySelector('#top'); } catch { ok = false; }
+        if (!ok) { frame.remove(); return; }
+        frame.classList.add('is-ready');
+        if (!reduced) drive(frame);
+      });
+      screen.append(frame);
+    };
+    // After the front page has finished loading, so the phone never competes with it; not at all on a data-saver connection.
+    if (!saveData) {
+      const start = () => ('requestIdleCallback' in window ? requestIdleCallback(mount, { timeout: 3000 }) : setTimeout(mount, 800));
+      if (document.readyState === 'complete') start();
+      else addEventListener('load', start, { once: true });
+    }
+  }
+</script>

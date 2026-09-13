@@ -76,3 +76,28 @@ export async function renderOg(site: DemoSite): Promise<Buffer> {
     quality -= 6;
   }
 }
+
+/**
+ * The front page's link-preview image: the name, the one-line offer and the
+ * number, on the same dark ground as the page.
+ */
+export async function renderHomeOg(): Promise<Buffer> {
+  const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <radialGradient id="glow" cx="0.92" cy="0.08" r="0.75"><stop offset="0" stop-color="#f2a93b" stop-opacity="0.26"/><stop offset="1" stop-color="#f2a93b" stop-opacity="0"/></radialGradient>
+  </defs>
+  <rect width="1200" height="630" fill="#0e0c0a"/>
+  <rect width="1200" height="630" fill="url(#glow)"/>
+  <rect x="0" y="0" width="14" height="630" fill="#f2a93b"/>
+  <text x="80" y="128" font-family="DM Sans" font-weight="700" font-size="24" letter-spacing="5" fill="#f2a93b">FOR UK BARBERS</text>
+  <text x="76" y="330" font-family="Big Shoulders Display" font-weight="800" font-size="190" fill="#f4eee4">GET SEEN.</text>
+  <text x="76" y="490" font-family="Big Shoulders Display" font-weight="800" font-size="190" fill="#f2a93b">GET BOOKED.</text>
+  <text x="80" y="562" font-family="DM Sans" font-weight="700" font-size="30" fill="#f4eee4">Your shop online, built first. £500 one-off, no monthly fee, live in 48 hours.</text>
+  <text x="80" y="604" font-family="DM Sans" font-weight="500" font-size="24" fill="#d9d4cb">mybarbersite.co.uk  ·  07546 685660</text>
+</svg>`;
+  const composed = await sharp({ create: { width: 1200, height: 630, channels: 3, background: '#0e0c0a' } })
+    .composite([{ input: Buffer.from(svg) }])
+    .png()
+    .toBuffer();
+  return sharp(composed).jpeg({ quality: 86, mozjpeg: true }).toBuffer();
+}

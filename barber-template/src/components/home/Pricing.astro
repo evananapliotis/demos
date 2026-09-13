@@ -1,0 +1,29 @@
+---
+/* 7. Two prices. */
+import { COPY, OFFER, OWNER } from '../../lib/home.ts';
+import Section from '../demo/Section.astro';
+import Wa from './Wa.astro';
+const c = COPY.pricing;
+const cards = [
+  { ...c.page, sum: '', price: OFFER.page, featured: true },
+  { ...c.pageBooking, price: OFFER.page + OFFER.booking, featured: false },
+];
+---
+<Section id="pricing" eyebrow="Pricing" title={c.heading} class="bg-ink-2">
+  <div class="grid gap-4 md:grid-cols-2 md:gap-6">
+    {cards.map((card) => (
+      <div class={`lift flex flex-col rounded-xl border p-6 md:p-8 ${card.featured ? 'border-amber/60 bg-ink' : 'border-line bg-ink'}`} data-reveal>
+        <h3 class="text-[1.9rem] leading-none text-cream">{card.name}</h3>
+        {card.sum && <p class="mt-2 text-sm text-cream-2">{card.sum}</p>}
+        <p class="mt-4 flex items-baseline gap-2"><span class="display text-[4.5rem] leading-none text-amber">£{card.price}</span><span class="text-sm font-bold uppercase tracking-[0.14em] text-cream-2">one-off</span></p>
+        <ul class="mt-6 grid gap-2 text-cream/90" role="list">
+          {card.lines.map((l) => (
+            <li class="flex items-start gap-3"><span class="mt-[0.45rem] inline-block h-[2px] w-4 shrink-0 bg-amber" aria-hidden="true"></span>{l}</li>
+          ))}
+        </ul>
+        <a href={OWNER.whatsapp} target="_blank" rel="noopener" class={`btn mt-8 ${card.featured ? 'btn-amber' : 'btn-outline'}`}><Wa size={18} /> {c.button}</a>
+      </div>
+    ))}
+  </div>
+  <p class="mt-6 flex items-center gap-3 text-cream-2" data-reveal><span class="inline-block h-[2px] w-6 shrink-0 bg-amber" aria-hidden="true"></span>{c.note}</p>
+</Section>

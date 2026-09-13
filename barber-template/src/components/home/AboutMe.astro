@@ -1,0 +1,19 @@
+---
+/* 9. Who you are dealing with. */
+import { COPY, OWNER, telHref } from '../../lib/home.ts';
+import Section from '../demo/Section.astro';
+import Icons from '../demo/Icons.astro';
+import Wa from './Wa.astro';
+const c = COPY.about;
+---
+<Section id="evangelos" eyebrow={c.eyebrow} title={c.heading} class="bg-ink-2">
+  <div class="grid gap-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-end lg:gap-16" data-reveal>
+    <div class="max-w-2xl space-y-4 text-lg leading-relaxed text-cream/90 md:text-2xl">
+      {c.lines.map((l) => <p>{l}</p>)}
+    </div>
+    <div class="grid gap-1 text-lg font-bold">
+      <a href={telHref} class="inline-flex min-h-12 items-center gap-2 text-amber hover:text-amber-2"><Icons name="phone" size={20} /> {OWNER.phone.display}</a>
+      <a href={OWNER.whatsapp} target="_blank" rel="noopener" class="inline-flex min-h-12 items-center gap-2 text-amber hover:text-amber-2"><Wa size={20} /> WhatsApp me</a>
+    </div>
+  </div>
+</Section>

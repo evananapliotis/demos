@@ -90,7 +90,13 @@ Image URLs carry a content hash as a query string (`/img/hero-1024.avif?v=…`),
 
 ## Pages
 
-The site is served at https://mybarbersite.co.uk. `/` is a placeholder for MyBarberSite and `404` matches it. The Halden & Crane page described by `src/config/site.ts` is no longer served: its components, config and graded images stay in the repo as the template, checked on every build, but no page renders them. Photo provenance is kept in `src/config/credits.json` but not rendered.
+The site is served at https://mybarbersite.co.uk. `/` is the MyBarberSite front page (below) and `404` matches its style. The Halden & Crane page described by `src/config/site.ts` is no longer served: its components, config and graded images stay in the repo as the template, checked on every build, but no page renders them. Photo provenance is kept in `src/config/credits.json` but not rendered.
+
+### Front page, `/`
+
+`src/pages/index.astro` is the offer to UK barbershop owners, composed from `src/components/home/*` on `src/layouts/HomeBase.astro` (indexable, with `/og.jpg` from `src/pages/og.jpg.ts` as its link preview). Every line of copy, the phone number, the WhatsApp links and the figures of the offer live in `src/lib/home.ts`; nothing on the page states a number that is not in `OFFER` there. The page's own styles are `src/styles/home.css`, which imports the shop pages' stylesheet, so the front page and the listing pages share one look.
+
+Its mockups are built from the shop pages' real components around a made-up shop, Halden & Crane (`mockSite` in `src/lib/home.ts`, photos from the template's own `public/img`). The phone in the hero shows that shop's actual page: `/example` (`src/pages/example.astro`, `noindex`, with `/example/book` and `/example/og.jpg`) is rendered by the same `ShopPage`/`BookingPage` components as every listing, and is loaded into the phone in an iframe once the front page has finished loading, over a still laid out with the same classes and sizes so nothing moves when it arrives. `public/_headers` therefore allows same-origin framing (`SAMEORIGIN` and `frame-ancestors 'self'`); the frame is dropped, and the still kept, if the page fails to render in it. The "Try it" booking taster runs the listing pages' own availability rules from `src/lib/demo-booking.ts` and confirms on screen only.
 
 ### Barber pages, `/<slug>`
 

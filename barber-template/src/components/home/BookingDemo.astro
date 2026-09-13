@@ -1,0 +1,143 @@
+---
+/* 5. Online booking: why, the price, and a working taste of the flow. */
+import { COPY, OWNER, mockSite } from '../../lib/home.ts';
+import { SERVICES } from '../../lib/demo-booking.ts';
+import Section from '../demo/Section.astro';
+import Icons from '../demo/Icons.astro';
+import Wa from './Wa.astro';
+const c = COPY.booking;
+const services = SERVICES.slice(0, 3);
+const config = { week: mockSite.week, seed: mockSite.slug, services };
+---
+<Section id="booking" eyebrow="Online booking" title={c.heading} class="bg-ink-2">
+  <div class="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:items-start lg:gap-14">
+    <div class="space-y-5 text-lg leading-relaxed text-cream/90 md:text-xl" data-reveal>
+      {c.lines.map((l) => <p>{l}</p>)}
+      <p class="display text-[2rem] leading-none text-amber md:text-[2.6rem]">{c.price}</p>
+      <a href={OWNER.whatsappBooking} target="_blank" rel="noopener" class="btn btn-amber w-full sm:w-auto"><Wa size={19} /> {c.button}</a>
+    </div>
+
+    <div class="min-w-0 rounded-xl border border-line bg-ink p-4 sm:p-6" data-mini-book data-config={JSON.stringify(config)} data-reveal>
+      <p class="eyebrow">{c.tryIt}</p>
+      <div class="mt-4 grid grid-cols-1 gap-6" data-mb-form>
+        <div data-mb-step="service">
+          <p class="mb-2 text-sm font-bold text-cream" id="mb-l-service">{c.steps[0]}</p>
+          <div class="grid gap-2" role="group" aria-labelledby="mb-l-service">
+            {services.map((s) => (
+              <label class="choice">
+                <input type="radio" name="mb-service" value={s.id} />
+                <span class="choice-body">
+                  <span class="font-bold text-cream">{s.name}</span>
+                  <span class="shrink-0 text-xs font-bold uppercase tracking-[0.12em] text-amber">{s.minutes} min</span>
+                </span>
+              </label>
+            ))}
+          </div>
+        </div>
+        <div class="min-w-0" data-mb-step="day" hidden>
+          <p class="mb-2 text-sm font-bold text-cream" id="mb-l-day">{c.steps[1]}</p>
+          <div class="days" data-mb-days role="group" aria-labelledby="mb-l-day"></div>
+        </div>
+        <div data-mb-step="time" hidden>
+          <p class="mb-2 text-sm font-bold text-cream" id="mb-l-time">{c.steps[2]}</p>
+          <div class="grid grid-cols-3 gap-2 min-[400px]:grid-cols-4" data-mb-times role="group" aria-labelledby="mb-l-time"></div>
+        </div>
+        <div data-mb-step="confirm" hidden>
+          <button type="button" class="btn btn-amber w-full" data-mb-confirm><Icons name="calendar" size={19} /> {c.confirm}</button>
+          <p class="mt-2 text-center text-xs text-cream-2">{c.depositLine}</p>
+        </div>
+      </div>
+      <div class="hidden rounded-md border border-amber/40 bg-ink-2 p-5 outline-none" data-mb-done tabindex="-1">
+        <svg class="tick mb-3" viewBox="0 0 52 52" width="48" height="48" aria-hidden="true"><circle class="tick-ring" cx="26" cy="26" r="24" /><path class="tick-mark" d="M15 27l7 7 15-16" /></svg>
+        <p class="eyebrow">Booked</p>
+        <p class="display mt-1 text-3xl text-cream">See you <span class="text-amber">soon.</span></p>
+        <p class="mt-3 text-cream" data-mb-when></p>
+        <p class="mt-1 text-cream">{c.doneLine}</p>
+        <p class="mt-3 text-sm text-cream-2">{c.demoLine}</p>
+        <button type="button" class="btn btn-outline mt-4 min-h-11" data-mb-again>{c.again}</button>
+      </div>
+    </div>
+  </div>
+</Section>
+
+<script>
+  import { addDays, fmtDayLong, fmtTime } from '../../lib/time.ts';
+  import { availability, type Day, type Service, type Week } from '../../lib/demo-booking.ts';
+
+  const box = document.querySelector<HTMLElement>('[data-mini-book]');
+  if (box) {
+    const cfg = JSON.parse(box.dataset.config!) as { week: Week | null; seed: string; services: Service[] };
+    const form = box.querySelector<HTMLElement>('[data-mb-form]')!;
+    const done = box.querySelector<HTMLElement>('[data-mb-done]')!;
+    const step = (n: string) => box.querySelector<HTMLElement>(`[data-mb-step="${n}"]`)!;
+    const daysBox = box.querySelector<HTMLElement>('[data-mb-days]')!;
+    const timesBox = box.querySelector<HTMLElement>('[data-mb-times]')!;
+    const reduced = matchMedia('(prefers-reduced-motion: reduce)').matches;
+    let service: Service | null = null;
+    let days: Day[] = [];
+    let today = '';
+    let date = '';
+    let time = '';
+    const buzz = () => { try { navigator.vibrate?.(8); } catch { /* not supported */ } };
+    const chip = (name: string, value: string, label: string, sub = '', disabled = false, checked = false) =>
+      `<label class="chip"><input type="radio" name="${name}" value="${value}"${disabled ? ' disabled' : ''}${checked ? ' checked' : ''}><span class="chip-body">${label}${sub ? `<small>${sub}</small>` : ''}</span></label>`;
+    const dayLabel = (d: Day) => (d.date === today ? 'Today' : d.date === addDays(today, 1) ? 'Tomorrow' : d.label);
+    const show = (el: HTMLElement) => { if (el.hidden) { el.hidden = false; if (!reduced) el.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } };
+
+    const renderDays = () => {
+      daysBox.innerHTML = days.slice(0, 7).map((d) => chip('mb-date', d.date, dayLabel(d), d.closed ? 'Closed' : d.slots.length ? '' : 'Full', d.closed || !d.slots.length, d.date === date)).join('');
+    };
+    const renderTimes = () => {
+      const d = days.find((x) => x.date === date);
+      timesBox.innerHTML = (d?.slots ?? []).slice(0, 8).map((t) => chip('mb-time', t, fmtTime(t), '', false, t === time)).join('');
+    };
+
+    box.addEventListener('change', (e) => {
+      const t = e.target as HTMLInputElement;
+      buzz();
+      if (t.name === 'mb-service') {
+        service = cfg.services.find((s) => s.id === t.value) ?? null;
+        if (!service) return;
+        const a = availability(cfg.week, service, cfg.seed);
+        days = a.days;
+        today = a.today;
+        // keep the day already picked if the new service still has times on it
+        const open = (d: Day) => !d.closed && d.slots.length > 0;
+        const kept = days.find((d) => d.date === date && open(d));
+        date = kept?.date ?? days.find(open)?.date ?? '';
+        time = '';
+        renderDays();
+        renderTimes();
+        show(step('day'));
+        if (date) show(step('time'));
+        step('confirm').hidden = true;
+      } else if (t.name === 'mb-date') {
+        date = t.value;
+        time = '';
+        renderTimes();
+        show(step('time'));
+        step('confirm').hidden = true;
+      } else if (t.name === 'mb-time') {
+        time = t.value;
+        show(step('confirm'));
+      }
+    });
+    box.querySelector('[data-mb-confirm]')!.addEventListener('click', () => {
+      if (!service || !date || !time) return;
+      done.querySelector('[data-mb-when]')!.textContent = `${service.name} (${service.minutes} min), ${fmtDayLong(date)} at ${fmtTime(time)}.`;
+      form.hidden = true;
+      done.classList.remove('hidden');
+      done.focus({ preventScroll: true });
+      if (!reduced) done.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+    });
+    box.querySelector('[data-mb-again]')!.addEventListener('click', () => {
+      service = null; date = ''; time = '';
+      box.querySelectorAll<HTMLInputElement>('input[type="radio"]').forEach((i) => (i.checked = false));
+      daysBox.innerHTML = ''; timesBox.innerHTML = '';
+      ['day', 'time', 'confirm'].forEach((n) => (step(n).hidden = true));
+      done.classList.add('hidden');
+      form.hidden = false;
+      box.querySelector<HTMLInputElement>('input[name="mb-service"]')?.focus({ preventScroll: true });
+    });
+  }
+</script>

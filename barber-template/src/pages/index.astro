@@ -1,31 +1,39 @@
 ---
 /**
- * The front door of mybarbersite.co.uk: a placeholder until MyBarberSite has
- * a page of its own. The barbers' pages live at /<slug>.
+ * The front page of mybarbersite.co.uk: the offer to UK barbershop owners,
+ * with the shop pages' own components inside its mockups.
  */
-import '../styles/demo.css';
-const phone = { display: '07546 685660', tel: '+447546685660' };
+import HomeBase from '../layouts/HomeBase.astro';
+import Hero from '../components/home/Hero.astro';
+import ProofStrip from '../components/home/ProofStrip.astro';
+import BeforeAfter from '../components/home/BeforeAfter.astro';
+import WhatYouGet from '../components/home/WhatYouGet.astro';
+import BookingDemo from '../components/home/BookingDemo.astro';
+import HowItWorks from '../components/home/HowItWorks.astro';
+import Pricing from '../components/home/Pricing.astro';
+import Faq from '../components/home/Faq.astro';
+import AboutMe from '../components/home/AboutMe.astro';
+import Cta from '../components/home/Cta.astro';
+import Footer from '../components/home/Footer.astro';
+import StickyBar from '../components/home/StickyBar.astro';
+
+const title = 'MyBarberSite | Your shop online. £500 one-off, no monthly fee.';
+const description = 'A page for your barbershop with your photos, your Google rating, opening hours with open now, tap to call and directions. Online booking for £400 more. Built before you pay, live in 48 hours. £500 one-off, no monthly fee.';
 ---
 
-<!doctype html>
-<html lang="en-GB" class="bg-ink">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>MyBarberSite</title>
-    <meta name="description" content="Websites and online booking for barbers." />
-    <link rel="canonical" href={new URL('/', Astro.site).href} />
-    <meta name="theme-color" content="#0e0c0a" />
-    <meta name="color-scheme" content="dark" />
-    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-  </head>
-  <body class="bg-ink text-cream antialiased">
-    <main class="flex min-h-[100svh] flex-col justify-center px-5 py-16 sm:px-8 lg:px-12">
-      <div class="mx-auto w-full max-w-5xl">
-        <h1 class="text-[clamp(3rem,14vw,8rem)] text-cream">My<span class="text-amber">Barber</span>Site</h1>
-        <p class="mt-4 max-w-md text-lg text-cream/85 md:text-2xl">Websites and online booking for barbers.</p>
-        <p class="mt-8"><a href={`tel:${phone.tel}`} class="btn btn-amber">Call {phone.display}</a></p>
-      </div>
-    </main>
-  </body>
-</html>
+<HomeBase title={title} description={description}>
+  <Hero />
+  <main id="main">
+    <ProofStrip />
+    <BeforeAfter />
+    <WhatYouGet />
+    <BookingDemo />
+    <HowItWorks />
+    <Pricing />
+    <Faq />
+    <AboutMe />
+    <Cta />
+  </main>
+  <Footer />
+  <StickyBar />
+</HomeBase>

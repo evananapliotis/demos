@@ -1,0 +1,42 @@
+---
+import { COPY, OWNER, telHref } from '../../lib/home.ts';
+import Icons from '../demo/Icons.astro';
+import Wa from './Wa.astro';
+import Header from './Header.astro';
+import PhoneMock from './PhoneMock.astro';
+/** Each word keeps its letters together so the line wraps between words, never inside one. */
+const words = (line: string, offset: number) => {
+  let i = offset;
+  return line.split(' ').map((word) => ({ word, letters: [...word].map((ch) => ({ ch, i: i++ })) }));
+};
+const [line1, line2] = COPY.hero.headline;
+---
+<header id="home" class="relative isolate overflow-hidden bg-ink px-5 sm:px-8 lg:px-12">
+  <div class="absolute inset-0 -z-10 bg-[radial-gradient(70%_50%_at_100%_0%,rgb(242_169_59/0.14),transparent_60%)]" aria-hidden="true"></div>
+  <Header />
+  <div class="relative mx-auto grid w-full max-w-5xl gap-8 pb-16 pt-8 md:pt-12 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-center lg:gap-16 lg:pb-20 lg:pt-14">
+    <div class="relative z-10">
+      <p class="eyebrow rise">{COPY.hero.eyebrow}</p>
+      <h1 class="mt-4 text-[clamp(3.75rem,17vw,9.5rem)] text-cream lg:text-[7.5rem] xl:text-[8.5rem]" aria-label={`${line1} ${line2}`}>
+        <span class="letters block" aria-hidden="true">
+          {words(line1!, 0).map((w, wi) => (<>{wi > 0 && ' '}<span class="word">{w.letters.map(({ ch, i }) => <span class="letter" style={`--i:${i}`}>{ch}</span>)}</span></>))}
+        </span>
+        <span class="letters block text-amber" aria-hidden="true">
+          {words(line2!, line1!.length).map((w, wi) => (<>{wi > 0 && ' '}<span class="word">{w.letters.map(({ ch, i }) => <span class="letter" style={`--i:${i}`}>{ch}</span>)}</span></>))}
+        </span>
+      </h1>
+      <p class="rise mt-5 max-w-md text-lg leading-snug text-cream/85 md:text-2xl" style="animation-delay:120ms">{COPY.hero.support}</p>
+      <div class="rise mt-6 grid grid-cols-1 gap-3 sm:flex sm:flex-wrap" style="animation-delay:180ms" data-hero-cta>
+        <a href={OWNER.whatsapp} target="_blank" rel="noopener" class="btn btn-amber"><Wa size={19} /> WhatsApp me</a>
+        <a href={telHref} class="btn btn-outline"><Icons name="phone" size={19} /> Call {OWNER.phone.display}</a>
+      </div>
+      <p class="rise mt-6 flex items-center gap-2 text-sm text-cream-2" style="animation-delay:240ms"><span class="inline-block h-[2px] w-6 bg-amber" aria-hidden="true"></span>{COPY.hero.under}</p>
+      <p class="rise mt-2 text-sm text-cream-2" style="animation-delay:280ms">{COPY.hero.sent}</p>
+    </div>
+    <div class="relative flex flex-col items-center lg:items-end">
+      <div class="phone-glow" aria-hidden="true"></div>
+      <PhoneMock />
+      <p class="relative mt-5 max-w-xs text-center text-xs leading-snug text-cream-2 lg:text-right">{COPY.hero.example}</p>
+    </div>
+  </div>
+</header>

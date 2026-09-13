@@ -222,8 +222,13 @@ export function derive(shop: Shop) {
     photos,
     hero,
     authors,
+    /** A price list, when the shop has given one. */
+    prices: null as PriceRow[] | null,
   };
 }
+
+/** One line of a price list. Listings carry none; the front page's example shop gives one. */
+export type PriceRow = { name: string; price: string; minutes?: number };
 
 export type DemoSite = ReturnType<typeof derive>;
 

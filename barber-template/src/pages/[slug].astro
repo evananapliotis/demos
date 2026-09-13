@@ -1,28 +1,13 @@
 ---
 /**
- * One demo page per listing in src/data/barbers.json, at /<slug>.
- *
- * The HAWAR BARBER one-page structure with the listing's content: hero on the
- * first photo, a trust strip and ticker of listing facts, 01 Prices, 02 The
- * work (photos with a lightbox), the Google reviews block, 03 The shop,
- * 04 Find us, a closing call to action, footer and a sticky Call/Directions
- * bar. Every value comes from src/lib/demo.ts, derived from the listing;
- * nothing on the page belongs to one shop. Each page is noindex.
+ * One page per listing in src/data/barbers.json, at /<slug>. The page itself
+ * is src/components/demo/ShopPage.astro; everything it shows is derived from
+ * the listing in src/lib/demo.ts. Nothing on a page belongs to one shop, and
+ * every page is noindex.
  */
-import DemoBase from '../layouts/DemoBase.astro';
+import ShopPage from '../components/demo/ShopPage.astro';
 import { derive } from '../lib/demo.ts';
 import { shops, type Shop } from '../lib/shops.ts';
-import Hero from '../components/demo/Hero.astro';
-import TrustStrip from '../components/demo/TrustStrip.astro';
-import Ticker from '../components/demo/Ticker.astro';
-import Prices from '../components/demo/Prices.astro';
-import Gallery from '../components/demo/Gallery.astro';
-import Reviews from '../components/demo/Reviews.astro';
-import About from '../components/demo/About.astro';
-import FindUs from '../components/demo/FindUs.astro';
-import FinalCta from '../components/demo/FinalCta.astro';
-import Footer from '../components/demo/Footer.astro';
-import StickyBar from '../components/demo/StickyBar.astro';
 
 export function getStaticPaths() {
   return shops.map((shop) => ({ params: { slug: shop.slug }, props: { shop } }));
@@ -31,27 +16,6 @@ export function getStaticPaths() {
 interface Props {
   shop: Shop;
 }
-
-const site = derive(Astro.props.shop);
-const title = `${site.name} | ${site.kind}, ${site.roadName}, ${site.address.locality}`;
-// Section numerals only count sections that render.
-let n = 0;
-const next = () => String(++n).padStart(2, '0');
-const idx = { prices: next(), gallery: site.photos.length ? next() : undefined, about: next(), findUs: next() };
 ---
 
-<DemoBase site={site} title={title} description={site.description} preloadHero>
-  <Hero site={site} />
-  <TrustStrip site={site} />
-  <Ticker site={site} />
-  <main id="main">
-    <Prices site={site} index={idx.prices} />
-    <Gallery site={site} index={idx.gallery} />
-    <Reviews site={site} />
-    <About site={site} index={idx.about} />
-    <FindUs site={site} index={idx.findUs} />
-    <FinalCta site={site} />
-  </main>
-  <Footer site={site} />
-  <StickyBar site={site} />
-</DemoBase>
+<ShopPage site={derive(Astro.props.shop)} />
