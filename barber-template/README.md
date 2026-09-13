@@ -96,6 +96,8 @@ One page with anchor sections (`/`), plus `/book` (front-end only booking flow, 
 
 `src/pages/demo/[slug].astro` builds one page per entry in `src/data/barbers-5.json`, an export of Google Business listings. Each page is the template's look with the listing's content: the listing photo as the hero (street view stands in when the photo is missing or fails to load), name, rating and review count, address, a Monday-to-Sunday hours list, a call button, and the booking flow with the shop's name in the copy. The pages carry `<meta name="robots" content="noindex">`. Entries are validated by `src/lib/shops.ts` at build time; add more listings to the JSON and they get pages too.
 
+Photos for these pages come from Google Places. `npm run photos` (needs `GOOGLE_PLACES_KEY` in `.env`, see `.env.example`) finds each listing on Places API (New) by name within 500m of its coordinates and saves up to six photos to `public/photos/<slug>-<n>.jpg`, writing their paths into the entry as `photos` and author attributions to `src/data/photo-credits.json`. Existing files are kept; `-- --force` re-downloads, `-- --slug a,b` limits the run.
+
 ## Deploy
 
 Static output, no adapter. Two routes, pick one:
