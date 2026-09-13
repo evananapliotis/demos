@@ -1,12 +1,12 @@
 ---
-/* 3. What a customer sees today with no page, and with one. A white clipping beside a black object; fictional shop, nothing real. */
-import { COPY, mockSite } from '../../lib/home.ts';
+/* 3. What a customer sees today with no page, and with one. A white Google clipping beside the showcase shop's page; made-up shop, nothing real. */
+import { COPY } from '../../lib/home.ts';
+import { SHOP } from '../../lib/showcase.ts';
 import HomeSection from './HomeSection.astro';
 import Stars from '../demo/Stars.astro';
 import GoogleG from '../demo/GoogleG.astro';
-import Icons from '../demo/Icons.astro';
+import Panel from '../showcase/Panel.astro';
 const c = COPY.beforeAfter;
-const m = mockSite;
 ---
 <HomeSection id="before-after" label="Before and after" title={c.heading}>
   <div class="grid gap-12 md:grid-cols-2 md:gap-10 lg:gap-16">
@@ -15,11 +15,11 @@ const m = mockSite;
       <p class="mb-5 mt-3 max-w-[22rem] text-base leading-normal text-print-2">{c.leftLine}</p>
       <div class="clipping mx-auto flex w-full max-w-sm flex-1 flex-col p-4 text-[#202124] md:max-w-none" aria-hidden="true" inert>
         <p class="flex items-center gap-2 text-xs font-bold text-[#5f6368]"><GoogleG size={14} /> Google</p>
-        <p class="mt-3 text-2xl font-bold leading-tight">{m.name}</p>
-        <p class="mt-1 text-sm text-[#5f6368]">Barber shop · {m.address.locality}</p>
-        <p class="mt-1 flex items-center gap-1.5 text-sm"><span class="font-bold">{m.google.rating!.toFixed(1)}</span> <Stars rating={m.google.rating!} class="text-[#fbbc04]" size={13} /> <span class="text-[#5f6368]">({m.google.reviewCount})</span></p>
+        <p class="mt-3 text-2xl font-bold leading-tight">{SHOP.name}</p>
+        <p class="mt-1 text-sm text-[#5f6368]">Barber shop · {SHOP.town}</p>
+        <p class="mt-1 flex items-center gap-1.5 text-sm"><span class="font-bold">{SHOP.rating.toFixed(1)}</span> <Stars rating={SHOP.rating} class="text-[#fbbc04]" size={13} /> <span class="text-[#5f6368]">({SHOP.reviews})</span></p>
         <div class="mt-3 grid grid-cols-3 gap-1 md:min-h-0 md:flex-1">
-          <img src={m.photos[0]!.path} alt="" width={m.photos[0]!.width} height={m.photos[0]!.height} loading="lazy" decoding="async" class="aspect-square w-full rounded-md object-cover md:aspect-auto md:h-full md:min-h-32" />
+          <img src={SHOP.photos[0]!.path} alt="" width={SHOP.photos[0]!.width} height={SHOP.photos[0]!.height} loading="lazy" decoding="async" class="aspect-square w-full rounded-md object-cover md:aspect-auto md:h-full md:min-h-32" />
           <div class="grid aspect-square place-items-center rounded-md bg-[#e8eaed] text-[11px] font-bold text-[#5f6368] md:aspect-auto md:min-h-32">No photo</div>
           <div class="grid aspect-square place-items-center rounded-md bg-[#e8eaed] text-[11px] font-bold text-[#5f6368] md:aspect-auto md:min-h-32">No photo</div>
         </div>
@@ -39,29 +39,7 @@ const m = mockSite;
       <p class="label">{c.rightLabel}</p>
       <p class="mb-5 mt-3 max-w-[22rem] text-base leading-normal text-print-2">{c.rightLine}</p>
       <div class="object mx-auto flex w-full max-w-sm flex-1 flex-col md:max-w-none" aria-hidden="true" inert>
-        <div class="relative h-44 shrink-0">
-          <img src={m.hero!.path} alt="" width={m.hero!.width} height={m.hero!.height} loading="lazy" decoding="async" class="absolute inset-0 h-full w-full object-cover opacity-60" />
-          <div class="absolute inset-0 bg-[linear-gradient(to_bottom,rgb(14_12_10/0.2),rgb(14_12_10)_95%)]"></div>
-          <div class="absolute inset-x-4 bottom-3">
-            <p class="eyebrow text-[0.7rem]">Barber shop · {m.address.locality}</p>
-            <p class="display mt-1 text-[2.4rem] leading-[0.9] text-cream">{m.nameLines[0]}<br /><span class="text-amber">{m.nameLines[1]}</span></p>
-          </div>
-        </div>
-        <div class="flex flex-1 flex-col p-4">
-          <span class="inline-flex min-h-10 items-center gap-2.5 rounded-md border border-cream/20 bg-ink-2/80 px-3 py-1.5 text-sm font-bold text-cream">
-            <span class="display text-xl leading-none text-amber">{m.google.rating!.toFixed(1)}</span><Stars rating={m.google.rating!} class="text-amber" size={13} />
-            <span class="inline-flex items-center gap-1.5">{m.google.reviewsText} <GoogleG size={14} /></span>
-          </span>
-          <p class="mt-3 flex items-center gap-2 text-sm font-bold text-cream"><span class="status-dot" data-status-dot aria-hidden="true"></span><span data-open-status data-week={JSON.stringify(m.week)}>{m.openDaysLabel}</span></p>
-          <div class="mt-3 grid grid-cols-2 gap-2">
-            <span class="btn btn-outline min-h-11 px-2 text-[0.9rem]"><Icons name="phone" size={16} /> Call</span>
-            <span class="btn btn-outline min-h-11 px-2 text-[0.9rem]"><Icons name="pin" size={16} /> Directions</span>
-          </div>
-          <span class="btn btn-amber mt-2 min-h-11 w-full text-[0.95rem]"><Icons name="calendar" size={17} /> Book online</span>
-          <div class="mt-auto grid grid-cols-3 gap-1.5 pt-3">
-            {m.photos.map((p) => <img src={p.path} alt="" width={p.width} height={p.height} loading="lazy" decoding="async" class="aspect-square w-full rounded-md object-cover" />)}
-          </div>
-        </div>
+        <Panel />
       </div>
     </div>
   </div>

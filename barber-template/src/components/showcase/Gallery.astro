@@ -1,0 +1,12 @@
+---
+/* Three photos: one wide, two square, all rounded. */
+import Photo from './Photo.astro';
+---
+<section class="px-5 py-8">
+  <h3 class="sc-display text-[2.25rem] font-medium">Inside</h3>
+  <div class="mt-5 grid grid-cols-2 gap-2.5">
+    <div class="col-span-2 aspect-[16/10] overflow-hidden rounded-[1.25rem] bg-sand"><Photo index={0} class="h-full w-full object-cover" /></div>
+    <div class="aspect-square overflow-hidden rounded-[1.25rem] bg-sand"><Photo index={1} class="h-full w-full object-cover" /></div>
+    <div class="aspect-square overflow-hidden rounded-[1.25rem] bg-sand"><Photo index={2} class="h-full w-full object-cover" /></div>
+  </div>
+</section>

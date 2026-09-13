@@ -1,13 +1,14 @@
 ---
 /* 5. Online booking: why, the price, and a working taste of the flow. */
-import { COPY, OWNER, mockSite } from '../../lib/home.ts';
+import { COPY, OWNER } from '../../lib/home.ts';
+import { SHOP } from '../../lib/showcase.ts';
 import { SERVICES } from '../../lib/demo-booking.ts';
 import HomeSection from './HomeSection.astro';
 import Icons from '../demo/Icons.astro';
 import Wa from './Wa.astro';
 const c = COPY.booking;
 const services = SERVICES.slice(0, 3);
-const config = { week: mockSite.week, seed: mockSite.slug, services };
+const config = { week: SHOP.week, seed: SHOP.slug, services };
 ---
 <HomeSection id="booking" label="Online booking" title={c.heading}>
   <div class="grid grid-cols-1 gap-10 lg:grid-cols-2 lg:items-start lg:gap-16">
@@ -24,40 +25,40 @@ const config = { week: mockSite.week, seed: mockSite.slug, services };
       <div class="object min-w-0 p-4 sm:p-6" data-mini-book data-config={JSON.stringify(config)}>
       <div class="grid grid-cols-1 gap-6" data-mb-form>
         <div data-mb-step="service">
-          <p class="mb-2 text-sm font-bold text-cream" id="mb-l-service">{c.steps[0]}</p>
+          <p class="mb-2 text-sm font-bold text-cocoa" id="mb-l-service">{c.steps[0]}</p>
           <div class="grid gap-2" role="group" aria-labelledby="mb-l-service">
             {services.map((s) => (
-              <label class="choice">
+              <label class="sc-choice">
                 <input type="radio" name="mb-service" value={s.id} />
-                <span class="choice-body">
-                  <span class="font-bold text-cream">{s.name}</span>
-                  <span class="shrink-0 text-xs font-bold uppercase tracking-[0.12em] text-amber">{s.minutes} min</span>
+                <span class="sc-choice-body">
+                  <span class="font-bold text-cocoa">{s.name}</span>
+                  <span class="shrink-0 text-xs font-semibold text-cocoa-2">{s.minutes} min</span>
                 </span>
               </label>
             ))}
           </div>
         </div>
         <div class="min-w-0" data-mb-step="day" hidden>
-          <p class="mb-2 text-sm font-bold text-cream" id="mb-l-day">{c.steps[1]}</p>
-          <div class="days" data-mb-days role="group" aria-labelledby="mb-l-day"></div>
+          <p class="mb-2 text-sm font-bold text-cocoa" id="mb-l-day">{c.steps[1]}</p>
+          <div class="sc-days" data-mb-days role="group" aria-labelledby="mb-l-day"></div>
         </div>
         <div data-mb-step="time" hidden>
-          <p class="mb-2 text-sm font-bold text-cream" id="mb-l-time">{c.steps[2]}</p>
+          <p class="mb-2 text-sm font-bold text-cocoa" id="mb-l-time">{c.steps[2]}</p>
           <div class="grid grid-cols-3 gap-2 min-[400px]:grid-cols-4" data-mb-times role="group" aria-labelledby="mb-l-time"></div>
         </div>
         <div data-mb-step="confirm" hidden>
-          <button type="button" class="btn btn-amber w-full" data-mb-confirm><Icons name="calendar" size={19} /> {c.confirm}</button>
-          <p class="mt-2 text-center text-xs text-cream-2">{c.depositLine}</p>
+          <button type="button" class="sc-pill sc-pill-moss w-full" data-mb-confirm><Icons name="calendar" size={18} /> {c.confirm}</button>
+          <p class="mt-2 text-center text-xs text-cocoa-2">{c.depositLine}</p>
         </div>
       </div>
-      <div class="hidden rounded-md border border-amber/40 bg-ink-2 p-5 outline-none" data-mb-done tabindex="-1">
-        <svg class="tick mb-3" viewBox="0 0 52 52" width="48" height="48" aria-hidden="true"><circle class="tick-ring" cx="26" cy="26" r="24" /><path class="tick-mark" d="M15 27l7 7 15-16" /></svg>
-        <p class="eyebrow">Booked</p>
-        <p class="display mt-1 text-3xl text-cream">See you <span class="text-amber">soon.</span></p>
-        <p class="mt-3 text-cream" data-mb-when></p>
-        <p class="mt-1 text-cream">{c.doneLine}</p>
-        <p class="mt-3 text-sm text-cream-2">{c.demoLine}</p>
-        <button type="button" class="btn btn-outline mt-4 min-h-11" data-mb-again>{c.again}</button>
+      <div class="sc-card hidden p-5 outline-none" data-mb-done tabindex="-1">
+        <svg class="mb-3" viewBox="0 0 52 52" width="48" height="48" aria-hidden="true"><circle class="sc-tick-ring" cx="26" cy="26" r="24" /><path class="sc-tick-mark" d="M15 27l7 7 15-16" /></svg>
+        <p class="sc-eyebrow">Booked</p>
+        <p class="sc-display mt-1 text-3xl">See you <span class="text-moss">soon.</span></p>
+        <p class="mt-3 text-cocoa" data-mb-when></p>
+        <p class="mt-1 text-cocoa">{c.doneLine}</p>
+        <p class="mt-3 text-sm text-cocoa-2">{c.demoLine}</p>
+        <button type="button" class="sc-pill sc-pill-line mt-4 min-h-11 bg-linen" data-mb-again>{c.again}</button>
       </div>
       </div>
     </div>
@@ -84,7 +85,7 @@ const config = { week: mockSite.week, seed: mockSite.slug, services };
     let time = '';
     const buzz = () => { try { navigator.vibrate?.(8); } catch { /* not supported */ } };
     const chip = (name: string, value: string, label: string, sub = '', disabled = false, checked = false) =>
-      `<label class="chip"><input type="radio" name="${name}" value="${value}"${disabled ? ' disabled' : ''}${checked ? ' checked' : ''}><span class="chip-body">${label}${sub ? `<small>${sub}</small>` : ''}</span></label>`;
+      `<label class="sc-chip"><input type="radio" name="${name}" value="${value}"${disabled ? ' disabled' : ''}${checked ? ' checked' : ''}><span class="sc-chip-body">${label}${sub ? `<small>${sub}</small>` : ''}</span></label>`;
     const dayLabel = (d: Day) => (d.date === today ? 'Today' : d.date === addDays(today, 1) ? 'Tomorrow' : d.label);
     const show = (el: HTMLElement) => { if (el.hidden) { el.hidden = false; if (!reduced) el.scrollIntoView({ block: 'nearest', behavior: 'smooth' }); } };
 

@@ -1,0 +1,27 @@
+---
+/* The showcase shop's first screen: wordmark and Book, the name, a rounded photo with the rating on it, tagline, the two buttons, open now. */
+import { SHOP } from '../../lib/showcase.ts';
+import Icons from '../demo/Icons.astro';
+import Rating from './Rating.astro';
+import Photo from './Photo.astro';
+const [first, second] = SHOP.nameLines;
+---
+<header class="px-5 pb-8 pt-3">
+  <div class="flex items-center justify-between gap-3">
+    <span class="sc-display text-[1.3rem] font-semibold">{SHOP.name}</span>
+    <span class="sc-pill sc-pill-moss min-h-10 px-4 text-sm"><Icons name="calendar" size={16} /> Book</span>
+  </div>
+  <p class="mt-8"><span class="sc-tag">{SHOP.kind} · {SHOP.town}</span></p>
+  <p class="sc-display mt-3 text-[4.25rem]">{first}<br /><span class="text-moss">{second}</span></p>
+  <div class="relative mt-6 aspect-[4/5] overflow-hidden rounded-[1.5rem] bg-sand">
+    <Photo index={0} class="absolute inset-0 h-full w-full object-cover" />
+    <Rating class="absolute bottom-3 left-3" />
+  </div>
+  <p class="mt-5 text-[1.0625rem] leading-relaxed text-cocoa-2">{SHOP.tagline}</p>
+  <div class="mt-5 grid gap-2.5">
+    <span class="sc-pill sc-pill-moss"><Icons name="calendar" size={18} /> Book online</span>
+    <span class="sc-pill sc-pill-line"><Icons name="phone" size={18} /> Call {SHOP.phone.display}</span>
+  </div>
+  <p class="mt-5 flex items-center gap-2 text-sm font-semibold text-cocoa"><span class="sc-dot" data-status-dot></span><span data-open-status data-week={JSON.stringify(SHOP.week)}>{SHOP.openLabel}</span></p>
+  <p class="mt-1 text-sm text-cocoa-2">{SHOP.address.street}, {SHOP.address.locality} {SHOP.address.postcode}</p>
+</header>

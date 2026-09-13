@@ -1,0 +1,161 @@
+/*
+ * The showcase shop's own system: linen and sand grounds, cocoa type, moss
+ * green for everything you can press, Fraunces for the shop's name and section
+ * titles, Plus Jakarta Sans for the rest, round corners and pills throughout.
+ * Used only inside the front page's mockups (the phone, the panels, the taster).
+ */
+@import '@fontsource-variable/fraunces/opsz.css';
+@import '@fontsource-variable/plus-jakarta-sans/index.css';
+
+@theme {
+  --color-linen: #fcf9f3;
+  --color-sand: #f1e8d9;
+  --color-sand-2: #e6dac6;
+  --color-cocoa: #241c15;
+  --color-cocoa-2: #6a5c4d;
+  --color-moss: #3e5b45;
+  --color-moss-2: #2f4736;
+  --color-hairline: rgb(36 28 21 / 0.12);
+
+  --font-sc-display: 'Fraunces Variable', Georgia, 'Times New Roman', serif;
+  --font-sc-text: 'Plus Jakarta Sans Variable', 'Segoe UI', system-ui, sans-serif;
+}
+
+/* The root of anything drawn in the showcase system. */
+@utility sc {
+  font-family: var(--font-sc-text);
+  color: var(--color-cocoa);
+  background: var(--color-linen);
+  color-scheme: light;
+  -webkit-font-smoothing: antialiased;
+}
+@utility sc-display {
+  font-family: var(--font-sc-display);
+  font-weight: 500;
+  font-optical-sizing: auto;
+  letter-spacing: -0.02em;
+  line-height: 0.95;
+}
+@utility sc-eyebrow {
+  font-family: var(--font-sc-text);
+  font-weight: 700;
+  font-size: 0.75rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--color-moss);
+}
+@utility sc-tag {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 1.75rem;
+  padding: 0.3rem 0.75rem;
+  border-radius: 999px;
+  background: var(--color-sand);
+  color: var(--color-cocoa-2);
+  font-size: 0.8125rem;
+  font-weight: 600;
+  line-height: 1;
+}
+@utility sc-card {
+  background: var(--color-sand);
+  border-radius: 1.25rem;
+}
+@utility sc-pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: 3rem;
+  padding: 0.75rem 1.25rem;
+  border-radius: 999px;
+  font-family: var(--font-sc-text);
+  font-weight: 700;
+  font-size: 1rem;
+  line-height: 1;
+  text-decoration: none;
+  transition: background-color 150ms ease, color 150ms ease;
+}
+@utility sc-pill-moss {
+  background: var(--color-moss);
+  color: var(--color-linen);
+  &:hover { background: var(--color-moss-2); }
+}
+@utility sc-pill-line {
+  background: transparent;
+  color: var(--color-cocoa);
+  box-shadow: inset 0 0 0 1.5px var(--color-cocoa);
+  &:hover { background: var(--color-sand); }
+}
+@utility sc-pill-sand {
+  background: var(--color-sand);
+  color: var(--color-cocoa);
+  &:hover { background: var(--color-sand-2); }
+}
+
+/* Live open / closed dot (state set by src/lib/open-status.ts). */
+.sc-dot { flex: none; width: 0.5rem; height: 0.5rem; border-radius: 999px; background: var(--color-cocoa-2); opacity: 0.5; }
+.sc-dot[data-state='open'] { background: var(--color-moss); opacity: 1; }
+
+/* Booking controls: rows for services, pills for days and times. */
+.sc-choice,
+.sc-chip { display: block; position: relative; cursor: pointer; }
+.sc-choice > input,
+.sc-chip > input { position: absolute; inset: 0; opacity: 0; width: 100%; height: 100%; margin: 0; cursor: pointer; }
+.sc-choice-body {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 3.5rem;
+  padding: 0.85rem 1.1rem;
+  border-radius: 1rem;
+  background: var(--color-sand);
+  border: 1.5px solid transparent;
+  transition: border-color 120ms ease, background-color 120ms ease;
+}
+.sc-choice > input:checked + .sc-choice-body { border-color: var(--color-moss); background: #fffdf9; }
+.sc-choice > input:focus-visible + .sc-choice-body,
+.sc-chip > input:focus-visible + .sc-chip-body { outline: 3px solid var(--color-moss); outline-offset: 2px; }
+.sc-chip-body {
+  display: grid;
+  place-items: center;
+  gap: 0.1rem;
+  min-height: 3rem;
+  padding: 0.5rem 1rem;
+  border-radius: 999px;
+  background: var(--color-sand);
+  font-weight: 700;
+  line-height: 1.1;
+  white-space: nowrap;
+  color: var(--color-cocoa);
+  transition: background-color 120ms ease, color 120ms ease;
+}
+.sc-chip-body small { font-size: 0.7rem; font-weight: 600; color: var(--color-cocoa-2); }
+.sc-chip > input:checked + .sc-chip-body { background: var(--color-moss); color: var(--color-linen); }
+.sc-chip > input:checked + .sc-chip-body small { color: rgb(252 249 243 / 0.8); }
+.sc-chip > input:disabled { cursor: not-allowed; }
+.sc-chip > input:disabled + .sc-chip-body { opacity: 0.45; }
+.sc-days {
+  display: flex;
+  gap: 0.5rem;
+  overflow-x: auto;
+  padding-inline: 1.25rem;
+  margin-inline: -1.25rem;
+  padding-bottom: 0.25rem;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.sc-days::-webkit-scrollbar { display: none; }
+.sc-days > .sc-chip { flex: 0 0 auto; }
+@media (min-width: 40rem) {
+  .sc-days { flex-wrap: wrap; overflow: visible; padding-inline: 0; margin-inline: 0; }
+}
+.sc-tick-ring,
+.sc-tick-mark { fill: none; stroke: var(--color-moss); stroke-linecap: round; stroke-linejoin: round; }
+.sc-tick-ring { stroke-width: 3; stroke-dasharray: 151; stroke-dashoffset: 151; animation: sc-tick-draw 0.6s ease-out forwards; }
+.sc-tick-mark { stroke-width: 4; stroke-dasharray: 36; stroke-dashoffset: 36; animation: sc-tick-draw 0.35s ease-out 0.5s forwards; }
+@keyframes sc-tick-draw { to { stroke-dashoffset: 0; } }
+@media (prefers-reduced-motion: reduce) {
+  .sc-tick-ring, .sc-tick-mark { animation: none; stroke-dashoffset: 0; }
+}

@@ -1,0 +1,11 @@
+---
+/* One of the shop's photos, AVIF first. */
+import { SHOP } from '../../lib/showcase.ts';
+interface Props { index: number; class?: string; eager?: boolean }
+const { index, class: cls = '', eager = false } = Astro.props;
+const p = SHOP.photos[index]!;
+---
+<picture>
+  <source srcset={p.avif} type="image/avif" />
+  <img src={p.path} alt="" width={p.width} height={p.height} loading={eager ? 'eager' : 'lazy'} decoding="async" class={cls} />
+</picture>

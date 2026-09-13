@@ -1,0 +1,37 @@
+---
+/* The whole showcase shop page at a phone's 390px, as shown inside the front page's phone. */
+import Hero from './Hero.astro';
+import Prices from './Prices.astro';
+import About from './About.astro';
+import Gallery from './Gallery.astro';
+import Reviews from './Reviews.astro';
+import FindUs from './FindUs.astro';
+import Footer from './Footer.astro';
+---
+<div class="sc w-[390px] pb-20">
+  <Hero />
+  <Prices />
+  <About />
+  <Gallery />
+  <Reviews />
+  <FindUs />
+  <Footer />
+</div>
+
+<script>
+  import { shopClock } from '../../lib/clock.ts';
+  // The hours list puts today first, on the shop's clock.
+  const list = document.querySelector<HTMLElement>('[data-sc-hours]');
+  if (list) {
+    const names = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
+    const today = names[shopClock().day];
+    const all = [...list.querySelectorAll<HTMLElement>('li')];
+    const at = all.findIndex((r) => r.dataset.day === today);
+    if (at >= 0) {
+      const order = [...all.slice(at), ...all.slice(0, at)];
+      order[0]!.dataset.today = '';
+      order[0]!.querySelector<HTMLElement>('[data-today-tag]')?.classList.remove('hidden');
+      list.replaceChildren(...order);
+    }
+  }
+</script>

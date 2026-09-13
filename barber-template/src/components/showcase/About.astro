@@ -1,0 +1,13 @@
+---
+/* Two lines about the shop and the practical facts as tags. */
+import { SHOP } from '../../lib/showcase.ts';
+---
+<section class="px-5 py-8">
+  <h3 class="sc-display text-[2.25rem] font-medium">The shop</h3>
+  <div class="mt-4 space-y-3 text-[1.0625rem] leading-relaxed text-cocoa">
+    {SHOP.about.map((p) => <p>{p}</p>)}
+  </div>
+  <ul class="mt-5 flex flex-wrap gap-2" role="list">
+    {SHOP.facts.map((f) => <li class="sc-tag">{f}</li>)}
+  </ul>
+</section>

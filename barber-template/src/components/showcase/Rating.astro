@@ -1,0 +1,11 @@
+---
+/* The shop's Google rating as a small linen pill. */
+import { SHOP } from '../../lib/showcase.ts';
+import Icons from '../demo/Icons.astro';
+interface Props { class?: string }
+const { class: cls = '' } = Astro.props;
+---
+<span class={`inline-flex items-center gap-1.5 rounded-full bg-linen px-3 py-1.5 text-sm font-bold text-cocoa shadow-[0_1px_2px_rgb(36_28_21/0.12)] ${cls}`}>
+  <Icons name="star" size={14} class="text-moss" /> {SHOP.rating.toFixed(1)}
+  <span class="font-semibold text-cocoa-2">· {SHOP.reviews} Google reviews</span>
+</span>

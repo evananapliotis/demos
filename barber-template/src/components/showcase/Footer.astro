@@ -1,0 +1,10 @@
+---
+/* The shop's own footer. */
+import { SHOP } from '../../lib/showcase.ts';
+---
+<footer class="bg-sand px-5 pb-10 pt-8">
+  <p class="sc-display text-2xl">{SHOP.name}</p>
+  <p class="mt-2 text-sm text-cocoa-2">{SHOP.address.street}, {SHOP.address.locality} {SHOP.address.postcode}</p>
+  <p class="mt-1 text-sm font-semibold text-cocoa">{SHOP.phone.display}</p>
+  <p class="mt-6 text-xs text-cocoa-2">© {new Date().getFullYear()} {SHOP.name}</p>
+</footer>

@@ -1,28 +1,23 @@
 ---
-/* 4. What is on the page, each shown with the real piece of it as a small black object on a hairline grid. */
-import { COPY, mockSite } from '../../lib/home.ts';
+/* 4. What is on the page, each shown with the real piece of the showcase shop's page, as a small object on a hairline grid. */
+import { COPY } from '../../lib/home.ts';
+import { SHOP } from '../../lib/showcase.ts';
 import HomeSection from './HomeSection.astro';
-import Stars from '../demo/Stars.astro';
-import GoogleG from '../demo/GoogleG.astro';
 import Icons from '../demo/Icons.astro';
+import Rating from '../showcase/Rating.astro';
+import Photo from '../showcase/Photo.astro';
 const c = COPY.whatYouGet;
-const m = mockSite;
-const rows = m.hoursRows ?? [];
 const items = c.items;
+const [first, second] = SHOP.nameLines;
 ---
 <HomeSection id="what-you-get" label="What you get" title={c.heading}>
   <ul class="grid gap-px border-t border-rule bg-rule md:grid-cols-2 lg:grid-cols-3" role="list">
     <li class="flex flex-col bg-paper py-6 md:row-span-2 md:p-6 md:pl-0" data-reveal style="--i:0">
-      <div class="object object-sm relative h-56 md:h-auto md:min-h-80 md:flex-1" aria-hidden="true" inert>
-        <img src={m.hero!.path} alt="" width={m.hero!.width} height={m.hero!.height} loading="lazy" decoding="async" class="absolute inset-0 h-full w-full object-cover opacity-55" />
-        <div class="absolute inset-0 bg-[linear-gradient(to_bottom,rgb(14_12_10/0.2),rgb(14_12_10)_92%)]"></div>
-        <div class="absolute inset-x-4 bottom-4">
-          <p class="eyebrow text-[0.7rem]">Barber shop · {m.address.locality}</p>
-          <p class="display mt-1 text-[2.6rem] leading-[0.9] text-cream">{m.nameLines[0]}<br /><span class="text-amber">{m.nameLines[1]}</span></p>
-          <span class="mt-3 inline-flex min-h-10 items-center gap-2 rounded-md border border-cream/20 bg-ink-2/80 px-2.5 py-1.5 text-xs font-bold text-cream">
-            <span class="display text-xl leading-none text-amber">{m.google.rating!.toFixed(1)}</span><Stars rating={m.google.rating!} class="text-amber" size={12} />
-            <span class="inline-flex items-center gap-1.5 whitespace-nowrap">{m.google.reviewsText} <GoogleG size={13} /></span>
-          </span>
+      <div class="object object-sm relative h-64 md:h-auto md:min-h-80 md:flex-1" aria-hidden="true" inert>
+        <Photo index={0} class="absolute inset-0 h-full w-full object-cover" />
+        <div class="absolute inset-x-3 bottom-3 rounded-2xl bg-linen/95 p-3.5">
+          <p class="sc-display text-[2rem]">{first} <span class="text-moss">{second}</span></p>
+          <Rating class="mt-2 bg-sand shadow-none" />
         </div>
       </div>
       <div class="mt-auto pt-5">
@@ -34,17 +29,15 @@ const items = c.items;
     <li class="flex flex-col bg-paper py-6 md:p-6 md:pr-0 lg:pr-6" data-reveal style="--i:1">
       <div class="grid content-end lg:min-h-48">
         <div class="object object-sm p-4" aria-hidden="true" inert>
-          <p class="flex items-center gap-2 text-sm font-bold text-cream"><span class="status-dot" data-status-dot aria-hidden="true"></span><span data-open-status data-week={JSON.stringify(m.week)}>{m.openDaysLabel}</span></p>
-          <table class="mt-2 w-full border-collapse text-sm" data-hours-peek>
-            <tbody>
-              {rows.map((r, i) => (
-                <tr class="border-t border-line data-[today]:text-amber" data-day={r.day} hidden={i > 2}>
-                  <th scope="row" class="py-2 text-left font-medium">{r.label}<span class="ml-2 hidden text-[10px] font-bold uppercase tracking-[0.14em]" data-today-tag>Today</span></th>
-                  <td class="py-2 text-right tabular-nums">{r.text}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
+          <p class="flex items-center gap-2 text-sm font-semibold text-cocoa"><span class="sc-dot" data-status-dot aria-hidden="true"></span><span data-open-status data-week={JSON.stringify(SHOP.week)}>{SHOP.openLabel}</span></p>
+          <ul class="mt-2 divide-y divide-hairline text-sm" role="list" data-hours-peek>
+            {SHOP.hours.map((h, i) => (
+              <li class="flex items-center justify-between py-2 data-[today]:font-bold data-[today]:text-moss" data-day={h.day} hidden={i > 2}>
+                <span>{h.label}<span class="ml-2 hidden rounded-full bg-moss px-2 py-0.5 text-[0.6rem] font-bold uppercase tracking-wide text-linen" data-today-tag>Today</span></span>
+                <span class={`tabular-nums ${h.closed ? 'text-cocoa-2' : ''}`}>{h.text}</span>
+              </li>
+            ))}
+          </ul>
         </div>
       </div>
       <div class="mt-auto pt-5">
@@ -56,8 +49,8 @@ const items = c.items;
     <li class="flex flex-col bg-paper py-6 md:p-6 md:pr-0" data-reveal style="--i:2">
       <div class="grid content-end lg:min-h-48">
         <div class="object object-sm grid grid-cols-2 gap-2 p-4" aria-hidden="true" inert>
-          <span class="btn btn-amber min-h-11 px-2 text-[0.95rem]"><Icons name="phone" size={17} /> Call</span>
-          <span class="btn btn-outline min-h-11 px-2 text-[0.95rem]"><Icons name="pin" size={17} /> Directions</span>
+          <span class="sc-pill sc-pill-moss min-h-11 px-2 text-sm"><Icons name="phone" size={16} /> Call</span>
+          <span class="sc-pill sc-pill-line min-h-11 px-2 text-sm"><Icons name="pin" size={16} /> Directions</span>
         </div>
       </div>
       <div class="mt-auto pt-5">
@@ -69,11 +62,11 @@ const items = c.items;
     <li class="flex flex-col bg-paper py-6 md:p-6 md:pl-0 lg:pl-6" data-reveal style="--i:3">
       <div class="grid content-end lg:min-h-48">
         <div class="object object-sm p-4" aria-hidden="true" inert>
-          <div class="flex items-center gap-2 rounded-full bg-ink-3 px-3 py-2 text-sm text-cream lg:text-xs">
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shrink-0 text-cream-2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
-            <span class="truncate"><span class="text-cream-2">mybarbersite.co.uk/</span><span class="font-bold text-amber">halden-crane</span></span>
+          <div class="flex items-center gap-2 rounded-full bg-sand px-3.5 py-2.5 text-sm text-cocoa lg:text-xs">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="shrink-0 text-cocoa-2"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>
+            <span class="truncate"><span class="text-cocoa-2">mybarbersite.co.uk/</span><span class="font-bold text-moss">{SHOP.slug}</span></span>
           </div>
-          <p class="mt-3 text-sm text-cream-2">Not <span class="text-cream/60 line-through">someapp.com/…/halden-crane-x9k2</span></p>
+          <p class="mt-3 text-sm text-cocoa-2">Not <span class="text-cocoa-2/70 line-through">someapp.com/…/{SHOP.slug}-x9k2</span></p>
         </div>
       </div>
       <div class="mt-auto pt-5">
@@ -85,11 +78,11 @@ const items = c.items;
     <li class="flex flex-col bg-paper py-6 md:p-6 md:pr-0" data-reveal style="--i:4">
       <div class="grid content-end lg:min-h-48">
         <div class="object object-sm p-4" aria-hidden="true" inert>
-          <span class="choice-body"><span class="font-bold text-cream">Skin fade</span><span class="text-xs font-bold uppercase tracking-[0.12em] text-amber">45 min</span></span>
-          <div class="mt-2 grid grid-cols-3 gap-2">
-            <span class="chip-body">9:30am</span>
-            <span class="chip-body border-amber bg-amber text-ink">10am</span>
-            <span class="chip-body">11:15am</span>
+          <span class="sc-choice-body border-moss bg-[#fffdf9]"><span class="font-bold text-cocoa">Skin fade</span><span class="text-xs font-semibold text-cocoa-2">45 min</span></span>
+          <div class="mt-2.5 grid grid-cols-3 gap-2">
+            <span class="sc-chip-body">9:30am</span>
+            <span class="sc-chip-body bg-moss text-linen">10am</span>
+            <span class="sc-chip-body">11:15am</span>
           </div>
         </div>
       </div>
@@ -104,23 +97,22 @@ const items = c.items;
 <script>
   import { paintOpenStatus } from '../../lib/open-status.ts';
   import { shopClock } from '../../lib/clock.ts';
-  // The "open now" lines in the mockups follow the fictional shop's hours on the shop's clock.
+  // The "open now" lines in the mockups follow the showcase shop's hours on the shop's clock.
   paintOpenStatus();
 
-  // The hours peek shows today first, then the next two days, like the real page's table.
-  const table = document.querySelector<HTMLTableElement>('[data-hours-peek]');
-  if (table) {
+  // The hours peek shows today first, then the next two days, like the page's own list.
+  const list = document.querySelector<HTMLElement>('[data-hours-peek]');
+  if (list) {
     const names = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'];
     const today = names[shopClock().day];
-    const tbody = table.tBodies[0]!;
-    const all = [...tbody.querySelectorAll('tr')];
+    const all = [...list.querySelectorAll<HTMLElement>('li')];
     const at = all.findIndex((r) => r.dataset.day === today);
     if (at >= 0) {
       const order = [...all.slice(at), ...all.slice(0, at)];
       order.forEach((r, i) => { r.hidden = i > 2; });
       order[0]!.dataset.today = '';
       order[0]!.querySelector<HTMLElement>('[data-today-tag]')?.classList.remove('hidden');
-      tbody.replaceChildren(...order);
+      list.replaceChildren(...order);
     }
   }
 </script>

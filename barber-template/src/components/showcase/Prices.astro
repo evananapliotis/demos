@@ -1,0 +1,16 @@
+---
+/* The price list, on a sand card. */
+import { SHOP } from '../../lib/showcase.ts';
+---
+<section class="px-5 py-8">
+  <h3 class="sc-display text-[2.25rem] font-medium">Prices</h3>
+  <p class="mt-1 text-sm text-cocoa-2">Walk in, or book a time online.</p>
+  <ul class="sc-card mt-5 divide-y divide-hairline px-5" role="list">
+    {SHOP.prices.map((p) => (
+      <li class="flex items-center justify-between gap-4 py-3.5">
+        <span><span class="block font-semibold text-cocoa">{p.name}</span><span class="text-xs font-medium text-cocoa-2">{p.minutes} min</span></span>
+        <span class="sc-display text-2xl font-medium text-cocoa">{p.price}</span>
+      </li>
+    ))}
+  </ul>
+</section>

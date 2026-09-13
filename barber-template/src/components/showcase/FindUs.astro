@@ -1,0 +1,26 @@
+---
+/* Hours with today first, the address, and a map card. */
+import { SHOP } from '../../lib/showcase.ts';
+import Icons from '../demo/Icons.astro';
+---
+<section class="px-5 py-8">
+  <h3 class="sc-display text-[2.25rem] font-medium">Hours &amp; where</h3>
+  <p class="mt-3 flex items-center gap-2 text-sm font-semibold text-cocoa"><span class="sc-dot" data-status-dot></span><span data-open-status>{SHOP.openLabel}</span></p>
+  <ul class="mt-3 divide-y divide-hairline" role="list" data-sc-hours>
+    {SHOP.hours.map((h) => (
+      <li class="flex items-center justify-between py-2.5 text-[0.9375rem] data-[today]:font-bold data-[today]:text-moss" data-day={h.day}>
+        <span>{h.label}<span class="ml-2 hidden rounded-full bg-moss px-2 py-0.5 text-[0.65rem] font-bold uppercase tracking-wide text-linen" data-today-tag>Today</span></span>
+        <span class={`tabular-nums ${h.closed ? 'text-cocoa-2' : ''}`}>{h.text}</span>
+      </li>
+    ))}
+  </ul>
+  <div class="sc-card relative mt-6 overflow-hidden p-5">
+    <span class="absolute right-6 top-6 block h-3.5 w-3.5 rounded-full bg-moss shadow-[0_0_0_6px_rgb(62_91_69/0.18)]" aria-hidden="true"></span>
+    <p class="sc-display text-2xl">{SHOP.address.street}</p>
+    <p class="mt-1 text-sm text-cocoa-2">{SHOP.address.locality} {SHOP.address.postcode}</p>
+    <div class="mt-4 grid grid-cols-2 gap-2">
+      <span class="sc-pill sc-pill-moss min-h-11 text-sm"><Icons name="pin" size={16} /> Directions</span>
+      <span class="sc-pill sc-pill-line min-h-11 text-sm"><Icons name="phone" size={16} /> Call</span>
+    </div>
+  </div>
+</section>

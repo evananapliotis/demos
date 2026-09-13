@@ -1,0 +1,19 @@
+---
+/* The rating, big, on a sand card, with the way to the reviews. */
+import { SHOP } from '../../lib/showcase.ts';
+import Stars from '../demo/Stars.astro';
+import GoogleG from '../demo/GoogleG.astro';
+---
+<section class="px-5 py-8">
+  <div class="sc-card p-5">
+    <div class="flex items-end gap-4">
+      <p class="sc-display text-[4.5rem] leading-none">{SHOP.rating.toFixed(1)}</p>
+      <div class="pb-2">
+        <Stars rating={SHOP.rating} class="text-moss" size={18} />
+        <p class="mt-1.5 text-sm font-semibold text-cocoa-2">{SHOP.reviews} reviews on Google</p>
+      </div>
+    </div>
+    <p class="mt-4 text-[1.0625rem] leading-relaxed text-cocoa">Every one written by someone who sat in the chair.</p>
+    <span class="sc-pill sc-pill-line mt-4 w-full bg-linen"><GoogleG size={16} /> Read them on Google</span>
+  </div>
+</section>

@@ -22,12 +22,12 @@ const c = COPY.how;
     <figure class="plate mx-auto w-full max-w-sm overflow-hidden lg:mr-0" data-reveal aria-label="An example WhatsApp exchange">
       <figcaption class="flex items-center gap-3 border-b border-rule bg-[#f0f2f5] px-4 py-3">
         <span class="grid h-9 w-9 place-items-center rounded-full bg-print font-serif text-lg text-paper" aria-hidden="true">E</span>
-        <span class="min-w-0"><span class="block text-[0.9375rem] font-semibold text-print">Evangelos</span><span class="mt-0.5 flex items-center gap-1.5 text-xs text-[#54656f]">MyBarberSite <Wa size={12} /></span></span>
+        <span class="min-w-0"><span class="block text-[0.9375rem] font-semibold text-print">Evan</span><span class="mt-0.5 flex items-center gap-1.5 text-xs text-[#54656f]">MyBarberSite <Wa size={12} /></span></span>
       </figcaption>
       <ul class="grid gap-2 bg-[#efe7dd] px-3 py-4 text-[0.9375rem] leading-[1.4] text-[#111b21]" role="list">
         {c.whatsapp.map((b) => (
           <li class={`max-w-[85%] px-3 py-2 ${b.from === 'owner' ? 'wa-out justify-self-end' : 'wa-in justify-self-start'}`}>
-            <span class="sr-only">{b.from === 'owner' ? 'You: ' : 'Evangelos: '}</span>{b.text}
+            <span class="sr-only">{b.from === 'owner' ? 'You: ' : 'Evan: '}</span>{b.text}
           </li>
         ))}
       </ul>

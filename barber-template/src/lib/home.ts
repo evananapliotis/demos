@@ -1,17 +1,13 @@
 /**
- * The front page's fixed facts (phone, WhatsApp, the offer) and the fictional
- * shop its mockups are built from. Halden & Crane is the template's own
- * invented shop: its photos in public/img are the three from the template's
- * Pexels set that show no people.
+ * The front page's fixed facts (phone, WhatsApp, the offer) and every line of
+ * its copy. The made-up shop its mockups show lives in showcase.ts.
  */
-import { derive, type DemoSite, type Photo, type PriceRow } from './demo.ts';
-import { ShopSchema } from './shops.ts';
 
 export const OWNER = {
-  name: 'Evangelos',
+  name: 'Evan',
   phone: { display: '07546 685660', tel: '+447546685660' },
-  whatsapp: 'https://wa.me/447546685660?text=Hi%20Evangelos%2C%20I%27d%20like%20my%20shop%20page',
-  whatsappBooking: 'https://wa.me/447546685660?text=Hi%20Evangelos%2C%20I%27d%20like%20my%20shop%20page%20with%20booking',
+  whatsapp: 'https://wa.me/447546685660?text=Hi%20Evan%2C%20I%27d%20like%20my%20shop%20page',
+  whatsappBooking: 'https://wa.me/447546685660?text=Hi%20Evan%2C%20I%27d%20like%20my%20shop%20page%20with%20booking',
 };
 export const telHref = `tel:${OWNER.phone.tel}`;
 
@@ -23,74 +19,6 @@ export const OFFER = {
   deposit: 100,
   hours: 48,
 };
-
-const MOCK_PHOTOS: Photo[] = [
-  { path: '/img/about-shop-640.webp', width: 640, height: 427, alt: 'Inside the shop: three leather chairs and the long mirror', authors: [] },
-  { path: '/img/gallery-3-960.webp', width: 960, height: 960, alt: 'Clipper guards laid out in the tool case', authors: [] },
-  { path: '/img/gallery-4-960.webp', width: 960, height: 960, alt: 'Scissors in the tool roll', authors: [] },
-];
-
-const mockShop = ShopSchema.parse({
-  slug: 'example',
-  name: 'Halden & Crane',
-  phone: '+44 114 496 0782',
-  address: "12 Tanner's Yard, Sheffield S3 8XY",
-  street: "12 Tanner's Yard",
-  city: 'Sheffield',
-  postcode: 'S3 8XY',
-  rating: 4.9,
-  reviews: 212,
-  hours: {
-    Monday: ['10am-6pm'],
-    Tuesday: ['9am-7pm'],
-    Wednesday: ['9am-7pm'],
-    Thursday: ['9am-7pm'],
-    Friday: ['9am-7pm'],
-    Saturday: ['8am-5pm'],
-    Sunday: ['Closed'],
-  },
-  photo: null,
-  street_view: null,
-  reviews_link: null,
-  subtypes: 'Barber shop',
-  lat: 53.3889,
-  lng: -1.4726,
-  photos: MOCK_PHOTOS.map((p) => p.path),
-  about: {
-    Accessibility: { 'Wheelchair-accessible entrance': true },
-    Planning: { 'Accepts walk-ins': true },
-    Payments: { 'Credit cards': true, 'NFC mobile payments': true },
-  },
-  reviews_per_score: { '1': 3, '2': 2, '3': 4, '4': 19, '5': 184 },
-});
-
-/** The example shop's price list: the three prices in the WhatsApp mock, plus the booking page's other services. */
-const MOCK_PRICES: PriceRow[] = [
-  { name: 'Haircut', price: '£18', minutes: 30 },
-  { name: 'Skin fade', price: '£22', minutes: 45 },
-  { name: 'Beard trim', price: '£12', minutes: 20 },
-  { name: 'Haircut & beard', price: '£30', minutes: 50 },
-  { name: 'Kids cut', price: '£14', minutes: 20 },
-  { name: 'Hot towel shave', price: '£20', minutes: 30 },
-];
-
-/** The fictional shop as a DemoSite, with its photos wired to public/img, a plain tagline and its prices. */
-export const mockSite: DemoSite = {
-  ...derive(mockShop),
-  photos: MOCK_PHOTOS,
-  hero: MOCK_PHOTOS[0]!,
-  authors: [],
-  tagline: "Barbers on Tanner's Yard, Sheffield. Walk in or book online.",
-  prices: MOCK_PRICES,
-};
-
-/** The example's name size on a 390px phone, in px: the page's clamp() resolved for the still that stands in until the live page loads. */
-export const MOCK_H1_PX = (() => {
-  const m = /clamp\(([\d.]+)rem, ([\d.]+)vw, ([\d.]+)rem\)/.exec(mockSite.h1Size);
-  if (!m) return 96;
-  const [lo, vw, hi] = m.slice(1).map(Number) as [number, number, number];
-  return Math.round(Math.min(Math.max(lo * 16, (vw * 390) / 100), hi * 16) * 10) / 10;
-})();
 
 /** Every line of copy on the front page. Short, plain, UK English; every claim traces to OFFER. */
 export const COPY = {
@@ -146,10 +74,10 @@ export const COPY = {
       { title: 'Live in 48 hours', line: "Live within 48 hours of getting them. Pay the rest when it's live and you're happy." },
     ],
     whatsapp: [
-      { from: 'owner', text: "Hi Evangelos, I'd like my shop page" },
-      { from: 'evangelos', text: 'Nice one. Here it is to look over: mybarbersite.co.uk/halden-crane. Like it? £100 holds your slot, then send me your prices and opening hours.' },
+      { from: 'owner', text: "Hi Evan, I'd like my shop page" },
+      { from: 'evan', text: 'Nice one. Here it is to look over: mybarbersite.co.uk/marlow-finch. Like it? £100 holds your slot, then send me your prices and opening hours.' },
       { from: 'owner', text: 'Love it. Skin fade £22, beard trim £12, cut and beard £30. Mon 10 to 6, Tue to Fri 9 to 7, Sat 8 to 5. Closed Sunday.' },
-      { from: 'evangelos', text: "Got them. Live within 48 hours, and the rest when it's live and you're happy." },
+      { from: 'evan', text: "Got them. Live within 48 hours, and the rest when it's live and you're happy." },
     ],
   },
   pricing: {
@@ -171,15 +99,16 @@ export const COPY = {
     ],
   },
   about: {
-    heading: 'Evangelos<span class="ac">.</span>',
+    heading: 'My<span class="ac">Barber</span>Site.',
     eyebrow: "Who you're dealing with",
-    lines: ["I'm Evangelos. I build every one of these myself and I answer my own phone.", 'No team, no office, just me.'],
+    lines: ['MyBarberSite builds shop pages and online booking for barbers across the UK.', 'Evan runs it and answers the phone himself.'],
+    fromEvan: "Send me your shop's name and I'll take it from there.",
   },
   cta: {
     heading: 'See yours <span class="ac">before you pay.</span>',
     line: "WhatsApp me your shop's name. I'll build it first and send you the link.",
   },
   footer: {
-    demoLine: 'The shop pages on this domain are demos, built for their owners. Halden & Crane is made up.',
+    demoLine: 'The shop pages on this domain are demos, built for their owners. Marlow & Finch is made up.',
   },
 };
