@@ -1,0 +1,16 @@
+---
+/* Slim header for inner pages: wordmark back to the shop's page, Call. */
+import type { DemoSite } from '../../lib/demo.ts';
+import Icons from './Icons.astro';
+interface Props { site: DemoSite }
+const { site } = Astro.props;
+---
+<nav class="flex items-center justify-between gap-3 px-5 pt-4 sm:px-8 lg:px-12" aria-label="Primary">
+  <a href={site.home} class="display inline-flex min-h-11 min-w-0 items-center gap-2 text-[1.35rem] tracking-wide text-cream" aria-label={`${site.name} home`}>
+    <span class="inline-block h-6 w-[7px] shrink-0 rounded-sm stripe-amber" aria-hidden="true"></span>
+    <span class="truncate">{site.name}</span>
+  </a>
+  <a href={site.telHref} class="inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center gap-2 rounded-md px-3 text-amber hover:text-amber-2" aria-label={`Call ${site.phone.display}`}>
+    <Icons name="phone" size={20} /><span class="hidden sm:inline">{site.phone.display}</span>
+  </a>
+</nav>

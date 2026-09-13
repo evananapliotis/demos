@@ -14,8 +14,8 @@ interface Props {
 }
 const { site, title, description } = Astro.props;
 const pageUrl = new URL(Astro.url.pathname, Astro.site).href.replace(/\/$/, '');
-/** Rendered next to the page by src/pages/demo/[slug]/og.jpg.ts. */
-const ogImage = `${pageUrl}/og.jpg`;
+/** Rendered by src/pages/demo/[slug]/og.jpg.ts; the booking page shares the shop page's. */
+const ogImage = new URL(`/demo/${site.slug}/og.jpg`, Astro.site).href;
 const ld = jsonLd(site, pageUrl, ogImage);
 const ratingAlt = site.google.rating != null ? `Rated ${site.google.rating.toFixed(1)} from ${site.google.reviewsText}.` : `${site.google.reviewsText}.`;
 ---

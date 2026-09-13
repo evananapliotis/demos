@@ -19,6 +19,7 @@ const nav = [
   ...(site.photos.length ? [{ href: '#gallery', label: 'The work' }] : []),
   { href: '#reviews', label: 'Reviews' },
   { href: '#find-us', label: 'Find us' },
+  { href: site.bookHref, label: 'Book' },
 ];
 ---
 <header id="top" class="relative isolate flex min-h-[100svh] flex-col overflow-hidden bg-ink">
@@ -99,8 +100,9 @@ const nav = [
       <p class="rise mt-4 max-w-md text-lg leading-snug text-cream/85 md:text-2xl" style="animation-delay:120ms">{site.tagline}</p>
 
       <div class="mt-6 grid grid-cols-1 gap-3 sm:flex sm:flex-wrap">
-        <a href={site.telHref} class="btn btn-amber"><Icons name="phone" size={19} /> Call {site.phone.display}</a>
-        <a href={site.directionsUrl} target="_blank" rel="noopener" class="btn btn-outline"><Icons name="pin" size={19} /> Directions</a>
+        <a href={site.bookHref} class="btn btn-amber"><Icons name="calendar" size={19} /> Book online</a>
+        <a href={site.telHref} class="btn btn-outline"><Icons name="phone" size={19} /> Call {site.phone.display}</a>
+        <a href={site.directionsUrl} target="_blank" rel="noopener" class="btn btn-outline hidden sm:inline-flex"><Icons name="pin" size={19} /> Directions</a>
       </div>
 
       <p class="rise mt-6 flex flex-col items-start gap-y-1 text-sm text-cream-2" style="animation-delay:180ms">

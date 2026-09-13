@@ -39,6 +39,34 @@ export function nameLines(name: string): [string, string] {
 }
 
 const NUMBER_WORDS = ['zero', 'one', 'two', 'three', 'four', 'five', 'six', 'seven'];
+
+/** Google listing attributes as short clauses for the about copy. Anything not listed here is left unsaid. */
+const ATTRIBUTE_CLAUSES: [RegExp, string][] = [
+  [/^toilets?$/i, 'there is a toilet'],
+  [/^gender-neutral toilets$/i, 'there are gender-neutral toilets'],
+  [/^good for kids$/i, 'it is good for kids'],
+  [/^free of charge street parking$/i, 'street parking nearby is free'],
+  [/^on-site parking$/i, 'there is parking on site'],
+  [/^beverages$/i, 'drinks are offered'],
+  [/^lgbtq\+ friendly$/i, 'it is LGBTQ+ friendly'],
+  [/^transgender safe space$/i, 'it is a transgender safe space'],
+  [/^identifies as women-owned$/i, 'the shop is women-owned'],
+];
+/** Up to four clauses, the practical ones first: appointments, walk-ins, payments, then the rest in listing order. */
+function amenityClauses(attributes: string[]): string[] {
+  const has = (re: RegExp) => attributes.some((a) => re.test(a));
+  const out: string[] = [];
+  if (has(/^accepts walk-ins$/i)) out.push('walk-ins are welcome');
+  if (has(/^appointment required$/i) && !has(/^accepts walk-ins$/i)) out.push('appointments are required');
+  else if (has(/^appointments? (required|recommended)$/i)) out.push('appointments are recommended');
+  const cards = has(/^(credit|debit) cards$/i);
+  const contactless = has(/^nfc mobile payments$/i);
+  if (cards && contactless) out.push('cards and contactless are taken');
+  else if (cards) out.push('cards are taken');
+  else if (contactless) out.push('contactless is taken');
+  for (const [re, clause] of ATTRIBUTE_CLAUSES) if (has(re) && !out.includes(clause)) out.push(clause);
+  return out.slice(0, 4);
+}
 /** ["a", "b", "c"] -> "a, b and c". */
 const listJoin = (items: string[]) => (items.length <= 1 ? items.join('') : `${items.slice(0, -1).join(', ')} and ${items[items.length - 1]}`);
 /** Text that goes through set:html. */
@@ -83,10 +111,10 @@ export function derive(shop: Shop) {
   const openDaysLabel = openDays === 7 ? 'Open 7 days' : openDays ? `Open ${openDays} days a week` : '';
   const hoursRows = hoursList(shop.hours);
 
-  const attributes = trueAttributes(shop.about);
+  const attributes = [...new Set(trueAttributes(shop.about))];
   const wheelchair = attributes.some((a) => /wheelchair/i.test(a));
   const features = wheelchair ? ['Wheelchair accessible'] : [];
-  const amenities = attributes.filter((a) => !/wheelchair/i.test(a)).slice(0, 4).map((a) => a.toLowerCase());
+  const amenities = amenityClauses(attributes);
 
   const rating = shop.rating ?? null;
   const reviewCount = shop.reviews;
@@ -110,7 +138,7 @@ export function derive(shop: Shop) {
           : 'Opening hours are not published online',
       wheelchair ? ', and wheelchair accessible' : '',
       '.',
-      amenities.length ? ` The listing also notes ${listJoin(amenities)}.` : '',
+      amenities.length ? ` The listing also notes that ${listJoin(amenities)}.` : '',
       ` Call ${phone.display} if you want to check before you set off.`,
     ].join(''),
   ];
@@ -156,6 +184,9 @@ export function derive(shop: Shop) {
 
   return {
     slug: shop.slug,
+    /** This shop's page and its booking page. */
+    home: `/demo/${shop.slug}`,
+    bookHref: `/demo/${shop.slug}/book`,
     name,
     nameLines: lines,
     h1Size,
