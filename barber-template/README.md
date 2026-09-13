@@ -90,7 +90,7 @@ Image URLs carry a content hash as a query string (`/img/hero-1024.avif?v=…`),
 
 ## Pages
 
-The site is served at https://mybarbersite.co.uk. `/` is a placeholder for MyBarberSite (the Halden & Crane page in `src/config/site.ts` is no longer served at the root); `/book` (its front-end only booking flow, marked as a demo) and `404` still build. Photo provenance is kept in `src/config/credits.json` but not rendered.
+The site is served at https://mybarbersite.co.uk. `/` is a placeholder for MyBarberSite and `404` matches it. The Halden & Crane page described by `src/config/site.ts` is no longer served: its components, config and graded images stay in the repo as the template, checked on every build, but no page renders them. Photo provenance is kept in `src/config/credits.json` but not rendered.
 
 ### Barber pages, `/<slug>`
 
