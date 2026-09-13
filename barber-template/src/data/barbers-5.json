@@ -43,7 +43,15 @@
     "lat": 51.4455156,
     "lng": -0.1504617,
     "tier": 1,
-    "subtypes": "Barber shop, Anaesthetist, Beautician, Beauty Salon, Facial spa, Laser hair removal service, Nail salon, Hairdresser, Waxing Hair-Removal Service"
+    "subtypes": "Barber shop, Anaesthetist, Beautician, Beauty Salon, Facial spa, Laser hair removal service, Nail salon, Hairdresser, Waxing Hair-Removal Service",
+    "photos": [
+      "/photos/jacksons-for-hair-1.jpg",
+      "/photos/jacksons-for-hair-2.jpg",
+      "/photos/jacksons-for-hair-3.jpg",
+      "/photos/jacksons-for-hair-4.jpg",
+      "/photos/jacksons-for-hair-5.jpg",
+      "/photos/jacksons-for-hair-6.jpg"
+    ]
   },
   {
     "slug": "hm-barbers",
@@ -89,7 +97,15 @@
     "lat": 51.5410755,
     "lng": -0.0759982,
     "tier": 1,
-    "subtypes": "Barber shop, Barber Supply Shop, Beauty Salon, Health and beauty shop, Hairdresser"
+    "subtypes": "Barber shop, Barber Supply Shop, Beauty Salon, Health and beauty shop, Hairdresser",
+    "photos": [
+      "/photos/hm-barbers-1.jpg",
+      "/photos/hm-barbers-2.jpg",
+      "/photos/hm-barbers-3.jpg",
+      "/photos/hm-barbers-4.jpg",
+      "/photos/hm-barbers-5.jpg",
+      "/photos/hm-barbers-6.jpg"
+    ]
   },
   {
     "slug": "nandj-cutz",
@@ -135,7 +151,15 @@
     "lat": 52.4077934,
     "lng": -1.4950299,
     "tier": 1,
-    "subtypes": "Barber shop"
+    "subtypes": "Barber shop",
+    "photos": [
+      "/photos/nandj-cutz-1.jpg",
+      "/photos/nandj-cutz-2.jpg",
+      "/photos/nandj-cutz-3.jpg",
+      "/photos/nandj-cutz-4.jpg",
+      "/photos/nandj-cutz-5.jpg",
+      "/photos/nandj-cutz-6.jpg"
+    ]
   },
   {
     "slug": "gentlemans-fade-barberstm-aldgate-east",
@@ -181,7 +205,15 @@
     "lat": 51.5118486,
     "lng": -0.06418109999999999,
     "tier": 1,
-    "subtypes": "Barber shop, Stylist"
+    "subtypes": "Barber shop, Stylist",
+    "photos": [
+      "/photos/gentlemans-fade-barberstm-aldgate-east-1.jpg",
+      "/photos/gentlemans-fade-barberstm-aldgate-east-2.jpg",
+      "/photos/gentlemans-fade-barberstm-aldgate-east-3.jpg",
+      "/photos/gentlemans-fade-barberstm-aldgate-east-4.jpg",
+      "/photos/gentlemans-fade-barberstm-aldgate-east-5.jpg",
+      "/photos/gentlemans-fade-barberstm-aldgate-east-6.jpg"
+    ]
   },
   {
     "slug": "what-the-barber",
@@ -227,6 +259,14 @@
     "lat": 51.5224169,
     "lng": -0.07824439999999999,
     "tier": 1,
-    "subtypes": "Barber shop, Beauty Salon"
+    "subtypes": "Barber shop, Beauty Salon",
+    "photos": [
+      "/photos/what-the-barber-1.jpg",
+      "/photos/what-the-barber-2.jpg",
+      "/photos/what-the-barber-3.jpg",
+      "/photos/what-the-barber-4.jpg",
+      "/photos/what-the-barber-5.jpg",
+      "/photos/what-the-barber-6.jpg"
+    ]
   }
 ]
