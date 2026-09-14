@@ -2,6 +2,7 @@ import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import { BOOKING_ENABLED, CLIENT_SLUG, SITE_URL } from './src/config/build.ts';
+import { singleClient } from './scripts/single-client.mjs';
 
 /**
  * The components each build picks. A component that is imported and never
@@ -40,13 +41,18 @@ export default defineConfig({
   // SITE_URL points a single-client build at the client's own domain.
   site: SITE_URL,
   output: 'static',
+  // A single-client build has one page and no slug paths at all, so it
+  // redirects with dist/_redirects alone and builds no meta-refresh pages.
+  integrations: CLIENT_SLUG ? [singleClient(CLIENT_SLUG)] : [],
   // The barber pages moved from /demo/<slug> to /<slug>. These produce a
   // meta-refresh page per old path; public/_redirects gives Cloudflare a 301.
   // The booking redirect goes when the booking page is not built.
-  redirects: {
-    '/demo/[slug]': '/[slug]',
-    ...(BOOKING_ENABLED ? { '/demo/[slug]/book': '/[slug]/book' } : {}),
-  },
+  redirects: CLIENT_SLUG
+    ? {}
+    : {
+        '/demo/[slug]': '/[slug]',
+        ...(BOOKING_ENABLED ? { '/demo/[slug]/book': '/[slug]/book' } : {}),
+      },
   compressHTML: true,
   build: {
     inlineStylesheets: 'always',

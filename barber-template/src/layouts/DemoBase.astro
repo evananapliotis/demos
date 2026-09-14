@@ -5,6 +5,7 @@
  */
 import '../styles/demo.css';
 import displayWoff2 from '@fontsource-variable/big-shoulders-display/files/big-shoulders-display-latin-wght-normal.woff2?url';
+import { CLIENT_SLUG } from '../config/build.ts';
 import { jsonLd, type DemoSite } from '../lib/demo.ts';
 
 interface Props {
@@ -16,8 +17,8 @@ interface Props {
 }
 const { site, title, description, preloadHero = false } = Astro.props;
 const pageUrl = new URL(Astro.url.pathname, Astro.site).href.replace(/\/$/, '');
-/** Rendered by src/pages/[slug]/og.jpg.ts; the booking page shares the shop page's. */
-const ogImage = new URL(`/${site.slug}/og.jpg`, Astro.site).href;
+/** Rendered by src/pages/[slug]/og.jpg.ts; the booking page shares the shop page's. A single-client build has no slug path, so its one image is /og.jpg. */
+const ogImage = new URL(CLIENT_SLUG ? '/og.jpg' : `/${site.slug}/og.jpg`, Astro.site).href;
 const ld = jsonLd(site, pageUrl, ogImage);
 const ratingAlt = site.google.rating != null ? `Rated ${site.google.rating.toFixed(1)} from ${site.google.reviewsText}.` : `${site.google.reviewsText}.`;
 ---

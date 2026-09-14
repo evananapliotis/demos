@@ -83,23 +83,22 @@ function parseShops(input: unknown): Shop[] {
 /** Every listing in src/data/barbers.json, in file order. */
 const allShops: Shop[] = parseShops(raw);
 
-/**
- * The listings that get a page. CLIENT_SLUG narrows the build to one shop for
- * a single-client deploy; unset, every listing gets a page as before. A slug
- * that is not in the export fails the build rather than shipping an empty site.
- */
-function selectShops(every: Shop[]): Shop[] {
-  if (!CLIENT_SLUG) return every;
-  const shop = every.find((s) => s.slug === CLIENT_SLUG);
-  if (!shop) throw new Error(`CLIENT_SLUG="${CLIENT_SLUG}" is not a slug in src/data/barbers.json`);
-  return [shop];
+/** The one listing CLIENT_SLUG names. A slug that is not in the export fails the build rather than shipping an empty site. */
+function findClientShop(every: Shop[], slug: string): Shop {
+  const shop = every.find((s) => s.slug === slug);
+  if (!shop) throw new Error(`CLIENT_SLUG="${slug}" is not a slug in src/data/barbers.json`);
+  return shop;
 }
 
-/** Every listing this build has a page for. One page each. */
-export const shops: Shop[] = selectShops(allShops);
+/**
+ * The listings behind /<slug>. One page each on a full build; none on a
+ * single-client build, where the client's shop is the root page and the slug
+ * path 301s to it (dist/_redirects, written by scripts/single-client.mjs).
+ */
+export const shops: Shop[] = CLIENT_SLUG ? [] : allShops;
 
 /** The single listing a CLIENT_SLUG build is for, or null on a full build. */
-export const clientShop: Shop | null = CLIENT_SLUG ? shops[0]! : null;
+export const clientShop: Shop | null = CLIENT_SLUG ? findClientShop(allShops, CLIENT_SLUG) : null;
 
 /* ---------- opening hours ---------- */
 
