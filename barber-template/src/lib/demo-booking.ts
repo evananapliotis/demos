@@ -37,6 +37,30 @@ export const SERVICES: Service[] = [
   { id: 'hot-towel-shave', name: 'Hot towel shave', minutes: 30 },
 ];
 export const RULES: BookingRules = { slotMinutes: 15, minNoticeMinutes: 60, horizonDays: 21, busyFraction: 0.3 };
+
+/**
+ * The week the booking page falls back to when a listing publishes none.
+ *
+ * 958 of the 1107 listings carry no hours at all: the export they came from
+ * took only Text Search fields. With no week every day renders closed and the
+ * page says nothing is free for three weeks, which shows the shop a booking
+ * system that does not work. A standard barbershop week stands in instead —
+ * Monday to Saturday, nine to six, closed Sunday — so the demo demonstrates
+ * the thing it is meant to sell.
+ *
+ * These are not the shop's hours and are not presented as them: the shop page's
+ * Find us still says the hours are not published, and the booking page says the
+ * times follow a standard week. A constant, so the page stays deterministic.
+ */
+export const DEMO_WEEK: Week = {
+  monday: { open: '09:00', close: '18:00' },
+  tuesday: { open: '09:00', close: '18:00' },
+  wednesday: { open: '09:00', close: '18:00' },
+  thursday: { open: '09:00', close: '18:00' },
+  friday: { open: '09:00', close: '18:00' },
+  saturday: { open: '09:00', close: '18:00' },
+  sunday: null,
+};
 export const EXAMPLE_PHONE = '07700 900123'; // Ofcom drama range: never a real subscriber
 
 /** Opening hours on a date, or null when the shop is closed that day. */
@@ -68,12 +92,26 @@ export function windowDates(rules: BookingRules = RULES, now: Date = new Date())
   return out;
 }
 
-/** A stable "already booked" pattern per shop, so the same day always shows the same gaps. */
+/**
+ * A stable "already booked" pattern per shop, so the same day always shows the
+ * same gaps.
+ *
+ * FNV-1a rather than djb2. djb2 changes by a fixed multiple per appended
+ * character, so with the date and time always the same shape the low bits
+ * stayed a near-linear function of the seed: across 300 shops, 95 of them drew
+ * a diary with nothing taken at all and a third drew one over half full. Every
+ * time of day was taken at about the right rate — it was the spread between
+ * shops that was wrong. FNV-1a avalanches, so each shop gets its own scatter of
+ * gaps at the intended density.
+ */
 export function isTaken(seed: string, date: string, time: string, fraction: number): boolean {
   const s = `${seed}|${date}|${time}`;
-  let h = 5381;
-  for (let i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0;
-  return (Math.abs(h) % 1000) / 1000 < fraction;
+  let h = 0x811c9dc5;
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 0x01000193);
+  }
+  return ((h >>> 0) % 10000) / 10000 < fraction;
 }
 
 /** Start times still available on a date for a service. */

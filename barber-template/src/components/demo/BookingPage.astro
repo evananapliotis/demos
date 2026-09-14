@@ -11,7 +11,7 @@ import PageHeader from './PageHeader.astro';
 import StickyBar from './StickyBar.astro';
 import Icons from './Icons.astro';
 import type { DemoSite } from '../../lib/demo.ts';
-import { EXAMPLE_PHONE, RULES, SERVICES } from '../../lib/demo-booking.ts';
+import { DEMO_WEEK, EXAMPLE_PHONE, RULES, SERVICES } from '../../lib/demo-booking.ts';
 
 interface Props {
   site: DemoSite;
@@ -21,13 +21,15 @@ const [bookLead, bookAccent] = site.copy.bookTitle;
 const title = `Book a time | ${site.name}, ${site.address.locality}`;
 const description = `Book a haircut, fade, beard trim or shave at ${site.name}, ${site.address.street}, ${site.address.locality}. Pick a service, a day and a time.`;
 const disclaimer = `This is a demo booking page for ${site.name}. Nothing was sent and no appointment was made. To book for real, call ${site.phone.display}.`;
+/** Most listings publish no hours; the booking page stands a standard week in so it still works. */
+const assumedHours = !site.week;
 const config = {
   services: SERVICES,
   phone: site.phone.display,
   tel: site.phone.tel,
   name: site.name,
   address: site.fullAddress,
-  week: site.week,
+  week: site.week ?? DEMO_WEEK,
   rules: RULES,
   seed: site.slug,
   home: site.home,
@@ -99,6 +101,12 @@ const config = {
           <p class="text-center text-sm text-cream-2">Prefer to talk? <a href={site.telHref} class="inline-flex min-h-11 items-center font-bold text-amber">Call {site.phone.display}</a></p>
         </fieldset>
       </form>
+
+      {assumedHours && (
+        <p class="mt-6 text-sm text-cream-2">
+          Opening hours aren’t published on this shop’s Google listing, so the times above follow a standard week.
+        </p>
+      )}
 
       <section class="mt-8 hidden rounded-[var(--radius)] border border-amber/40 bg-ink-2 p-6" data-done aria-live="polite">
         <svg class="tick mb-4" viewBox="0 0 52 52" width="56" height="56" aria-hidden="true"><circle class="tick-ring" cx="26" cy="26" r="24" /><path class="tick-mark" d="M15 27l7 7 15-16" /></svg>
