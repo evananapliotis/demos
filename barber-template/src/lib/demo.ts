@@ -25,6 +25,50 @@ export const expandRoad = (street: string) =>
 /** "91 Balham High Rd" -> "Balham High Road": the road without the building number. */
 export const roadName = (street: string) => expandRoad(street.replace(/^\d+[a-z]?(?:-\d+[a-z]?)?\s+/i, '').replace(/^(unit|shop|flat)\s+\S+,?\s+/i, ''));
 
+/**
+ * Words that carry no address information, so a leading segment made only of
+ * these plus the shop's own words is the shop's name rather than a place.
+ */
+const TRADE_WORDS = new Set([
+  'the', 'and', 'a', 'of', 'ltd', 'limited', 'co', 'company', 'barber', 'barbers', 'barbershop', 'barbershops',
+  'hair', 'haircut', 'haircuts', 'hairdresser', 'hairdressers', 'salon', 'saloon', 'studio', 'cuts', 'cutz',
+  'grooming', 'gents', 'mens', 'turkish', 'kurdish',
+]);
+
+const addressTokens = (s: string) =>
+  s.replace(/[™®©️]/g, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim().split(' ').filter(Boolean);
+
+/**
+ * Some listings repeat the business name at the front of the address, so the
+ * street comes through as "Classic Barber, 19 Butts" and the page ends up
+ * saying "barbering on Classic Barber, 19 Butts". Drop those leading segments.
+ *
+ * Deliberately narrow, because most no-number leading segments are the building
+ * the shop sits in — "Post Office", "Maylord shopping centre", "White & Bishop
+ * Ltd" — and those belong in the address. A segment is only dropped when it
+ * carries no house number, says nothing the business name does not already say,
+ * and a house number still survives further along. That last guard is what
+ * keeps a shop named after its road ("Church Street Barbers" at "Church
+ * Street, Longwood") from having its address emptied out.
+ *
+ * Over the 1107 listings this changes 14 and leaves every other address alone.
+ */
+export function stripBusinessName(street: string, name: string): string {
+  const nameTokens = new Set(addressTokens(name));
+  if (!nameTokens.size) return street;
+  let segments = street.split(',').map((s) => s.trim()).filter(Boolean);
+  while (segments.length > 1) {
+    const [first, ...rest] = segments as [string, ...string[]];
+    if (/\d/.test(first)) break;
+    const words = addressTokens(first);
+    if (!words.length) break;
+    if (!words.filter((w) => !TRADE_WORDS.has(w)).every((w) => nameTokens.has(w))) break;
+    if (!rest.some((s) => /\d/.test(s))) break;
+    segments = rest;
+  }
+  return segments.join(', ');
+}
+
 /** Trademark marks and emoji variation selectors render as boxes in the display face, so they stay out of the type. */
 export const displayName = (name: string) => name.replace(/[™®©️]/g, '').replace(/\s+/g, ' ').trim();
 
@@ -98,7 +142,7 @@ export function derive(shop: Shop) {
   const nf = new Intl.NumberFormat('en-GB');
   const name = displayName(shop.name);
   const kind = kindOf(shop);
-  const street = shop.street ?? shop.address.split(',')[0]!.trim();
+  const street = stripBusinessName(shop.street ?? shop.address.split(',')[0]!.trim(), name);
   const address = { street, locality: shop.city, postcode: shop.postcode };
   const fullAddress = `${street}, ${shop.city} ${shop.postcode}`;
   const road = roadName(street);
