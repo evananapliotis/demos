@@ -1,30 +1,34 @@
 ---
 /* 03. Two paragraphs written from the listing's facts, and the facts as cards. */
-import { escapeHtml, type DemoSite } from '../../lib/demo.ts';
+import type { DemoSite } from '../../lib/demo.ts';
 import Section from './Section.astro';
 import Icons from './Icons.astro';
-interface Props { site: DemoSite; index?: string }
-const { site, index } = Astro.props;
-const title = `${escapeHtml(site.roadName)}, <span class='text-amber'>${escapeHtml(site.address.locality)}.</span>`;
+interface Props {
+  site: DemoSite;
+  index?: string;
+  /** Sit on the raised ground, so two neighbouring sections never share a tone. */
+  alt?: boolean;
+}
+const { site, index, alt = false } = Astro.props;
 ---
-<Section id="about" index={index} eyebrow="The shop" title={title}>
+<Section id="about" index={index} eyebrow={site.copy.aboutEyebrow} title={`${site.roadName},`} accent={`${site.address.locality}.`} class={alt ? 'bg-ink-2' : ''}>
   <div class="grid gap-8 md:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
     <div class="space-y-5 text-lg leading-relaxed text-cream/90 md:text-xl" data-reveal>
       {site.about.map((p) => <p>{p}</p>)}
       <a href={site.telHref} class="btn btn-amber"><Icons name="phone" size={19} /> Call the shop</a>
     </div>
-    <ul class="grid grid-cols-1 gap-3 self-start sm:grid-cols-2 md:grid-cols-1" role="list" data-reveal>
+    <ul class={`grid grid-cols-1 gap-3 self-start sm:grid-cols-2 md:grid-cols-1 ${alt ? "[&>li]:bg-ink" : "[&>li]:bg-ink-2"}`} role="list" data-reveal>
       {site.features.map((f) => (
-        <li class="flex items-center gap-3 rounded-md border border-line bg-ink-2 px-4 py-4 text-cream">
+        <li class="flex items-center gap-3 rounded-[var(--radius)] border border-line px-4 py-4 text-cream">
           <Icons name="wheelchair" size={22} class="shrink-0 text-amber" /> {f}
         </li>
       ))}
       {site.openDaysLabel && (
-        <li class="flex items-center gap-3 rounded-md border border-line bg-ink-2 px-4 py-4 text-cream">
+        <li class="flex items-center gap-3 rounded-[var(--radius)] border border-line px-4 py-4 text-cream">
           <Icons name="clock" size={22} class="shrink-0 text-amber" /> {site.openDaysLabel}
         </li>
       )}
-      <li class="flex items-center gap-3 rounded-md border border-line bg-ink-2 px-4 py-4 text-cream">
+      <li class="flex items-center gap-3 rounded-[var(--radius)] border border-line px-4 py-4 text-cream">
         <Icons name="pin" size={22} class="shrink-0 text-amber" /> {site.address.street}, {site.address.postcode}
       </li>
     </ul>

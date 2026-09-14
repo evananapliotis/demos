@@ -4,14 +4,18 @@ import type { DemoSite } from '../../lib/demo.ts';
 import Stars from './Stars.astro';
 import GoogleG from './GoogleG.astro';
 import Icons from './Icons.astro';
-interface Props { site: DemoSite }
-const { site } = Astro.props;
+interface Props {
+  site: DemoSite;
+  /** Sit on the raised ground, so two neighbouring sections never share a tone. */
+  alt?: boolean;
+}
+const { site, alt = false } = Astro.props;
 const nf = new Intl.NumberFormat('en-GB');
 const { rating, reviewCount } = site.google;
 ---
-<section id="reviews" class="scroll-mt-14 border-y border-line bg-ink-2 px-5 py-16 sm:px-8 md:py-24 lg:px-12" aria-labelledby="reviews-title">
+<section id="reviews" class={`scroll-mt-14 border-y border-line px-5 py-16 sm:px-8 md:py-24 lg:px-12 ${alt ? 'bg-ink-2' : 'bg-ink'}`} aria-labelledby="reviews-title">
   <div class="mx-auto max-w-5xl" data-reveal>
-    <p class="eyebrow flex items-center gap-3 before:block before:h-[2px] before:w-6 before:bg-amber">Google reviews</p>
+    <p class="eyebrow flex items-center gap-3 before:block before:h-[2px] before:w-6 before:bg-amber">{site.copy.reviewsEyebrow}</p>
     <div class="mt-6 grid items-end gap-6 md:grid-cols-[auto_1fr] md:gap-14">
       <div class="flex items-end gap-4">
         <p class="display text-[7.5rem] leading-[0.8] text-cream md:text-[12rem]">{rating != null ? rating.toFixed(1) : '–'}</p>
@@ -22,9 +26,9 @@ const { rating, reviewCount } = site.google;
       </div>
       <div class="md:pb-4">
         <h2 id="reviews-title" class="text-[clamp(2.5rem,10vw,5rem)] text-cream">
-          <span class="tabular-nums" data-count={reviewCount}>{nf.format(reviewCount)}</span> {reviewCount === 1 ? 'review' : 'reviews'}.<br /><span class="text-amber">Read them yourself.</span>
+          <span class="tabular-nums" data-count={reviewCount}>{nf.format(reviewCount)}</span> {reviewCount === 1 ? 'review' : 'reviews'}.<br /><span class="accent">{site.copy.reviewsAccent}</span>
         </h2>
-        <p class="mt-4 max-w-md text-cream-2">Every one is on the shop’s Google listing, word for word, from the people who sat in the chair.</p>
+        <p class="mt-4 max-w-md text-cream-2">{site.copy.reviewsLede}</p>
         {
           site.scoreBars && (
             <ul class="mt-6 max-w-md space-y-1.5" role="list" aria-label="Reviews by star rating">

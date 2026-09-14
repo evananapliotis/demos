@@ -17,6 +17,7 @@ interface Props {
   site: DemoSite;
 }
 const { site } = Astro.props;
+const [bookLead, bookAccent] = site.copy.bookTitle;
 const title = `Book a time | ${site.name}, ${site.address.locality}`;
 const description = `Book a haircut, fade, beard trim or shave at ${site.name}, ${site.address.street}, ${site.address.locality}. Pick a service, a day and a time.`;
 const disclaimer = `This is a demo booking page for ${site.name}. Nothing was sent and no appointment was made. To book for real, call ${site.phone.display}.`;
@@ -37,13 +38,13 @@ const config = {
   <main id="main" class="px-5 pb-28 pt-6 sm:px-8 lg:px-12">
     <div class="mx-auto max-w-lg">
       <p class="eyebrow flex items-center gap-3 before:block before:h-[2px] before:w-6 before:bg-amber">Online booking</p>
-      <h1 class="mt-3 text-[clamp(3rem,15vw,6rem)] text-cream">Book a <span class="text-amber">time.</span></h1>
+      <h1 class="mt-3 text-[clamp(2.6rem,12vw,5rem)] text-cream">{bookLead} <span class="accent">{bookAccent}</span></h1>
       <p class="mt-3 text-lg text-cream/85">Pick what you're coming in for, then a day and a time. It's confirmed straight away.</p>
       <p class="mt-3 text-sm text-cream-2" data-demo-note>Demo page for {site.name}: nothing you enter is sent or stored.</p>
       <div class="book-summary mt-4" data-summary-chips hidden aria-live="polite" aria-label="Your choices"></div>
 
       <noscript>
-        <p class="mt-6 rounded-md border border-amber/50 bg-amber/10 p-4 text-cream">Online booking needs JavaScript. To book, call <a href={site.telHref} class="font-bold text-amber">{site.phone.display}</a>.</p>
+        <p class="mt-6 rounded-[var(--radius)] border border-amber/50 bg-amber/10 p-4 text-cream">Online booking needs JavaScript. To book, call <a href={site.telHref} class="font-bold text-amber">{site.phone.display}</a>.</p>
       </noscript>
 
       <form data-book data-config={JSON.stringify(config)} class="mt-8 grid gap-8" novalidate>
@@ -76,7 +77,7 @@ const config = {
 
         <fieldset data-step="details" hidden class="grid gap-5">
           <legend class="eyebrow mb-3">4 · Your details</legend>
-          <div role="alert" tabindex="-1" class="rounded-md text-cream [&:not(:empty)]:border [&:not(:empty)]:border-amber/50 [&:not(:empty)]:bg-amber/10 [&:not(:empty)]:px-4 [&:not(:empty)]:py-3" data-summary></div>
+          <div role="alert" tabindex="-1" class="rounded-[var(--radius)] text-cream [&:not(:empty)]:border [&:not(:empty)]:border-amber/50 [&:not(:empty)]:bg-amber/10 [&:not(:empty)]:px-4 [&:not(:empty)]:py-3" data-summary></div>
           <div>
             <label for="name" class="mb-2 block font-bold text-cream">Your name</label>
             <input id="name" name="name" type="text" required minlength="2" maxlength="80" autocomplete="name" class="input" aria-describedby="name-err" />
@@ -99,13 +100,13 @@ const config = {
         </fieldset>
       </form>
 
-      <section class="mt-8 hidden rounded-md border border-amber/40 bg-ink-2 p-6" data-done aria-live="polite">
+      <section class="mt-8 hidden rounded-[var(--radius)] border border-amber/40 bg-ink-2 p-6" data-done aria-live="polite">
         <svg class="tick mb-4" viewBox="0 0 52 52" width="56" height="56" aria-hidden="true"><circle class="tick-ring" cx="26" cy="26" r="24" /><path class="tick-mark" d="M15 27l7 7 15-16" /></svg>
         <p class="eyebrow">Booked</p>
-        <h2 class="mt-2 text-4xl text-cream" tabindex="-1">See you <span class="text-amber">soon.</span></h2>
+        <h2 class="mt-2 text-4xl text-cream" tabindex="-1">See you <span class="accent">soon.</span></h2>
         <p class="mt-4 text-lg text-cream" data-done-when></p>
         <p class="mt-1 text-cream-2">{site.name}, {site.fullAddress}.</p>
-        <p class="mt-4 rounded-md border border-dashed border-amber/60 bg-amber/10 px-4 py-3 text-sm text-cream" role="note" data-disclaimer>{disclaimer}</p>
+        <p class="mt-4 rounded-[var(--radius)] border border-dashed border-amber/60 bg-amber/10 px-4 py-3 text-sm text-cream" role="note" data-disclaimer>{disclaimer}</p>
         <div class="mt-6 grid grid-cols-1 gap-3 sm:flex sm:flex-wrap">
           <a href="#" class="btn btn-outline" data-calendar target="_blank" rel="noopener"><Icons name="calendar" size={19} /> Google Calendar</a>
           <a href="#" class="btn btn-outline" data-ics download="booking.ics"><Icons name="calendar" size={19} /> Apple / Outlook (.ics)</a>

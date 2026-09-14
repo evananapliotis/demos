@@ -1,7 +1,32 @@
-/* Styles for the /demo pages only: Tailwind 4 plus the two self-hosted variable faces. The main site keeps global.css. */
+/*
+ * Styles for the /[slug] pages only: Tailwind 4 plus the self-hosted faces.
+ * The main site keeps global.css.
+ *
+ * Five themes (src/lib/theme.ts) share this one stylesheet. Every colour, face
+ * and corner is a custom property; a theme is one block of overrides on
+ * `html[data-theme="…"]`, so component markup never names a colour and never
+ * knows which theme it is in. The tokens below are the Midnight palette, which
+ * is also what `data-theme="midnight"` inherits.
+ *
+ * Token meanings, so a light theme reads sensibly under dark-sounding names:
+ *   ink / ink-2 / ink-3   the page ground, a raised ground, a deeper one
+ *   cream / cream-2       body type, quiet type
+ *   amber / amber-2       the accent and its hover
+ *   onaccent              type that sits on an accent ground
+ *   line                  hairlines
+ *
+ * Faces are self-hosted from @fontsource. All seven are declared; a browser
+ * downloads only the two or three its theme actually sets, so no page makes a
+ * request it did not make before.
+ */
 @import 'tailwindcss';
 @import '@fontsource-variable/big-shoulders-display';
 @import '@fontsource-variable/dm-sans';
+@import '@fontsource-variable/instrument-sans/wght.css';
+@import '@fontsource/instrument-serif/400.css';
+@import '@fontsource-variable/plus-jakarta-sans/wght.css';
+@import '@fontsource-variable/fraunces/opsz.css';
+@import '@fontsource-variable/geist-mono/wght.css';
 
 @theme {
   --color-ink: #0e0c0a;
@@ -11,12 +36,132 @@
   --color-cream-2: #b9b0a2;
   --color-amber: #f2a93b;
   --color-amber-2: #ffc45e;
-  --color-line: rgb(244 238 228 / 0.12);
+  --color-onaccent: #0e0c0a;
+  --color-line: color-mix(in srgb, var(--color-cream) 12%, transparent);
 
   --font-display: 'Big Shoulders Display Variable', 'BSD Fallback', 'Arial Narrow', 'Impact', sans-serif;
   --font-sans: 'DM Sans Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-label: 'DM Sans Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
 
   --breakpoint-xs: 24rem;
+}
+
+/* Shape, not colour: how the display face is set, and how sharp the corners are. */
+:root {
+  --display-transform: uppercase;
+  --display-weight: 800;
+  --display-tracking: 0.005em;
+  --display-leading: 0.9;
+  --display-variation: normal;
+  /* The accented tail of a heading. Ivory leans on an italic serif instead of a second colour. */
+  --accent-style: normal;
+  --radius: 0.5rem;
+  --radius-btn: 0.5rem;
+  /* The barber-pole motif: diagonal bars on the traditional themes, a plain accent bar on the rest. */
+  --stripe: repeating-linear-gradient(-45deg, var(--color-amber) 0 14px, var(--color-ink) 14px 28px);
+  /* Weight of the scrim over a hero photo, and how much of the photo shows through. */
+  --hero-photo-opacity: 0.45;
+}
+
+/* ---------- Ivory: off-white and warm grey, black type, editorial serif, wide margins ---------- */
+html[data-theme='ivory'] {
+  --color-ink: #f7f4ee;
+  --color-ink-2: #efebe1;
+  --color-ink-3: #e5e0d4;
+  --color-cream: #17140f;
+  --color-cream-2: #6c6558;
+  --color-amber: #17140f;
+  --color-amber-2: #46402f;
+  --color-onaccent: #f7f4ee;
+
+  --font-display: 'Instrument Serif', 'Times New Roman', Times, serif;
+  --font-sans: 'Instrument Sans Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-label: 'Instrument Sans Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --display-transform: none;
+  --display-weight: 400;
+  --display-tracking: -0.02em;
+  --display-leading: 0.94;
+  --accent-style: italic;
+  --radius: 0;
+  --radius-btn: 0;
+  --stripe: linear-gradient(var(--color-amber), var(--color-amber));
+  --hero-photo-opacity: 1;
+}
+
+/* ---------- Forest: deep green and bone, grotesk, terracotta accent ---------- */
+html[data-theme='forest'] {
+  --color-ink: #0d2a1f;
+  --color-ink-2: #123528;
+  --color-ink-3: #1a4433;
+  --color-cream: #f2f0e6;
+  --color-cream-2: #a7bcaf;
+  --color-amber: #e07a5f;
+  --color-amber-2: #ef8f74;
+  --color-onaccent: #0d2a1f;
+
+  --font-display: 'Plus Jakarta Sans Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-sans: 'DM Sans Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-label: 'DM Sans Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --display-transform: none;
+  --display-weight: 800;
+  --display-tracking: -0.035em;
+  --display-leading: 0.95;
+  --radius: 1rem;
+  --radius-btn: 999px;
+  --stripe: linear-gradient(var(--color-amber), var(--color-amber));
+  --hero-photo-opacity: 1;
+}
+
+/* ---------- Tan: warm parchment and oxblood, the traditional shopfront ---------- */
+html[data-theme='tan'] {
+  --color-ink: #ead9bf;
+  --color-ink-2: #e1cdad;
+  --color-ink-3: #d6bd97;
+  --color-cream: #33231a;
+  --color-cream-2: #6d5540;
+  --color-amber: #8c2f21;
+  --color-amber-2: #a93c2b;
+  --color-onaccent: #f6ece0;
+
+  --font-display: 'Fraunces Variable', Georgia, 'Times New Roman', serif;
+  --font-sans: 'Instrument Sans Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-label: 'Instrument Sans Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+
+  --display-transform: uppercase;
+  --display-weight: 900;
+  --display-tracking: 0;
+  --display-leading: 0.92;
+  --display-variation: 'opsz' 144;
+  --radius: 0.125rem;
+  --radius-btn: 0.125rem;
+  --hero-photo-opacity: 1;
+}
+
+/* ---------- Steel: cool grey and white, one high-contrast blue ---------- */
+html[data-theme='steel'] {
+  --color-ink: #f4f6f8;
+  --color-ink-2: #e9edf2;
+  --color-ink-3: #dce3ea;
+  --color-cream: #10161d;
+  --color-cream-2: #5b6775;
+  --color-amber: #0a53e0;
+  --color-amber-2: #2e6ff0;
+  --color-onaccent: #ffffff;
+
+  --font-display: 'Instrument Sans Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-sans: 'Plus Jakarta Sans Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-label: 'Geist Mono Variable', ui-monospace, 'SF Mono', Menlo, monospace;
+
+  --display-transform: uppercase;
+  --display-weight: 700;
+  --display-tracking: -0.02em;
+  --display-leading: 0.92;
+  --radius: 0.25rem;
+  --radius-btn: 0.25rem;
+  --stripe: linear-gradient(var(--color-amber), var(--color-amber));
+  --hero-photo-opacity: 1;
 }
 
 /* Width-matched fallback so the swap to the condensed display face does not reflow lines. */
@@ -46,24 +191,30 @@
   }
   ::selection {
     background: var(--color-amber);
-    color: var(--color-ink);
+    color: var(--color-onaccent);
   }
   h1, h2, h3, .display {
     font-family: var(--font-display);
-    font-weight: 800;
-    text-transform: uppercase;
-    letter-spacing: 0.005em;
-    line-height: 0.9;
+    font-weight: var(--display-weight);
+    font-variation-settings: var(--display-variation);
+    text-transform: var(--display-transform);
+    letter-spacing: var(--display-tracking);
+    line-height: var(--display-leading);
     text-wrap: balance;
+  }
+  /* The accented tail of a heading. Colour on four themes, an italic serif on Ivory. */
+  .accent {
+    color: var(--color-amber);
+    font-style: var(--accent-style);
   }
   a:focus-visible, button:focus-visible, summary:focus-visible, [tabindex='-1']:focus-visible {
     outline: 3px solid var(--color-amber-2);
     outline-offset: 3px;
     border-radius: 2px;
   }
-  /* On amber ground the amber ring would vanish. */
+  /* On accent ground the accent ring would vanish. */
   .bg-amber a:focus-visible, .bg-amber button:focus-visible {
-    outline-color: var(--color-ink);
+    outline-color: var(--color-onaccent);
   }
   @media (prefers-reduced-motion: reduce) {
     html { scroll-behavior: auto; }
@@ -72,7 +223,7 @@
 }
 
 @utility eyebrow {
-  font-family: var(--font-sans);
+  font-family: var(--font-label);
   font-size: 0.8125rem;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -91,21 +242,21 @@
   font-weight: 700;
   font-size: 1.0625rem;
   line-height: 1.1;
-  border-radius: 0.5rem;
+  border-radius: var(--radius-btn);
   text-decoration: none;
   transition: background-color 120ms ease, color 120ms ease, transform 120ms ease, box-shadow 120ms ease;
   -webkit-tap-highlight-color: transparent;
 }
 @utility btn-amber {
   background: var(--color-amber);
-  color: var(--color-ink);
+  color: var(--color-onaccent);
   &:hover { background: var(--color-amber-2); }
   &:active { transform: translateY(1px); }
 }
 @utility btn-outline {
   background: transparent;
   color: var(--color-cream);
-  box-shadow: inset 0 0 0 2px rgb(244 238 228 / 0.28);
+  box-shadow: inset 0 0 0 2px color-mix(in srgb, var(--color-cream) 28%, transparent);
   &:hover { box-shadow: inset 0 0 0 2px var(--color-cream); }
   &:active { transform: translateY(1px); }
 }
@@ -116,9 +267,14 @@
   &:active { transform: translateY(1px); }
 }
 
-/* Amber stripe: the one graphic motif. */
+/* The accent stripe: barber-pole bars on the traditional themes, a plain bar on the rest. */
 @utility stripe-amber {
-  background-image: repeating-linear-gradient(-45deg, var(--color-amber) 0 14px, var(--color-ink) 14px 28px);
+  background-image: var(--stripe);
+}
+
+/* One corner radius per theme, for photos, cards and panels. */
+@utility r-theme {
+  border-radius: var(--radius);
 }
 
 /* Outlined display text (footer wordmark, ticker). */
@@ -170,7 +326,7 @@
   position: absolute;
   inset: 0;
   width: 40%;
-  background: linear-gradient(90deg, transparent, rgb(244 238 228 / 0.18), transparent);
+  background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--color-cream) 18%, transparent), transparent);
   animation: shimmer 1400ms 700ms ease-out both;
   pointer-events: none;
 }
@@ -256,7 +412,7 @@ html:not(.js) .score-bar {
   font-size: clamp(7rem, 34vw, 20rem);
   line-height: 1;
   color: transparent;
-  -webkit-text-stroke: 1px rgb(244 238 228 / 0.09);
+  -webkit-text-stroke: 1px color-mix(in srgb, var(--color-cream) 14%, transparent);
   pointer-events: none;
   user-select: none;
 }
@@ -349,10 +505,43 @@ html.js [data-reveal].is-in {
   animation: dot-ping 2.2s ease-out infinite;
 }
 @keyframes dot-ping {
-  0% { box-shadow: 0 0 0 0 rgb(242 169 59 / 0.55); }
-  100% { box-shadow: 0 0 0 0.6rem rgb(242 169 59 / 0); }
+  0% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--color-amber) 55%, transparent); }
+  100% { box-shadow: 0 0 0 0.6rem color-mix(in srgb, var(--color-amber) 0%, transparent); }
 }
 
+/* ---------- Hero: the scrim over a photo, weighted by the theme ---------- */
+.hero-scrim {
+  background:
+    linear-gradient(
+      to bottom,
+      color-mix(in srgb, var(--color-ink) 85%, transparent),
+      color-mix(in srgb, var(--color-ink) 35%, transparent) 22%,
+      color-mix(in srgb, var(--color-ink) 55%, transparent) 50%,
+      var(--color-ink) 78%
+    ),
+    radial-gradient(90% 60% at 100% 0%, color-mix(in srgb, var(--color-amber) 12%, transparent), transparent 60%);
+}
+.hero-scrim-none {
+  background:
+    radial-gradient(90% 60% at 100% 0%, color-mix(in srgb, var(--color-amber) 16%, transparent), transparent 60%),
+    linear-gradient(to bottom, color-mix(in srgb, var(--color-ink) 20%, transparent), var(--color-ink) 70%);
+}
+/* The plaque hero is centred, so the photo is held back at the top (behind the
+   navigation) and at the bottom (into the strip below) and left alone between. */
+.hero-scrim-plaque {
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--color-ink) 88%, transparent) 0%,
+    color-mix(in srgb, var(--color-ink) 40%, transparent) 24%,
+    color-mix(in srgb, var(--color-ink) 40%, transparent) 72%,
+    var(--color-ink) 100%
+  );
+}
+
+/* Split and editorial heroes put the photo beside the type: the scrim only softens its inner edge. */
+.hero-scrim-side {
+  background: linear-gradient(to right, color-mix(in srgb, var(--color-ink) 70%, transparent), transparent 45%);
+}
 /* ---------- Hero photo: a slow push-in on load ---------- */
 @keyframes kenburns {
   from { transform: scale(1); }
@@ -377,7 +566,7 @@ html.js [data-reveal].is-in {
   background: var(--color-ink);
   color: var(--color-cream);
 }
-.lightbox::backdrop { background: rgb(14 12 10 / 0.9); }
+.lightbox::backdrop { background: color-mix(in srgb, var(--color-ink) 90%, transparent); }
 .lightbox[open] {
   display: grid;
   grid-template-rows: auto minmax(0, 1fr) auto;
@@ -416,7 +605,7 @@ html.lb-open { overflow: hidden; }
   width: auto;
   height: auto;
   object-fit: contain;
-  border-radius: 0.5rem;
+  border-radius: var(--radius);
   background: var(--color-ink-3);
 }
 .lb-btn {
@@ -426,10 +615,10 @@ html.lb-open { overflow: hidden; }
   min-height: 3rem;
   border-radius: 999px;
   color: var(--color-cream);
-  background: rgb(244 238 228 / 0.08);
+  background: color-mix(in srgb, var(--color-cream) 8%, transparent);
   transition: background-color 120ms ease, opacity 120ms ease;
 }
-.lb-btn:hover { background: rgb(244 238 228 / 0.16); }
+.lb-btn:hover { background: color-mix(in srgb, var(--color-cream) 16%, transparent); }
 .lb-btn:disabled { opacity: 0.25; pointer-events: none; }
 .lb-prev,
 .lb-next {
@@ -483,8 +672,8 @@ fieldset { min-inline-size: 0; }
   width: 100%;
   min-height: 3.25rem;
   padding: 0.8rem 1rem;
-  border-radius: 0.5rem;
-  border: 2px solid rgb(244 238 228 / 0.4);
+  border-radius: var(--radius);
+  border: 2px solid color-mix(in srgb, var(--color-cream) 40%, transparent);
   background: var(--color-ink-2);
   color: var(--color-cream);
   font-size: 1.0625rem;
@@ -502,12 +691,12 @@ fieldset { min-inline-size: 0; }
   gap: 1rem;
   min-height: 3.5rem;
   padding: 0.85rem 1rem;
-  border-radius: 0.5rem;
-  border: 2px solid rgb(244 238 228 / 0.4);
+  border-radius: var(--radius);
+  border: 2px solid color-mix(in srgb, var(--color-cream) 40%, transparent);
   background: var(--color-ink-2);
   transition: border-color 120ms ease, background-color 120ms ease;
 }
-.choice > input:checked + .choice-body { border-color: var(--color-amber); background: rgb(242 169 59 / 0.12); }
+.choice > input:checked + .choice-body { border-color: var(--color-amber); background: color-mix(in srgb, var(--color-amber) 12%, transparent); }
 .choice > input:focus-visible + .choice-body,
 .chip > input:focus-visible + .chip-body { outline: 3px solid var(--color-amber); outline-offset: 2px; }
 .chip-body {
@@ -516,8 +705,8 @@ fieldset { min-inline-size: 0; }
   gap: 0.1rem;
   min-height: 3rem;
   padding: 0.45rem 0.75rem;
-  border-radius: 0.5rem;
-  border: 2px solid rgb(244 238 228 / 0.4);
+  border-radius: var(--radius);
+  border: 2px solid color-mix(in srgb, var(--color-cream) 40%, transparent);
   font-weight: 700;
   line-height: 1.1;
   white-space: nowrap;
@@ -525,8 +714,8 @@ fieldset { min-inline-size: 0; }
   transition: border-color 120ms ease, background-color 120ms ease, color 120ms ease;
 }
 .chip-body small { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--color-cream-2); }
-.chip > input:checked + .chip-body { border-color: var(--color-amber); background: var(--color-amber); color: var(--color-ink); }
-.chip > input:checked + .chip-body small { color: var(--color-ink); }
+.chip > input:checked + .chip-body { border-color: var(--color-amber); background: var(--color-amber); color: var(--color-onaccent); }
+.chip > input:checked + .chip-body small { color: var(--color-onaccent); }
 .chip > input:disabled { cursor: not-allowed; }
 .chip > input:disabled + .chip-body { opacity: 0.55; }
 .days {
@@ -552,7 +741,7 @@ fieldset { min-inline-size: 0; }
   flex-wrap: wrap;
   gap: 0.5rem;
   padding: 0.6rem 0;
-  background: rgb(14 12 10 / 0.92);
+  background: color-mix(in srgb, var(--color-ink) 92%, transparent);
   backdrop-filter: blur(8px);
 }
 .book-summary > span {
@@ -561,7 +750,7 @@ fieldset { min-inline-size: 0; }
   min-height: 2rem;
   padding: 0.25rem 0.75rem;
   border-radius: 999px;
-  border: 1px solid rgb(242 169 59 / 0.55);
+  border: 1px solid color-mix(in srgb, var(--color-amber) 55%, transparent);
   color: var(--color-amber);
   font-size: 0.85rem;
   font-weight: 700;

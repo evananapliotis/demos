@@ -1,0 +1,29 @@
+---
+/** The Google rating pill: rating, stars, review count, opening the listing. */
+import type { DemoSite } from '../../../lib/demo.ts';
+import GoogleG from '../GoogleG.astro';
+import Stars from '../Stars.astro';
+
+interface Props {
+  site: DemoSite;
+  class?: string;
+}
+const { site, class: cls = '' } = Astro.props;
+---
+
+<a
+  href={site.listingUrl}
+  target="_blank"
+  rel="noopener"
+  class={`rise shimmer relative inline-flex min-h-12 flex-wrap items-center gap-x-3 gap-y-1 overflow-hidden rounded-[var(--radius)] border border-cream/20 bg-ink-2/80 px-3.5 py-2 text-base font-bold text-cream hover:border-amber ${cls}`}
+  style="animation-delay:60ms"
+  aria-label={`${site.google.rating != null ? `Rated ${site.google.rating.toFixed(1)} from ` : ''}${site.google.reviewsText}. Open the Google listing.`}
+>
+  {site.google.rating != null && (
+    <span class="inline-flex items-center gap-2.5">
+      <span class="display text-2xl leading-none text-amber">{site.google.rating.toFixed(1)}</span>
+      <Stars rating={site.google.rating} class="text-amber" size={15} />
+    </span>
+  )}
+  <span class="inline-flex items-center gap-1.5 whitespace-nowrap">{site.google.reviewsText} <GoogleG size={16} /></span>
+</a>

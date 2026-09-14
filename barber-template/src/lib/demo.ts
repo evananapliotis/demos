@@ -3,7 +3,9 @@
  * adds facts: it formats what the listing has and leaves out what it lacks.
  */
 import { DAYS, type Day } from '../config/site.schema.ts';
+import { copyFor } from './copy.ts';
 import { creditFor, photoFor, type PhotoAuthor } from './photos.ts';
+import { themeFor } from './theme.ts';
 import { hoursList, kindOf, phoneDisplay, reviewsPerScore, telHref, toSchedule, trueAttributes, type Shop } from './shops.ts';
 
 export const dayLabel = (d: Day) => d.charAt(0).toUpperCase() + d.slice(1);
@@ -182,13 +184,22 @@ export function derive(shop: Shop) {
   for (const p of photos) for (const a of p.authors) if (a.name && !authors.some((x) => x.name === a.name && x.uri === a.uri)) authors.push(a);
   const hero = photos[0] ?? null;
 
+  const theme = themeFor(shop.slug);
   const lines = nameLines(name);
   const longest = Math.max(lines[0].length, lines[1].length, 1);
-  /** The big type shrinks with the name so each line stays on one line at every width. */
-  const h1Size = `clamp(2rem, ${Math.min(26, 88 / (0.44 * longest)).toFixed(1)}vw, ${Math.min(12.5, 1100 / (0.44 * longest) / 16).toFixed(2)}rem)`;
+  /**
+   * The big type shrinks with the name so each line stays on one line at every
+   * width. The vw term is sized for a phone, where every hero is one column;
+   * the rem cap is sized for the column the theme's hero actually gives it.
+   */
+  const em = theme.display.width * longest;
+  const h1Size = `clamp(2rem, ${Math.min(theme.display.maxVw, 88 / em).toFixed(1)}vw, ${Math.min(theme.display.maxRem, theme.display.budgetPx / em / 16).toFixed(2)}rem)`;
 
   return {
     slug: shop.slug,
+    /** The look this shop keeps, and its wording. Both fixed by the slug: a live link never changes appearance. */
+    theme,
+    copy: copyFor(shop.slug),
     /** This shop's page and its booking page. */
     home: `/${shop.slug}`,
     bookHref: `/${shop.slug}/book`,

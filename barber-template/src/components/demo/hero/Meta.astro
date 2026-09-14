@@ -1,0 +1,23 @@
+---
+/** The hero's small print: street and postcode, and whether the shop is open right now. */
+import type { DemoSite } from '../../../lib/demo.ts';
+import Icons from '../Icons.astro';
+
+interface Props {
+  site: DemoSite;
+  /** Centred rather than ranged left, for the plaque hero. */
+  center?: boolean;
+  class?: string;
+}
+const { site, center = false, class: cls = '' } = Astro.props;
+---
+
+<p class={`rise flex flex-col gap-y-1 text-sm text-cream-2 ${center ? 'items-center' : 'items-start'} ${cls}`} style="animation-delay:180ms">
+  <span class="inline-flex min-h-6 items-center gap-1.5"><Icons name="pin" size={14} class="text-amber" /> {site.address.street}, {site.address.postcode}</span>
+  {site.week && (
+    <span class="inline-flex min-h-6 items-center gap-1.5">
+      <span class="status-dot" data-status-dot aria-hidden="true"></span>
+      <span data-open-status data-week={JSON.stringify(site.week)}>{site.openDaysLabel}</span>
+    </span>
+  )}
+</p>

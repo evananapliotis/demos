@@ -4,8 +4,22 @@
  * public listing, so it is noindex and says so in the footer.
  */
 import '../styles/demo.css';
-import displayWoff2 from '@fontsource-variable/big-shoulders-display/files/big-shoulders-display-latin-wght-normal.woff2?url';
+import bigShoulders from '@fontsource-variable/big-shoulders-display/files/big-shoulders-display-latin-wght-normal.woff2?url';
+import instrumentSerif from '@fontsource/instrument-serif/files/instrument-serif-latin-400-normal.woff2?url';
+import plusJakarta from '@fontsource-variable/plus-jakarta-sans/files/plus-jakarta-sans-latin-wght-normal.woff2?url';
+import fraunces from '@fontsource-variable/fraunces/files/fraunces-latin-opsz-normal.woff2?url';
+import instrumentSans from '@fontsource-variable/instrument-sans/files/instrument-sans-latin-wght-normal.woff2?url';
 import { jsonLd, type DemoSite } from '../lib/demo.ts';
+import type { ThemeId } from '../lib/theme.ts';
+
+/** The display face each theme sets, preloaded so the biggest type on the page does not swap. */
+const DISPLAY_WOFF2: Record<ThemeId, string> = {
+  midnight: bigShoulders,
+  ivory: instrumentSerif,
+  forest: plusJakarta,
+  tan: fraunces,
+  steel: instrumentSans,
+};
 
 interface Props {
   site: DemoSite;
@@ -15,6 +29,8 @@ interface Props {
   preloadHero?: boolean;
 }
 const { site, title, description, preloadHero = false } = Astro.props;
+const theme = site.theme;
+const displayWoff2 = DISPLAY_WOFF2[theme.id];
 const pageUrl = new URL(Astro.url.pathname, Astro.site).href.replace(/\/$/, '');
 /** Rendered by src/pages/[slug]/og.jpg.ts; the booking page shares the shop page's. */
 const ogImage = new URL(`/${site.slug}/og.jpg`, Astro.site).href;
@@ -23,15 +39,15 @@ const ratingAlt = site.google.rating != null ? `Rated ${site.google.rating.toFix
 ---
 
 <!doctype html>
-<html lang="en-GB" class="bg-ink">
+<html lang="en-GB" class="bg-ink" data-theme={theme.id}>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={pageUrl} />
-    <meta name="theme-color" content="#0e0c0a" />
-    <meta name="color-scheme" content="dark" />
+    <meta name="theme-color" content={theme.themeColor} />
+    <meta name="color-scheme" content={theme.scheme} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <meta name="robots" content="noindex,nofollow" />
     <link rel="preload" as="font" type="font/woff2" href={displayWoff2} crossorigin />

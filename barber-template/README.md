@@ -104,7 +104,27 @@ Its mockups show a made-up shop, Marlow & Finch (`src/lib/showcase.ts`), in a de
 
 ### Barber pages, `/<slug>`
 
-`src/pages/[slug].astro` builds one page per entry in `src/data/barbers.json`, an Outscraper export of Google Business listings plus the `photos` paths that `npm run photos` adds. The pages follow the HAWAR BARBER one-page structure and look (Tailwind 4, Big Shoulders Display and DM Sans, pulled in only by `src/styles/demo.css`): hero on the first photo with the name, a rating badge that opens the Google listing, a one-line tagline, Call and Directions; a trust strip and a ticker of listing facts; 01 Prices (ask, with a Call button); 02 The work (the photos on a swipe track with a lightbox, credited from `src/data/photo-credits.json`); the Google reviews block (per-star bar when the export carries `reviews_per_score`); 03 The shop (two paragraphs written from the listing); 04 Find us (address, copy-address, hours with today first, directions, map on tap); a closing call to action; footer; sticky Call/Directions bar. Each page gets its own link-preview image from `src/pages/[slug]/og.jpg.ts`, drawn with the faces in `src/og/fonts`. Every page is `noindex,nofollow`. The pages used to live at `/demo/<slug>`: `astro.config.mjs` still builds a meta-refresh page for each old path and `public/_redirects` gives Cloudflare a 301 for `/demo/*`.
+`src/pages/[slug].astro` builds one page per entry in `src/data/barbers.json`, an Outscraper export of Google Business listings plus the `photos` paths that `npm run photos` adds. Every page is built from the same components (Tailwind 4, pulled in only by `src/styles/demo.css`): hero on the listing's first photo with the name, a rating badge that opens the Google listing, a one-line tagline, Call and Directions; a trust strip and a ticker of listing facts; Prices (no listing publishes one, so the number goes up big, with the bookable services under it); The work (the photos on a swipe track with a lightbox, credited from `src/data/photo-credits.json`); the Google reviews block (per-star bar when the export carries `reviews_per_score`); The shop (two paragraphs written from the listing); Find us (address, copy-address, hours with today first, directions, map on tap); a closing call to action; footer; sticky Call/Directions bar. Each page gets its own link-preview image from `src/pages/[slug]/og.jpg.ts`, drawn with the faces in `src/og/fonts`. Every page is `noindex,nofollow`. The pages used to live at `/demo/<slug>`: `astro.config.mjs` still builds a meta-refresh page for each old path and `public/_redirects` gives Cloudflare a 301 for `/demo/*`.
+
+#### Five themes
+
+Those components are shared, but no two neighbouring shops should be handed the same website. Each page is built in one of five themes, defined in `src/lib/theme.ts`:
+
+| Theme | Look | Display / text | Hero | Services |
+| --- | --- | --- | --- | --- |
+| Midnight | near-black, gold | Big Shoulders Display / DM Sans | photo full-bleed behind the type | list |
+| Ivory | off-white and warm grey, black type, wide margins | Instrument Serif / Instrument Sans | type left, a tall photo right | list |
+| Forest | deep green and bone, terracotta accent | Plus Jakarta Sans / DM Sans | type alone, a wide photo band under it | cards |
+| Tan | warm parchment and oxblood, the traditional shopfront | Fraunces / Instrument Sans | a ruled plaque over the photo | cards |
+| Steel | cool grey and white, one high-contrast blue | Instrument Sans / Plus Jakarta Sans, Geist Mono labels | photo one half, type the other | cards |
+
+A theme also sets the section order, whether the ticker and the outsized section numerals render, the corner radius, and the palette of the share image. Midnight is the look the pages have always had, unchanged.
+
+The palettes and the faces are custom properties on `html[data-theme="…"]` in `src/styles/demo.css`, under one set of token names (`ink`/`ink-2`/`ink-3` for grounds, `cream`/`cream-2` for type, `amber`/`amber-2` for the accent, `onaccent` for type on an accent ground, `line` for hairlines). No component names a colour, and a light theme reads sensibly under the dark-sounding names. The seven faces are all self-hosted from `@fontsource`; every page declares them and downloads only the two or three its own theme sets, so a theme costs no extra request.
+
+The wording varies too, because five palettes do not stop five pages reading as one template. Every heading, eyebrow and standing line that states no fact about the shop is drawn from a small pool in `src/lib/copy.ts` — the gallery is "Fresh from the chair" on one page and "Recent cuts" on the next. Nothing in the pools adds a fact; anything specific to a shop is still derived from the listing in `src/lib/demo.ts`.
+
+Both the theme and the wording are chosen by hashing the shop's slug (FNV-1a, in `src/lib/theme.ts`) — nothing else. The same slug gives the same theme and the same words in every build, on every machine, so a live link a prospect has already opened never changes appearance. The copy pools are drawn with the same hash under a per-field key, so two shops that land on the same theme still read differently.
 
 `/<slug>/book` is the HAWAR BARBER booking page for the listing (`src/pages/[slug]/book.astro`): service, day, time, then name and phone. The live site asked a booking API; here the days and times come from the listing's opening hours and the six standard services in `src/lib/demo-booking.ts`, with a stable pattern of taken times per shop, and the booking is confirmed on screen only, with a note saying so. "Book online" buttons in the hero, the closing call to action and the sticky bar lead there; `?service=<id>` preselects a service.
 

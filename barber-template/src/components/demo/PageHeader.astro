@@ -10,7 +10,7 @@ const { site } = Astro.props;
     <span class="inline-block h-6 w-[7px] shrink-0 rounded-sm stripe-amber" aria-hidden="true"></span>
     <span class="truncate">{site.name}</span>
   </a>
-  <a href={site.telHref} class="inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center gap-2 rounded-md px-3 text-amber hover:text-amber-2" aria-label={`Call ${site.phone.display}`}>
+  <a href={site.telHref} class="inline-flex min-h-11 min-w-11 shrink-0 items-center justify-center gap-2 rounded-[var(--radius)] px-3 text-amber hover:text-amber-2" aria-label={`Call ${site.phone.display}`}>
     <Icons name="phone" size={20} /><span class="hidden sm:inline">{site.phone.display}</span>
   </a>
 </nav>

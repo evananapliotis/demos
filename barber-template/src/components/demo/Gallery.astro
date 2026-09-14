@@ -3,9 +3,15 @@
 import type { DemoSite } from '../../lib/demo.ts';
 import Section from './Section.astro';
 import Icons from './Icons.astro';
-interface Props { site: DemoSite; index?: string }
-const { site, index } = Astro.props;
+interface Props {
+  site: DemoSite;
+  index?: string;
+  /** Sit on the raised ground, so two neighbouring sections never share a tone. */
+  alt?: boolean;
+}
+const { site, index, alt = false } = Astro.props;
 const photos = site.photos;
+const [lead, accent] = site.copy.galleryTitle;
 // The lightbox shows the same files; they are already at most 1400px.
 const slides = photos.map((p) => ({
   src: p.path,
@@ -17,10 +23,10 @@ const slides = photos.map((p) => ({
 ---
 {
   photos.length > 0 && (
-    <Section id="gallery" index={index} eyebrow="The work" title="Fresh from the <span class='text-amber'>chair.</span>" class="bg-ink-2">
+    <Section id="gallery" index={index} eyebrow={site.copy.galleryEyebrow} title={lead} accent={accent} class={alt ? 'bg-ink-2' : ''}>
       <ul class="gallery-track" role="list" aria-label="Photos from the shop's Google listing">
         {photos.map((p, i) => (
-          <li class="overflow-hidden rounded-md bg-ink-3">
+          <li class="overflow-hidden rounded-[var(--radius)] bg-ink-3">
             <button type="button" class="gallery-open group block w-full cursor-zoom-in" data-index={i} aria-label={`Open photo ${i + 1} of ${photos.length} full size`}>
               <img
                 src={p.path}

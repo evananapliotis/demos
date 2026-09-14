@@ -1,0 +1,31 @@
+---
+/** The shop's name as the page's h1, one letter at a time. Shared by every hero treatment. */
+import type { DemoSite } from '../../../lib/demo.ts';
+
+interface Props {
+  site: DemoSite;
+  class?: string;
+}
+const { site, class: cls = '' } = Astro.props;
+const [first, second] = site.nameLines;
+/** Each word keeps its letters together so a long name wraps between words, never inside one. */
+const words = (line: string, offset: number) => {
+  let i = offset;
+  return line.split(' ').map((word) => ({ word, letters: [...word].map((ch) => ({ ch, i: i++ })) }));
+};
+---
+
+<h1 class={`text-cream ${cls}`} style={`font-size:${site.h1Size}`} aria-label={site.name}>
+  <span class="letters block" aria-hidden="true">
+    {words(first, 0).map((w, wi) => (
+      <>{wi > 0 && ' '}<span class="word">{w.letters.map(({ ch, i }) => <span class="letter" style={`--i:${i}`}>{ch}</span>)}</span></>
+    ))}
+  </span>
+  {second && (
+    <span class="letters accent block" aria-hidden="true">
+      {words(second, first.length).map((w, wi) => (
+        <>{wi > 0 && ' '}<span class="word">{w.letters.map(({ ch, i }) => <span class="letter" style={`--i:${i}`}>{ch}</span>)}</span></>
+      ))}
+    </span>
+  )}
+</h1>

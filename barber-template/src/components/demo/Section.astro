@@ -1,13 +1,31 @@
 ---
-interface Props { id: string; eyebrow: string; title: string; class?: string; titleClass?: string; index?: string }
-const { id, eyebrow, title, class: cls = '', titleClass = '', index } = Astro.props;
+/**
+ * A numbered page section. The heading comes in two parts — the lead and the
+ * accented tail — so each theme can colour, italicise or set the tail its own
+ * way without any component writing markup for it.
+ */
+interface Props {
+  id: string;
+  eyebrow: string;
+  title: string;
+  /** The tail of the heading, in the theme's accent. */
+  accent?: string;
+  class?: string;
+  titleClass?: string;
+  /** "01", "02" … Left out by the themes that do not show numerals. */
+  index?: string;
+}
+const { id, eyebrow, title, accent, class: cls = '', titleClass = '', index } = Astro.props;
 ---
+
 <section id={id} class={`relative scroll-mt-14 overflow-hidden px-5 py-16 sm:px-8 md:py-24 lg:px-12 ${cls}`} aria-labelledby={`${id}-title`}>
   {index && <span class="watermark" aria-hidden="true">{index}</span>}
   <div class="relative mx-auto max-w-5xl">
     <div class="mb-8 md:mb-12" data-reveal>
       <p class="eyebrow flex items-center gap-3 before:block before:h-[2px] before:w-6 before:bg-amber">{eyebrow}</p>
-      <h2 id={`${id}-title`} class={`mt-3 text-[clamp(2.75rem,11vw,6rem)] text-cream ${titleClass}`} set:html={title} />
+      <h2 id={`${id}-title`} class={`mt-3 text-[clamp(2.75rem,11vw,6rem)] text-cream ${titleClass}`}>
+        {title}{accent && <> <span class="accent">{accent}</span></>}
+      </h2>
     </div>
     <slot />
   </div>

@@ -1,46 +1,54 @@
 ---
 /**
- * A whole shop page from a DemoSite: the HAWAR BARBER one-page structure with
- * the listing's content. Used by /[slug] for every listing and by /example
- * for the fictional shop shown on the front page.
+ * A whole shop page from a DemoSite. The sections are the same components for
+ * every shop; the theme (src/lib/theme.ts) decides their order, whether the
+ * ticker and the section numerals render, and — through demo.css — everything
+ * the page looks like.
  */
 import DemoBase from '../../layouts/DemoBase.astro';
 import type { DemoSite } from '../../lib/demo.ts';
-import Hero from './Hero.astro';
-import TrustStrip from './TrustStrip.astro';
-import Ticker from './Ticker.astro';
-import Prices from './Prices.astro';
-import Gallery from './Gallery.astro';
-import Reviews from './Reviews.astro';
 import About from './About.astro';
-import FindUs from './FindUs.astro';
 import FinalCta from './FinalCta.astro';
+import FindUs from './FindUs.astro';
 import Footer from './Footer.astro';
+import Gallery from './Gallery.astro';
+import Hero from './Hero.astro';
+import Prices from './Prices.astro';
+import Reviews from './Reviews.astro';
 import StickyBar from './StickyBar.astro';
+import Ticker from './Ticker.astro';
+import TrustStrip from './TrustStrip.astro';
 
 interface Props {
   site: DemoSite;
-  /** Leave the footer off (the front page's example shop shows the page without it). */
+  /** Leave the footer off (a page that embeds the shop page shows it without one). */
   footer?: boolean;
 }
 const { site, footer = true } = Astro.props;
 const title = `${site.name} | ${site.kind}, ${site.roadName}, ${site.address.locality}`;
-// Section numerals only count sections that render.
-let n = 0;
-const next = () => String(++n).padStart(2, '0');
-const idx = { prices: next(), gallery: site.photos.length ? next() : undefined, about: next(), findUs: next() };
+
+// A shop with no photos has no gallery, so it never takes a numeral.
+const sections = site.theme.order.filter((id) => id !== 'gallery' || site.photos.length > 0);
+// Numerals count the numbered sections in render order, so 01 is always first on the page.
+const numbered = sections.filter((id) => id !== 'reviews');
+const index = (id: string) =>
+  site.theme.numerals ? String(numbered.indexOf(id as (typeof numbered)[number]) + 1).padStart(2, '0') : undefined;
 ---
 
 <DemoBase site={site} title={title} description={site.description} preloadHero>
   <Hero site={site} />
   <TrustStrip site={site} />
-  <Ticker site={site} />
+  {site.theme.ticker && <Ticker site={site} />}
   <main id="main">
-    <Prices site={site} index={idx.prices} />
-    <Gallery site={site} index={idx.gallery} />
-    <Reviews site={site} />
-    <About site={site} index={idx.about} />
-    <FindUs site={site} index={idx.findUs} />
+    {sections.map((id, i) => (
+      <>
+        {id === 'prices' && <Prices site={site} index={index('prices')} alt={i % 2 === 1} />}
+        {id === 'gallery' && <Gallery site={site} index={index('gallery')} alt={i % 2 === 1} />}
+        {id === 'reviews' && <Reviews site={site} alt={i % 2 === 1} />}
+        {id === 'about' && <About site={site} index={index('about')} alt={i % 2 === 1} />}
+        {id === 'find-us' && <FindUs site={site} index={index('find-us')} alt={i % 2 === 1} />}
+      </>
+    ))}
     <FinalCta site={site} />
   </main>
   {footer && <Footer site={site} />}

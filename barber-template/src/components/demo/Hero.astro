@@ -1,29 +1,29 @@
 ---
+/**
+ * The first screen, in one of five treatments (src/lib/theme.ts). The pieces —
+ * navigation, the name, the rating pill, the actions, the small print — are the
+ * same components in every treatment; only their arrangement and the photo's
+ * job change.
+ */
 import type { DemoSite } from '../../lib/demo.ts';
-import Icons from './Icons.astro';
-import Stars from './Stars.astro';
-import GoogleG from './GoogleG.astro';
+import Actions from './hero/Actions.astro';
+import Meta from './hero/Meta.astro';
+import Name from './hero/Name.astro';
+import Nav from './hero/Nav.astro';
+import Rating from './hero/Rating.astro';
 
 interface Props { site: DemoSite }
 const { site } = Astro.props;
-const [first, second] = site.nameLines;
 const hero = site.hero;
-/** Each word keeps its letters together so a long name wraps between words, never inside one. */
-const words = (line: string, offset: number) => {
-  let i = offset;
-  return line.split(' ').map((word) => ({ word, letters: [...word].map((ch) => ({ ch, i: i++ })) }));
-};
-const nav = [
-  { href: '#prices', label: 'Prices' },
-  ...(site.photos.length ? [{ href: '#gallery', label: 'The work' }] : []),
-  { href: '#reviews', label: 'Reviews' },
-  { href: '#find-us', label: 'Find us' },
-  { href: site.bookHref, label: 'Book' },
-];
+const variant = site.theme.hero;
+const eyebrow = `${site.kind} · ${site.address.locality}`;
+/** Small photos are upscaled behind the type, so they are softened rather than shown sharp. */
+const soften = hero && hero.width < 1000 ? 'blur-[2px]' : '';
 ---
-<header id="top" class="relative isolate flex min-h-[100svh] flex-col overflow-hidden bg-ink">
-  {
-    hero && (
+
+{variant === 'full-bleed' && (
+  <header id="top" class="relative isolate flex min-h-[100svh] flex-col overflow-hidden bg-ink">
+    {hero && (
       <img
         src={hero.path}
         alt={hero.alt}
@@ -32,89 +32,151 @@ const nav = [
         loading="eager"
         fetchpriority="high"
         decoding="async"
-        class={`hero-photo absolute inset-0 -z-20 h-full w-full object-cover object-center opacity-45 ${hero.width < 1000 ? 'blur-[2px]' : ''}`}
+        class={`hero-photo absolute inset-0 -z-20 h-full w-full object-cover object-center opacity-[var(--hero-photo-opacity)] ${soften}`}
       />
-    )
-  }
-  <div
-    class={`absolute inset-0 -z-10 ${
-      hero
-        ? 'bg-[linear-gradient(to_bottom,rgb(14_12_10/0.85),rgb(14_12_10/0.35)_22%,rgb(14_12_10/0.55)_50%,rgb(14_12_10)_78%),radial-gradient(90%_60%_at_100%_0%,rgb(242_169_59/0.12),transparent_60%)]'
-        : 'bg-[radial-gradient(90%_60%_at_100%_0%,rgb(242_169_59/0.16),transparent_60%),linear-gradient(to_bottom,rgb(14_12_10/0.2),rgb(14_12_10)_70%)]'
-    }`}
-    aria-hidden="true"
-  ></div>
+    )}
+    <div class={`absolute inset-0 -z-10 ${hero ? 'hero-scrim' : 'hero-scrim-none'}`} aria-hidden="true"></div>
 
-  <nav class="relative z-20 flex items-center justify-between gap-3 px-5 pt-4 sm:px-8 lg:px-12" aria-label="Primary">
-    <a href="#top" class="display inline-flex min-h-11 min-w-0 items-center gap-2 text-[1.35rem] tracking-wide text-cream" aria-label={`${site.name} home`}>
-      <span class="inline-block h-6 w-[7px] shrink-0 rounded-sm stripe-amber" aria-hidden="true"></span>
-      <span class="truncate">{site.name}</span>
-    </a>
-    <ul class="flex shrink-0 items-center gap-2 text-sm font-bold" role="list">
-      {nav.map((n) => (
-        <li class="hidden md:block"><a href={n.href} class="inline-flex min-h-11 items-center px-3 text-cream-2 hover:text-amber">{n.label}</a></li>
-      ))}
-      <li>
-        <a href={site.telHref} class="inline-flex min-h-11 min-w-11 items-center justify-center gap-2 rounded-md px-3 text-amber hover:text-amber-2" aria-label={`Call ${site.phone.display}`}>
-          <Icons name="phone" size={20} /><span class="hidden sm:inline">{site.phone.display}</span>
-        </a>
-      </li>
-    </ul>
-  </nav>
+    <Nav site={site} />
 
-  <div class="relative mx-auto flex w-full max-w-6xl flex-1 flex-col px-5 pb-8 pt-2 sm:px-8 md:pb-16 md:pt-10 lg:px-12">
-    <div class="relative z-10 mt-auto">
-      <p class="eyebrow rise">{site.kind} · {site.address.locality}</p>
-      <h1 class="mt-3 text-cream" style={`font-size:${site.h1Size}`} aria-label={site.name}>
-        <span class="letters block" aria-hidden="true">
-          {words(first, 0).map((w, wi) => (
-            <>{wi > 0 && ' '}<span class="word">{w.letters.map(({ ch, i }) => <span class="letter" style={`--i:${i}`}>{ch}</span>)}</span></>
-          ))}
-        </span>
-        {second && (
-          <span class="letters block text-amber" aria-hidden="true">
-            {words(second, first.length).map((w, wi) => (
-              <>{wi > 0 && ' '}<span class="word">{w.letters.map(({ ch, i }) => <span class="letter" style={`--i:${i}`}>{ch}</span>)}</span></>
-            ))}
-          </span>
-        )}
-      </h1>
-
-      <a
-        href={site.listingUrl}
-        target="_blank"
-        rel="noopener"
-        class="rise shimmer relative mt-5 inline-flex min-h-12 flex-wrap items-center gap-x-3 gap-y-1 overflow-hidden rounded-md border border-cream/20 bg-ink-2/80 px-3.5 py-2 text-base font-bold text-cream hover:border-amber"
-        style="animation-delay:60ms"
-        aria-label={`${site.google.rating != null ? `Rated ${site.google.rating.toFixed(1)} from ` : ''}${site.google.reviewsText}. Open the Google listing.`}
-      >
-        {site.google.rating != null && (
-          <span class="inline-flex items-center gap-2.5"><span class="display text-2xl leading-none text-amber">{site.google.rating.toFixed(1)}</span><Stars rating={site.google.rating} class="text-amber" size={15} /></span>
-        )}
-        <span class="inline-flex items-center gap-1.5 whitespace-nowrap">{site.google.reviewsText} <GoogleG size={16} /></span>
-      </a>
-
-      <p class="rise mt-4 max-w-md text-lg leading-snug text-cream/85 md:text-2xl" style="animation-delay:120ms">{site.tagline}</p>
-
-      <div class="mt-6 grid grid-cols-1 gap-3 sm:flex sm:flex-wrap">
-        <a href={site.bookHref} class="btn btn-amber"><Icons name="calendar" size={19} /> Book online</a>
-        <a href={site.telHref} class="btn btn-outline"><Icons name="phone" size={19} /> Call {site.phone.display}</a>
-        <a href={site.directionsUrl} target="_blank" rel="noopener" class="btn btn-outline hidden sm:inline-flex"><Icons name="pin" size={19} /> Directions</a>
+    <div class="relative mx-auto flex w-full max-w-6xl flex-1 flex-col px-5 pb-8 pt-2 sm:px-8 md:pb-16 md:pt-10 lg:px-12">
+      <div class="relative z-10 mt-auto">
+        <p class="eyebrow rise">{eyebrow}</p>
+        <Name site={site} class="mt-3" />
+        <Rating site={site} class="mt-5" />
+        <p class="rise mt-4 max-w-md text-lg leading-snug text-cream/85 md:text-2xl" style="animation-delay:120ms">{site.tagline}</p>
+        <Actions site={site} class="mt-6" />
+        <Meta site={site} class="mt-6" />
       </div>
-
-      <p class="rise mt-6 flex flex-col items-start gap-y-1 text-sm text-cream-2" style="animation-delay:180ms">
-        <span class="inline-flex min-h-6 items-center gap-1.5"><Icons name="pin" size={14} class="text-amber" /> {site.address.street}, {site.address.postcode}</span>
-        {site.week && (
-          <span class="inline-flex min-h-6 items-center gap-1.5"><span class="status-dot" data-status-dot aria-hidden="true"></span> <span data-open-status data-week={JSON.stringify(site.week)}>{site.openDaysLabel}</span></span>
-        )}
-      </p>
     </div>
-  </div>
 
-  <a href="#prices" class="scroll-cue absolute bottom-6 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 text-[0.7rem] font-bold uppercase tracking-[0.2em] text-cream-2 hover:text-amber md:flex" aria-label="Scroll to prices">
-    Scroll <span class="block h-10 w-px overflow-hidden bg-cream/20"><span class="scroll-line block h-full w-full bg-amber"></span></span>
-  </a>
-</header>
+    <a href="#prices" class="absolute bottom-6 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 text-[0.7rem] font-bold uppercase tracking-[0.2em] text-cream-2 hover:text-amber md:flex" aria-label="Scroll to the next section">
+      Scroll <span class="block h-10 w-px overflow-hidden bg-cream/20"><span class="scroll-line block h-full w-full bg-amber"></span></span>
+    </a>
+  </header>
+)}
+
+{variant === 'editorial' && (
+  <header id="top" class="relative bg-ink">
+    <Nav site={site} />
+    <div class={`mx-auto grid w-full max-w-6xl gap-10 px-5 pb-14 pt-10 sm:px-8 md:gap-16 md:pb-28 md:pt-20 lg:px-12 ${hero ? 'md:grid-cols-[minmax(0,1fr)_minmax(0,0.78fr)]' : 'max-w-3xl'}`}>
+      <div class="self-center">
+        <span class="mb-6 block h-px w-full bg-cream/25" aria-hidden="true"></span>
+        <p class="eyebrow rise">{eyebrow}</p>
+        <Name site={site} class="mt-5" />
+        <p class="rise mt-7 max-w-sm text-xl leading-snug text-cream-2" style="animation-delay:120ms">{site.tagline}</p>
+        <Rating site={site} class="mt-8" />
+        <Actions site={site} class="mt-8" />
+        <Meta site={site} class="mt-8" />
+      </div>
+      {hero && (
+        <img
+          src={hero.path}
+          alt={hero.alt}
+          width={hero.width}
+          height={hero.height}
+          loading="eager"
+          fetchpriority="high"
+          decoding="async"
+          class="aspect-[3/4] h-full w-full self-center object-cover"
+        />
+      )}
+    </div>
+  </header>
+)}
+
+{variant === 'type-led' && (
+  <header id="top" class="relative overflow-hidden bg-ink">
+    <Nav site={site} />
+    <div class="mx-auto w-full max-w-6xl px-5 pb-12 pt-12 sm:px-8 md:pb-16 md:pt-24 lg:px-12">
+      <p class="eyebrow rise">{eyebrow}</p>
+      <Name site={site} class="mt-4" />
+      <p class="rise mt-6 max-w-xl text-xl leading-snug text-cream-2 md:text-2xl" style="animation-delay:120ms">{site.tagline}</p>
+      <div class="mt-8 flex flex-wrap items-center gap-x-6 gap-y-4">
+        <Rating site={site} />
+        <Meta site={site} />
+      </div>
+      <Actions site={site} class="mt-8" />
+    </div>
+    {hero && (
+      <img
+        src={hero.path}
+        alt={hero.alt}
+        width={hero.width}
+        height={hero.height}
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+        class="h-[38vh] w-full object-cover object-center md:h-[54vh]"
+      />
+    )}
+  </header>
+)}
+
+{variant === 'plaque' && (
+  <header id="top" class="relative isolate flex min-h-[100svh] flex-col overflow-hidden bg-ink">
+    {hero && (
+      <img
+        src={hero.path}
+        alt={hero.alt}
+        width={hero.width}
+        height={hero.height}
+        loading="eager"
+        fetchpriority="high"
+        decoding="async"
+        class={`hero-photo absolute inset-0 -z-20 h-full w-full object-cover object-center opacity-[var(--hero-photo-opacity)] ${soften}`}
+      />
+    )}
+    <div class={`absolute inset-0 -z-10 ${hero ? 'hero-scrim-plaque' : 'hero-scrim-none'}`} aria-hidden="true"></div>
+
+    <Nav site={site} />
+
+    <div class="relative flex flex-1 items-center justify-center px-4 py-10 sm:px-8">
+      <div class="w-full max-w-3xl border-2 border-cream/55 p-1.5 shadow-[0_24px_60px_color-mix(in_srgb,var(--color-cream)_22%,transparent)]">
+        <div class="border-2 border-cream/55 bg-ink px-5 py-9 text-center sm:px-10 sm:py-12">
+          <p class="eyebrow rise">{eyebrow}</p>
+          <Name site={site} class="mt-4" />
+          <span class="mx-auto mt-6 block h-px w-24 bg-amber" aria-hidden="true"></span>
+          <p class="rise mx-auto mt-6 max-w-md text-lg leading-snug text-cream/90" style="animation-delay:120ms">{site.tagline}</p>
+          <Rating site={site} class="mt-6" />
+          <Actions site={site} center class="mt-7" />
+          <Meta site={site} center class="mt-7" />
+        </div>
+      </div>
+    </div>
+  </header>
+)}
+
+{variant === 'split' && (
+  <header id="top" class="relative bg-ink">
+    <Nav site={site} />
+    <div class={`grid items-stretch ${hero ? 'md:grid-cols-2' : ''}`}>
+      <div class="flex flex-col justify-center px-5 pb-12 pt-10 sm:px-8 md:py-20 lg:pl-12 lg:pr-10">
+        <p class="eyebrow rise">{eyebrow}</p>
+        <Name site={site} class="mt-4" />
+        <p class="rise mt-5 max-w-sm text-lg leading-snug text-cream-2 md:text-xl" style="animation-delay:120ms">{site.tagline}</p>
+        <Rating site={site} class="mt-6 self-start" />
+        <Actions site={site} class="mt-7" />
+        <Meta site={site} class="mt-7" />
+      </div>
+      {hero && (
+      <div class="relative order-first min-h-[42vh] overflow-hidden bg-ink-2 md:order-last md:min-h-[34rem]">
+          <img
+            src={hero.path}
+            alt={hero.alt}
+            width={hero.width}
+            height={hero.height}
+            loading="eager"
+            fetchpriority="high"
+            decoding="async"
+            class="absolute inset-0 h-full w-full object-cover object-center"
+          />
+        <div class="hero-scrim-side absolute inset-0 hidden md:block" aria-hidden="true"></div>
+      </div>
+      )}
+    </div>
+  </header>
+)}
 
 <script>
   import { paintOpenStatus } from '../../lib/open-status.ts';
