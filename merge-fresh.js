@@ -23,7 +23,7 @@ function normalisePhone(raw) {
   if (raw == null) return null;
   let digits = String(raw).replace(/\D/g, '');
   if (digits.startsWith('0044')) digits = `0${digits.slice(4)}`;
-  else if (digits.startsWith('44') && digits.length >= 12) digits = `0${digits.slice(2)}`;
+  else if (digits.startsWith('44') && digits.length >= 11) digits = `0${digits.slice(2)}`;
   return digits.length >= 10 ? digits : null;
 }
 
