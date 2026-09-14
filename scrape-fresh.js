@@ -5,21 +5,21 @@
  *   node scrape-fresh.js                    run: ~70 towns, stop at 500 kept rows
  *   node scrape-fresh.js --limit 200        stop sooner
  *   node scrape-fresh.js --towns Wigan,Bury only these towns
- *   node scrape-fresh.js --max-details 3000 hard cap on Place Details calls (default 6000)
+ *   node scrape-fresh.js --max-searches 300 hard cap on Text Search calls (default 400)
  *   node scrape-fresh.js --dry-run          load the existing lists, print the plan, no API calls
  *   node scrape-fresh.js --fresh            ignore .scrape-fresh-progress.json and start over
  *
  * Pipeline, per town:
- *   1. Places API (New) Text Search "barber shop in {town}", field mask
- *      `places.id,nextPageToken` (the ID-only SKU), every page (max 60 places).
- *   2. Place Details per new place id. Field mask: displayName,
- *      nationalPhoneNumber, websiteUri, rating, userRatingCount,
+ *   1. Places API (New) Text Search "barber shop in {town}", every page (max
+ *      60 places, 20 per call). One call carries every field we need:
+ *      displayName, nationalPhoneNumber, websiteUri, rating, userRatingCount,
  *      shortFormattedAddress, plus formattedAddress (postcode) and location
- *      (lat/lng), which barbers.json and `npm run photos` need. Those two are
- *      Essentials-tier fields, so they do not change the call's SKU: the call
- *      is billed at the Enterprise tier because of rating/userRatingCount
- *      either way. No photos, no reviews, no opening hours.
- *   3. Keep / drop rules below. Dedupe on normalised phone against every
+ *      (lat/lng), which barbers.json and `npm run photos` need. rating and
+ *      userRatingCount put the call in the Text Search Enterprise SKU; the
+ *      address and location fields are Essentials-tier and add nothing. No
+ *      Place Details calls at all, so 20 places cost one call, not twenty.
+ *      No photos, no reviews, no opening hours.
+ *   2. Keep / drop rules below. Dedupe on normalised phone against every
  *      barbers*.json and barbers*.csv in the repo, and within the run.
  *
  * Outputs (repo root), rewritten after every town so a crash loses nothing:
@@ -42,8 +42,8 @@ const PROGRESS = resolve(ROOT, '.scrape-fresh-progress.json');
 const API = 'https://places.googleapis.com/v1';
 const DEMO_HOST = 'mybarbersite.co.uk';
 
-const SEARCH_MASK = 'places.id,nextPageToken';
-const DETAILS_MASK = [
+const PLACE_FIELDS = [
+  'id',
   'displayName',
   'nationalPhoneNumber',
   'websiteUri',
@@ -52,7 +52,8 @@ const DETAILS_MASK = [
   'shortFormattedAddress',
   'formattedAddress',
   'location',
-].join(',');
+];
+const SEARCH_MASK = [...PLACE_FIELDS.map((f) => `places.${f}`), 'nextPageToken'].join(',');
 
 const RATING_MIN = 3.5;
 const RATING_MAX = 4.7;
@@ -91,16 +92,16 @@ const TOWNS = [
 const { values: args } = parseArgs({
   options: {
     limit: { type: 'string', default: '500' },
-    'max-details': { type: 'string', default: '6000' },
+    'max-searches': { type: 'string', default: '400' },
     towns: { type: 'string' },
     'dry-run': { type: 'boolean', default: false },
     fresh: { type: 'boolean', default: false },
   },
 });
 const LIMIT = Number(args.limit);
-const MAX_DETAILS = Number(args['max-details']);
+const MAX_SEARCHES = Number(args['max-searches']);
 if (!Number.isInteger(LIMIT) || LIMIT < 1) throw new Error('--limit must be a positive integer');
-if (!Number.isInteger(MAX_DETAILS) || MAX_DETAILS < 1) throw new Error('--max-details must be a positive integer');
+if (!Number.isInteger(MAX_SEARCHES) || MAX_SEARCHES < 1) throw new Error('--max-searches must be a positive integer');
 const towns = args.towns ? args.towns.split(',').map((t) => t.trim()).filter(Boolean) : TOWNS;
 
 // Tiny .env reader so the root needs no node_modules. Values already in the environment win.
@@ -257,7 +258,7 @@ function loadExisting() {
 
 /* ---------- Places API ---------- */
 
-const counts = { textSearch: 0, details: 0 };
+const counts = { textSearch: 0 };
 
 function errorMessage(text) {
   try {
@@ -293,12 +294,13 @@ async function api(path, { method = 'GET', body, fieldMask }) {
   }
 }
 
-/** Every place id Text Search returns for the town, all pages. */
+/** Every place Text Search returns for the town, all pages, with the fields we need. Stops at the call cap. */
 async function searchTown(town) {
-  const ids = [];
+  const places = [];
   let pageToken;
   let pages = 0;
   do {
+    if (counts.textSearch >= MAX_SEARCHES) break;
     counts.textSearch++;
     const data = await api('places:searchText', {
       method: 'POST',
@@ -312,30 +314,10 @@ async function searchTown(town) {
       },
     });
     pages++;
-    for (const p of data.places ?? []) if (p.id) ids.push(p.id);
+    for (const p of data.places ?? []) if (p.id) places.push(p);
     pageToken = data.nextPageToken;
   } while (pageToken);
-  return { ids, pages };
-}
-
-async function details(id) {
-  counts.details++;
-  return api(`places/${id}`, { fieldMask: DETAILS_MASK });
-}
-
-/** Run `fn` over `items` with at most `n` in flight; results in input order. */
-async function pool(items, n, fn) {
-  const out = new Array(items.length);
-  let next = 0;
-  await Promise.all(
-    Array.from({ length: Math.min(n, items.length) }, async () => {
-      while (next < items.length) {
-        const i = next++;
-        out[i] = await fn(items[i], i);
-      }
-    }),
-  );
-  return out;
+  return { places, pages, complete: !pageToken };
 }
 
 /* ---------- keep / drop ---------- */
@@ -350,11 +332,10 @@ function websiteKind(uri) {
 }
 
 /**
- * A lead, or a drop reason. `id` is the place id (the response has none, it is
- * not in the mask). `state` carries the existing phone set and the
+ * A lead, or a drop reason. `state` carries the existing phone set and the
  * phones and slugs used so far in this run.
  */
-function judge(id, place, town, state) {
+function judge(place, town, state) {
   const name = place.displayName?.text?.trim() ?? '';
   const phone = place.nationalPhoneNumber?.trim();
   const rating = place.rating;
@@ -387,7 +368,7 @@ function judge(id, place, town, state) {
 
   return {
     lead: {
-      placeId: id,
+      placeId: place.id,
       slug,
       name,
       phone,
@@ -461,7 +442,7 @@ function writeOutputs(state) {
 
 function totals(state) {
   const c = state.counts;
-  return `towns ${state.townsDone.length}/${towns.length}, places ${c.places}, text searches ${c.textSearch}, details ${c.details}, kept ${state.leads.length}`;
+  return `towns ${state.townsDone.length}/${towns.length}, places ${c.places}, text searches ${c.textSearch}, kept ${state.leads.length}`;
 }
 
 /* ---------- main ---------- */
@@ -479,7 +460,7 @@ async function main() {
     seenIds: new Set(),
     townsDone: [],
     leads: [],
-    counts: { places: 0, textSearch: 0, details: 0 },
+    counts: { places: 0, textSearch: 0 },
     drops: {},
   };
 
@@ -488,7 +469,7 @@ async function main() {
     state.townsDone = saved.townsDone ?? [];
     state.seenIds = new Set(saved.seenIds ?? []);
     state.leads = saved.leads ?? [];
-    state.counts = { places: 0, textSearch: 0, details: 0, ...saved.counts };
+    state.counts = { places: 0, textSearch: 0, ...saved.counts };
     state.drops = saved.drops ?? {};
     for (const l of state.leads) {
       state.runPhones.add(l.phoneKey);
@@ -497,11 +478,10 @@ async function main() {
     console.log(`Resuming from ${basename(PROGRESS)}: ${totals(state)} (pass --fresh to start over)\n`);
   }
   counts.textSearch = state.counts.textSearch;
-  counts.details = state.counts.details;
 
   const todo = towns.filter((t) => !state.townsDone.includes(t));
-  console.log(`Target ${LIMIT} rows, ${todo.length} towns to search, Details cap ${MAX_DETAILS} calls (--max-details).`);
-  console.log(`Details field mask: ${DETAILS_MASK}\n`);
+  console.log(`Target ${LIMIT} rows, ${todo.length} towns to search, Text Search cap ${MAX_SEARCHES} calls (--max-searches).`);
+  console.log(`Text Search field mask: ${SEARCH_MASK}\n`);
 
   if (args['dry-run']) {
     console.log(`Dry run. Towns: ${todo.join(', ')}`);
@@ -516,29 +496,17 @@ async function main() {
   try {
     for (const town of todo) {
       if (state.leads.length >= LIMIT) break;
-      if (counts.details >= MAX_DETAILS) break;
-      const { ids, pages } = await searchTown(town);
-      state.counts.places += ids.length;
-      const fresh = ids.filter((id) => !state.seenIds.has(id));
-      // Details are the paid step: never fetch more than could still be kept or than the cap allows.
-      const room = Math.min(LIMIT - state.leads.length, MAX_DETAILS - counts.details);
-      const toCheck = fresh.slice(0, Math.max(0, room));
-
-      const results = await pool(toCheck, 4, async (id) => {
-        try {
-          return await details(id);
-        } catch (err) {
-          if (!/HTTP 404/.test(err.message)) throw err;
-          console.warn(`  ${id}: ${err.message}`);
-          return null;
-        }
-      });
+      if (counts.textSearch >= MAX_SEARCHES) break;
+      const { places, pages, complete } = await searchTown(town);
+      state.counts.places += places.length;
+      // The same shop turns up in neighbouring towns' searches; judge it once.
+      const fresh = places.filter((p) => !state.seenIds.has(p.id));
 
       let kept = 0;
-      for (const [i, place] of results.entries()) {
-        state.seenIds.add(toCheck[i]);
-        if (!place) continue;
-        const verdict = judge(toCheck[i], place, town, state);
+      for (const place of fresh) {
+        state.seenIds.add(place.id);
+        if (state.leads.length >= LIMIT) break;
+        const verdict = judge(place, town, state);
         if (verdict.drop) {
           state.drops[verdict.drop] = (state.drops[verdict.drop] ?? 0) + 1;
           continue;
@@ -550,25 +518,23 @@ async function main() {
       }
 
       state.counts.textSearch = counts.textSearch;
-      state.counts.details = counts.details;
-      // A town is done only when every new id in it was checked; the rest stay unseen for a resumed run.
-      if (toCheck.length === fresh.length) state.townsDone.push(town);
+      // A town is done only when every page was fetched; a resumed run searches it again.
+      if (complete) state.townsDone.push(town);
       writeOutputs(state);
       console.log(
-        `${town.padEnd(18)} ${pages} page(s), ${String(ids.length).padStart(2)} places, ${String(fresh.length).padStart(2)} new, ${String(toCheck.length).padStart(2)} details, ${String(kept).padStart(2)} kept  | ${totals(state)}`,
+        `${town.padEnd(18)} ${pages} page(s), ${String(places.length).padStart(2)} places, ${String(fresh.length).padStart(2)} new, ${String(kept).padStart(2)} kept  | ${totals(state)}`,
       );
       if (state.leads.length >= LIMIT) {
         stop = `${LIMIT} rows kept`;
         break;
       }
-      if (counts.details >= MAX_DETAILS) {
-        stop = `Details cap of ${MAX_DETAILS} reached`;
+      if (counts.textSearch >= MAX_SEARCHES) {
+        stop = `Text Search cap of ${MAX_SEARCHES} calls reached`;
         break;
       }
     }
   } catch (err) {
     state.counts.textSearch = counts.textSearch;
-    state.counts.details = counts.details;
     writeOutputs(state);
     console.error(`\nStopped on an API error (progress saved, re-run to resume): ${err.message}`);
     process.exitCode = 1;
@@ -576,7 +542,7 @@ async function main() {
 
   console.log(`\n${stop ?? 'Every town searched'}.`);
   console.log(`Totals: ${totals(state)}`);
-  console.log(`API calls this and any resumed run: Text Search (ID-only SKU) ${state.counts.textSearch}, Place Details (Enterprise SKU) ${state.counts.details}`);
+  console.log(`API calls this and any resumed run: Text Search (Enterprise SKU) ${state.counts.textSearch}, Place Details 0`);
   const drops = Object.entries(state.drops).sort((a, b) => b[1] - a[1]);
   if (drops.length) console.log(`Dropped: ${drops.map(([k, v]) => `${k} ${v}`).join(', ')}`);
   const seg = { A: 0, B: 0, C: 0 };
