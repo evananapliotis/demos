@@ -2,12 +2,13 @@
 /**
  * Find UK barber shops with no real website that are not already in our lists.
  *
- *   node scrape-fresh.js                    run: ~70 towns, stop at 500 kept rows
+ *   node scrape-fresh.js                    run: 74 towns, stop at 1000 kept rows
  *   node scrape-fresh.js --limit 200        stop sooner
  *   node scrape-fresh.js --towns Wigan,Bury only these towns
- *   node scrape-fresh.js --max-searches 300 hard cap on Text Search calls (default 400)
+ *   node scrape-fresh.js --max-searches 300 hard cap on Text Search calls (default 500)
  *   node scrape-fresh.js --dry-run          load the existing lists, print the plan, no API calls
- *   node scrape-fresh.js --fresh            ignore .scrape-fresh-progress.json and start over
+ *   node scrape-fresh.js --fresh            ignore the progress file and the rows already in
+ *                                          barbers-fresh.*, start with an empty list
  *
  * Pipeline, per town:
  *   1. Places API (New) Text Search "barber shop in {town}", every page (max
@@ -22,11 +23,16 @@
  *   2. Keep / drop rules below. Dedupe on normalised phone against every
  *      barbers*.json and barbers*.csv in the repo, and within the run.
  *
- * Outputs (repo root), rewritten after every town so a crash loses nothing:
+ * Outputs (repo root), rewritten after every town so a crash loses nothing.
+ * Rows already in them are kept and only new shops are added, so re-running
+ * grows the list; their numbers count as "already have" like the other lists.
  *   barbers-fresh.csv             Name, Phone, Address, Rating, Reviews, Tier, Lead Source, Website, Demo, Segment
  *   barbers-fresh.json            same shape as barber-template/src/data/barbers.json
- *   .scrape-fresh-progress.json   towns done, place ids already checked, kept rows;
- *                                 a re-run resumes from it and repeats no paid call
+ *   .scrape-fresh-progress.json   towns done and place ids already judged, with the
+ *                                 filter band they were judged on. A re-run with the
+ *                                 same band resumes and repeats no paid call; a run
+ *                                 with a different band searches every town again
+ *                                 (kept rows are never re-judged, only added to).
  *
  * Needs GOOGLE_PLACES_KEY in .env (repo root or barber-template/, see
  * barber-template/.env.example) with "Places API (New)" enabled on the key.
@@ -56,9 +62,11 @@ const PLACE_FIELDS = [
 const SEARCH_MASK = [...PLACE_FIELDS.map((f) => `places.${f}`), 'nextPageToken'].join(',');
 
 const RATING_MIN = 3.5;
-const RATING_MAX = 4.7;
+const RATING_MAX = Infinity;
 const REVIEWS_MIN = 20;
 const REVIEWS_MAX = 150;
+/** Saved in the progress file: progress only carries over between runs that filter the same way. */
+const FILTERS = `rating ${RATING_MIN}-${Number.isFinite(RATING_MAX) ? RATING_MAX : "up"}, reviews ${REVIEWS_MIN}-${REVIEWS_MAX}`;
 const BOOKING_SITES = ['fresha', 'booksy', 'treatwell', 'nearcut', 'setmore', 'vagaro', 'squareup', 'square.site', 'phorest', 'ovatu', 'timely', 'acuity', 'simplybook'];
 /** Substring match, case-insensitive. "pet" is whole-word so Peter's Barbers survives. */
 const BAD_NAME = /nail|beauty|salon|unisex|hairdress|\bpets?\b|stylist/i;
@@ -91,8 +99,8 @@ const TOWNS = [
 
 const { values: args } = parseArgs({
   options: {
-    limit: { type: 'string', default: '500' },
-    'max-searches': { type: 'string', default: '400' },
+    limit: { type: 'string', default: '1000' },
+    'max-searches': { type: 'string', default: '500' },
     towns: { type: 'string' },
     'dry-run': { type: 'boolean', default: false },
     fresh: { type: 'boolean', default: false },
@@ -132,6 +140,11 @@ function internationalPhone(national) {
   const s = national.trim();
   if (s.startsWith('+')) return s;
   return `+44 ${s.replace(/^0/, '')}`;
+}
+
+/** "+44 20 8675 7999" -> "020 8675 7999", the way Google's nationalPhoneNumber writes it. */
+function nationalPhone(phone) {
+  return phone.trim().replace(/^\+44\s*\(?0?\)?\s*/, '0');
 }
 
 function slugify(text) {
@@ -254,6 +267,52 @@ function loadExisting() {
     files.push({ file: relative(ROOT, file), found });
   }
   return { phones, slugs, files };
+}
+
+/**
+ * The rows a previous run wrote, rebuilt from barbers-fresh.json (which has
+ * everything the JSON output needs) and barbers-fresh.csv (address as shown,
+ * town, segment). Missing CSV: those three are derived from the JSON row.
+ */
+function loadPriorLeads() {
+  if (!existsSync(OUT_JSON)) return [];
+  const rows = JSON.parse(readFileSync(OUT_JSON, 'utf8'));
+  const csv = new Map();
+  if (existsSync(OUT_CSV)) {
+    const [header = [], ...lines] = parseCsv(readFileSync(OUT_CSV, 'utf8'));
+    const col = (name) => header.findIndex((h) => h.trim().toLowerCase() === name.toLowerCase());
+    const c = { demo: col('Demo'), address: col('Address'), source: col('Lead Source'), segment: col('Segment'), phone: col('Phone') };
+    if (Object.values(c).every((i) => i >= 0))
+      for (const line of lines) {
+        const slug = (line[c.demo] ?? '').split('/').pop().trim();
+        if (slug) csv.set(slug, { phone: line[c.phone], address: line[c.address], segment: line[c.segment], source: line[c.source] });
+      }
+  }
+  return rows.map((r) => {
+    const line = csv.get(r.slug);
+    const site = websiteKind(r.website);
+    const parts = (line?.source ?? '').split('|').map((p) => p.trim());
+    const phone = line?.phone || nationalPhone(r.phone);
+    return {
+      placeId: r.place_id ?? null,
+      slug: r.slug,
+      name: r.name,
+      phone,
+      phoneKey: normalisePhone(phone),
+      shortAddress: line?.address || `${r.street}, ${r.city}`,
+      street: r.street,
+      city: r.city,
+      postcode: r.postcode,
+      rating: r.rating,
+      reviews: r.reviews,
+      website: r.website ?? '',
+      segment: line?.segment || site.segment || 'A',
+      sourceLabel: parts[2]?.split(',')[0] || site.label || 'no website',
+      town: parts[3] || r.city,
+      lat: r.lat,
+      lng: r.lng,
+    };
+  });
 }
 
 /* ---------- Places API ---------- */
@@ -436,7 +495,7 @@ function writeOutputs(state) {
   writeFileSync(OUT_JSON, `${JSON.stringify(state.leads.map(jsonRow), null, 2)}\n`);
   writeFileSync(
     PROGRESS,
-    `${JSON.stringify({ townsDone: state.townsDone, seenIds: [...state.seenIds], counts: state.counts, drops: state.drops, leads: state.leads }, null, 2)}\n`,
+    `${JSON.stringify({ filters: FILTERS, townsDone: state.townsDone, seenIds: [...state.seenIds], counts: state.counts, drops: state.drops }, null, 2)}\n`,
   );
 }
 
@@ -464,23 +523,33 @@ async function main() {
     drops: {},
   };
 
-  if (!args.fresh && existsSync(PROGRESS)) {
-    const saved = JSON.parse(readFileSync(PROGRESS, 'utf8'));
-    state.townsDone = saved.townsDone ?? [];
-    state.seenIds = new Set(saved.seenIds ?? []);
-    state.leads = saved.leads ?? [];
-    state.counts = { places: 0, textSearch: 0, ...saved.counts };
-    state.drops = saved.drops ?? {};
+  if (!args.fresh) {
+    state.leads = loadPriorLeads();
     for (const l of state.leads) {
-      state.runPhones.add(l.phoneKey);
+      if (l.phoneKey) state.runPhones.add(l.phoneKey);
       state.slugs.add(l.slug);
+      if (l.placeId) state.seenIds.add(l.placeId);
     }
-    console.log(`Resuming from ${basename(PROGRESS)}: ${totals(state)} (pass --fresh to start over)\n`);
+    if (state.leads.length) console.log(`Keeping the ${state.leads.length} rows already in ${basename(OUT_JSON)}; only new shops will be added.`);
+    if (existsSync(PROGRESS)) {
+      const saved = JSON.parse(readFileSync(PROGRESS, 'utf8'));
+      state.counts = { places: 0, textSearch: 0, ...saved.counts };
+      if (saved.filters === FILTERS) {
+        state.townsDone = saved.townsDone ?? [];
+        for (const id of saved.seenIds ?? []) state.seenIds.add(id);
+        state.drops = saved.drops ?? {};
+        console.log(`Resuming from ${basename(PROGRESS)}: ${state.townsDone.length} towns already done (pass --fresh to start over)`);
+      } else {
+        console.log(`${basename(PROGRESS)} was written with a different filter band (${saved.filters ?? 'unknown'}); now ${FILTERS}. Searching every town again, skipping only the shops already kept.`);
+      }
+    }
+    console.log('');
   }
   counts.textSearch = state.counts.textSearch;
+  const priorCount = state.leads.length;
 
   const todo = towns.filter((t) => !state.townsDone.includes(t));
-  console.log(`Target ${LIMIT} rows, ${todo.length} towns to search, Text Search cap ${MAX_SEARCHES} calls (--max-searches).`);
+  console.log(`Target ${LIMIT} rows, ${todo.length} towns to search, Text Search cap ${MAX_SEARCHES} calls (--max-searches). Filters: ${FILTERS}.`);
   console.log(`Text Search field mask: ${SEARCH_MASK}\n`);
 
   if (args['dry-run']) {
@@ -503,9 +572,11 @@ async function main() {
       const fresh = places.filter((p) => !state.seenIds.has(p.id));
 
       let kept = 0;
+      let judged = 0;
       for (const place of fresh) {
-        state.seenIds.add(place.id);
         if (state.leads.length >= LIMIT) break;
+        state.seenIds.add(place.id);
+        judged++;
         const verdict = judge(place, town, state);
         if (verdict.drop) {
           state.drops[verdict.drop] = (state.drops[verdict.drop] ?? 0) + 1;
@@ -518,8 +589,8 @@ async function main() {
       }
 
       state.counts.textSearch = counts.textSearch;
-      // A town is done only when every page was fetched; a resumed run searches it again.
-      if (complete) state.townsDone.push(town);
+      // A town is done only when every page was fetched and every place judged; a resumed run searches it again otherwise.
+      if (complete && judged === fresh.length) state.townsDone.push(town);
       writeOutputs(state);
       console.log(
         `${town.padEnd(18)} ${pages} page(s), ${String(places.length).padStart(2)} places, ${String(fresh.length).padStart(2)} new, ${String(kept).padStart(2)} kept  | ${totals(state)}`,
@@ -548,7 +619,7 @@ async function main() {
   const seg = { A: 0, B: 0, C: 0 };
   for (const l of state.leads) seg[l.segment]++;
   console.log(`Segments: A ${seg.A}, B ${seg.B}, C ${seg.C}`);
-  console.log(`Wrote ${relative(ROOT, OUT_CSV)} and ${relative(ROOT, OUT_JSON)} (${state.leads.length} rows). Photos not fetched.`);
+  console.log(`Wrote ${relative(ROOT, OUT_CSV)} and ${relative(ROOT, OUT_JSON)} (${state.leads.length} rows, ${state.leads.length - priorCount} added this run). Photos not fetched.`);
 }
 
 main().catch((err) => {
