@@ -5,7 +5,8 @@
 import { DAYS, type Day } from '../config/site.schema.ts';
 import { copyFor } from './copy.ts';
 import { creditFor, photoFor, type PhotoAuthor } from './photos.ts';
-import { themeFor } from './theme.ts';
+import { paletteFor } from './shop-palette.ts';
+import { layoutFor } from './theme.ts';
 import { hoursList, kindOf, phoneDisplay, reviewsPerScore, telHref, toSchedule, trueAttributes, type Shop } from './shops.ts';
 
 export const dayLabel = (d: Day) => d.charAt(0).toUpperCase() + d.slice(1);
@@ -184,7 +185,8 @@ export function derive(shop: Shop) {
   for (const p of photos) for (const a of p.authors) if (a.name && !authors.some((x) => x.name === a.name && x.uri === a.uri)) authors.push(a);
   const hero = photos[0] ?? null;
 
-  const theme = themeFor(shop.slug);
+  const layout = layoutFor(shop.slug);
+  const palette = paletteFor(shop.slug);
   const lines = nameLines(name);
   const longest = Math.max(lines[0].length, lines[1].length, 1);
   /**
@@ -192,9 +194,9 @@ export function derive(shop: Shop) {
    * width. The vw term is sized for a phone, where every hero is one column;
    * the rem cap is sized for the column the theme's hero actually gives it.
    */
-  const em = theme.display.width * longest;
-  const h1Rem = Math.min(theme.display.maxRem, theme.display.budgetPx / em / 16);
-  const h1Size = `clamp(2rem, ${Math.min(theme.display.maxVw, 88 / em).toFixed(1)}vw, ${h1Rem.toFixed(2)}rem)`;
+  const em = layout.display.width * longest;
+  const h1Rem = Math.min(layout.display.maxRem, layout.display.budgetPx / em / 16);
+  const h1Size = `clamp(2rem, ${Math.min(layout.display.maxVw, 88 / em).toFixed(1)}vw, ${h1Rem.toFixed(2)}rem)`;
   /**
    * Every section heading is sized off the shop's name, so the name is the
    * first and largest thing on the page whatever the theme, and whatever the
@@ -205,8 +207,13 @@ export function derive(shop: Shop) {
 
   return {
     slug: shop.slug,
-    /** The look this shop keeps, and its wording. Both fixed by the slug: a live link never changes appearance. */
-    theme,
+    /**
+     * The two halves of the page's identity: the layout is fixed by the slug,
+     * the palette is derived from this shop's own photo. Both come from
+     * committed data, so a live link never changes appearance.
+     */
+    layout,
+    palette,
     copy: copyFor(shop.slug),
     /** This shop's page and its booking page. */
     home: `/${shop.slug}`,

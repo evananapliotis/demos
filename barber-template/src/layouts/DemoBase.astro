@@ -2,6 +2,11 @@
 /**
  * Document shell for a /[slug] page. Every page is a demo built from a
  * public listing, so it is noindex and says so in the footer.
+ *
+ * The page's colours are written here, inline on <html>: they are this shop's
+ * own, derived from its primary photo, so they cannot live in the shared
+ * stylesheet. `data-layout` picks the faces and metrics; `data-ground` is
+ * carried only so a page can be identified at a glance when auditing.
  */
 import '../styles/demo.css';
 import bigShoulders from '@fontsource-variable/big-shoulders-display/files/big-shoulders-display-latin-wght-normal.woff2?url';
@@ -10,15 +15,15 @@ import plusJakarta from '@fontsource-variable/plus-jakarta-sans/files/plus-jakar
 import fraunces from '@fontsource-variable/fraunces/files/fraunces-latin-opsz-normal.woff2?url';
 import instrumentSans from '@fontsource-variable/instrument-sans/files/instrument-sans-latin-wght-normal.woff2?url';
 import { jsonLd, type DemoSite } from '../lib/demo.ts';
-import type { ThemeId } from '../lib/theme.ts';
+import type { LayoutId } from '../lib/theme.ts';
 
-/** The display face each theme sets, preloaded so the biggest type on the page does not swap. */
-const DISPLAY_WOFF2: Record<ThemeId, string> = {
-  midnight: bigShoulders,
-  ivory: instrumentSerif,
-  forest: plusJakarta,
-  tan: fraunces,
-  steel: instrumentSans,
+/** The display face each layout sets, preloaded so the biggest type on the page does not swap. */
+const DISPLAY_WOFF2: Record<LayoutId, string> = {
+  condensed: bigShoulders,
+  editorial: instrumentSerif,
+  grotesk: plusJakarta,
+  slab: fraunces,
+  technical: instrumentSans,
 };
 
 interface Props {
@@ -29,8 +34,8 @@ interface Props {
   preloadHero?: boolean;
 }
 const { site, title, description, preloadHero = false } = Astro.props;
-const theme = site.theme;
-const displayWoff2 = DISPLAY_WOFF2[theme.id];
+const { layout, palette } = site;
+const displayWoff2 = DISPLAY_WOFF2[layout.id];
 const pageUrl = new URL(Astro.url.pathname, Astro.site).href.replace(/\/$/, '');
 /** Rendered by src/pages/[slug]/og.jpg.ts; the booking page shares the shop page's. */
 const ogImage = new URL(`/${site.slug}/og.jpg`, Astro.site).href;
@@ -39,15 +44,22 @@ const ratingAlt = site.google.rating != null ? `Rated ${site.google.rating.toFix
 ---
 
 <!doctype html>
-<html lang="en-GB" class="bg-ink" data-theme={theme.id} style={`--section-title:${site.sectionTitleSize}`}>
+<html
+  lang="en-GB"
+  class="bg-ink"
+  data-layout={layout.id}
+  data-ground={palette.ground}
+  data-scheme={palette.scheme}
+  style={`${palette.cssVars};--section-title:${site.sectionTitleSize}`}
+>
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <title>{title}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={pageUrl} />
-    <meta name="theme-color" content={theme.themeColor} />
-    <meta name="color-scheme" content={theme.scheme} />
+    <meta name="theme-color" content={palette.ink} />
+    <meta name="color-scheme" content={palette.scheme} />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <meta name="robots" content="noindex,nofollow" />
     <link rel="preload" as="font" type="font/woff2" href={displayWoff2} crossorigin />

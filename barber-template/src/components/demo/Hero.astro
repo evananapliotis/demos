@@ -15,7 +15,7 @@ import Rating from './hero/Rating.astro';
 interface Props { site: DemoSite }
 const { site } = Astro.props;
 const hero = site.hero;
-const variant = site.theme.hero;
+const variant = site.layout.hero;
 const eyebrow = `${site.kind} · ${site.address.locality}`;
 /** Small photos are upscaled behind the type, so they are softened rather than shown sharp. */
 const soften = hero && hero.width < 1000 ? 'blur-[2px]' : '';
@@ -135,8 +135,8 @@ const soften = hero && hero.width < 1000 ? 'blur-[2px]' : '';
     <Nav site={site} />
 
     <div class="relative flex flex-1 items-center justify-center px-4 py-10 sm:px-8">
-      <div class="w-full max-w-5xl border-[3px] border-amber/70 p-2 shadow-[0_28px_70px_rgb(0_0_0/0.45)]">
-        <div class="border border-amber/45 bg-ink/94 px-5 py-10 text-center sm:px-12 sm:py-14">
+      <div class="w-full max-w-5xl border-[3px] border-amber/70 p-2 shadow-[0_28px_70px_color-mix(in_srgb,var(--color-cream)_38%,transparent)]">
+        <div class="border border-amber/45 bg-ink px-5 py-10 text-center sm:px-12 sm:py-14">
           <p class="eyebrow rise">{eyebrow}</p>
           <Name site={site} class="mt-4" />
           <span class="mx-auto mt-7 block h-0.5 w-28 bg-amber" aria-hidden="true"></span>

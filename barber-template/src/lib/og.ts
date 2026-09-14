@@ -29,48 +29,83 @@ const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replac
 const STAR = 'M12 2.8l2.9 6.1 6.7.8-4.9 4.6 1.3 6.6L12 17.6 6 20.9l1.3-6.6L2.4 9.7l6.7-.8z';
 
 export async function renderOg(site: DemoSite): Promise<Buffer> {
-  const og = site.theme.og;
-  const [line1, line2] = site.nameLines;
-  const longest = Math.max(line1.length, line2.length, 1);
-  // Each theme's face sets at its own width (Big Shoulders is condensed at 0.46em
-  // a character; a grotesk in caps is half again as wide), so the name is sized
-  // against the face it is actually drawn in.
-  const size = Math.min(210, Math.floor(1040 / (og.width * longest)));
-  const caps = (line: string) => (og.upper ? line.toUpperCase() : line);
-  const baseline2 = 500;
-  const baseline1 = line2 ? baseline2 - Math.round(size * 0.84) : baseline2;
-  const eyebrow = `${site.kind} · ${site.roadName}, ${site.address.locality}`.toUpperCase();
-  const full = site.google.rating != null ? Math.round(site.google.rating) : 0;
-  const stars = (x: number, y: number) =>
-    Array.from({ length: 5 }, (_, i) => `<path d="${STAR}" fill="${i < full ? og.accent : 'none'}" stroke="${og.accent}" stroke-width="1.6" transform="translate(${x + i * 28} ${y}) scale(1.15)"/>`).join('');
-  const ratingRow =
-    site.google.rating != null
-      ? `<text x="80" y="566" font-family="DM Sans" font-weight="700" font-size="30" fill="${og.accent}">${site.google.rating.toFixed(1)}</text>
-  ${stars(138, 540)}
-  <text x="290" y="566" font-family="DM Sans" font-weight="700" font-size="30" fill="${og.text}">from ${esc(site.google.reviewsText)}</text>`
-      : `<text x="80" y="566" font-family="DM Sans" font-weight="700" font-size="30" fill="${og.text}">${esc(site.google.reviewsText)}</text>`;
+  const type = site.layout.og;
+  const p = site.palette;
+  // The share image is the page's own palette: the ground this shop's photo
+  // chose and the accent taken from the photo itself.
+  const ground = p.ink;
+  const text = p.cream;
+  const muted = p.cream2;
+  const accent = p.accent;
 
   const heroFile = site.hero ? fileURLToPath(new URL(`public${site.hero.path}`, root)) : null;
   const hasHero = !!heroFile && existsSync(heroFile);
 
+  // A split card: the type sits on a solid panel and the photo keeps its own
+  // half. Nothing is set over the photograph, so a blown-out shopfront or a
+  // dark interior cannot make the name unreadable — the one failure mode that
+  // matters when this is the only thing a prospect ever sees.
+  const PANEL = hasHero ? 700 : 1200;
+  const PAD = 64;
+  const column = PANEL - PAD - (hasHero ? 44 : PAD);
+
+  const [rawLine1, rawLine2] = site.nameLines;
+  const caps = (line: string) => (type.upper ? line.toUpperCase() : line);
+  const line1 = caps(rawLine1);
+  const line2 = caps(rawLine2);
+  const longest = Math.max(line1.length, line2.length, 1);
+  // Each face sets at its own width, so the name is measured against the face
+  // it is actually drawn in and then held inside the column.
+  const cap = hasHero ? (line2 ? 108 : 132) : line2 ? 150 : 180;
+  const size = Math.max(40, Math.min(cap, Math.floor(column / (type.width * longest))));
+  const leading = Math.round(size * 0.9);
+
+  // The type block is centred in the space between the eyebrow and the rating.
+  const blockTop = 168;
+  const blockBottom = 452;
+  const blockHeight = line2 ? leading + size * 0.74 : size * 0.74;
+  const firstBaseline = Math.round(blockTop + (blockBottom - blockTop - blockHeight) / 2 + size * 0.74);
+  const secondBaseline = firstBaseline + leading;
+
+  const eyebrow = `${site.kind} · ${site.address.locality}`.toUpperCase();
+  const full = site.google.rating != null ? Math.round(site.google.rating) : 0;
+  const stars = (x: number, y: number, scale: number) =>
+    Array.from({ length: 5 }, (_, i) => `<path d="${STAR}" fill="${i < full ? accent : 'none'}" stroke="${accent}" stroke-width="1.6" transform="translate(${x + i * 26 * scale} ${y}) scale(${scale})"/>`).join('');
+
+  // Rating, then the address and number, anchored to the bottom of the panel.
+  const ratingY = 520;
+  const hasRating = site.google.rating != null;
+  const ratingBlock = hasRating
+    ? `<text x="${PAD}" y="${ratingY}" font-family="DM Sans" font-weight="700" font-size="52" fill="${accent}">${site.google.rating!.toFixed(1)}</text>
+  ${stars(PAD + 78, ratingY - 26, 1.25)}
+  <text x="${PAD + 78 + 5 * 26 * 1.25 + 14}" y="${ratingY - 4}" font-family="DM Sans" font-weight="500" font-size="27" fill="${text}">${esc(site.google.reviewsText)}</text>`
+    : `<text x="${PAD}" y="${ratingY}" font-family="DM Sans" font-weight="700" font-size="34" fill="${text}">${esc(site.google.reviewsText)}</text>`;
+
+  // The eyebrow already carries the town, so the last line is the street and the
+  // number. It is trimmed rather than allowed to run past the panel.
+  const room = Math.floor(column / (0.5 * 24)) - site.phone.display.length - 5;
+  const street = site.address.street.length > room ? `${site.address.street.slice(0, Math.max(10, room - 1))}…` : site.address.street;
+  const address = `${street}  ·  ${site.phone.display}`;
+
   const svg = `<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
   <defs>
-    <radialGradient id="glow" cx="0.95" cy="0.05" r="0.7"><stop offset="0" stop-color="${og.accent}" stop-opacity="0.22"/><stop offset="1" stop-color="${og.accent}" stop-opacity="0"/></radialGradient>
-    <linearGradient id="photo-x" x1="0" x2="1"><stop offset="0" stop-color="${og.ground}" stop-opacity="0.94"/><stop offset="0.55" stop-color="${og.ground}" stop-opacity="0.72"/><stop offset="1" stop-color="${og.ground}" stop-opacity="0.25"/></linearGradient>
-    <linearGradient id="photo-y" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${og.ground}" stop-opacity="0.15"/><stop offset="0.7" stop-color="${og.ground}" stop-opacity="0.35"/><stop offset="1" stop-color="${og.ground}" stop-opacity="0.85"/></linearGradient>
+    <linearGradient id="seam" x1="0" x2="1"><stop offset="0" stop-color="${ground}" stop-opacity="1"/><stop offset="1" stop-color="${ground}" stop-opacity="0"/></linearGradient>
+    <linearGradient id="glow" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="${accent}" stop-opacity="0.16"/><stop offset="1" stop-color="${accent}" stop-opacity="0"/></linearGradient>
   </defs>
-  ${hasHero ? '<rect width="1200" height="630" fill="url(#photo-x)"/><rect width="1200" height="630" fill="url(#photo-y)"/>' : `<rect width="1200" height="630" fill="${og.ground}"/><rect width="1200" height="630" fill="url(#glow)"/>`}
-  <rect x="0" y="0" width="14" height="630" fill="${og.accent}"/>
-  <text x="80" y="128" font-family="DM Sans" font-weight="700" font-size="24" letter-spacing="5" fill="${og.accent}">${esc(eyebrow)}</text>
-  <text x="76" y="${baseline1}" font-family="${og.display}" font-weight="800" font-size="${size}" fill="${og.text}">${esc(caps(line1))}</text>
-  ${line2 ? `<text x="76" y="${baseline2}" font-family="${og.display}" font-weight="800" font-size="${size}"${og.italicAccent ? ' font-style="italic"' : ''} fill="${og.accent}">${esc(caps(line2))}</text>` : ''}
-  ${ratingRow}
-  <text x="80" y="604" font-family="DM Sans" font-weight="500" font-size="24" fill="${og.muted}">${esc(site.fullAddress)}  ·  ${esc(site.phone.display)}</text>
+  <rect x="0" y="0" width="${PANEL}" height="630" fill="${ground}"/>
+  ${hasHero ? `<rect x="${PANEL}" y="0" width="72" height="630" fill="url(#seam)"/>` : `<rect x="0" y="0" width="1200" height="630" fill="url(#glow)"/>`}
+  <rect x="0" y="0" width="14" height="630" fill="${accent}"/>
+  <text x="${PAD}" y="104" font-family="Geist Mono" font-weight="500" font-size="23" letter-spacing="4" fill="${accent}">${esc(eyebrow)}</text>
+  <text x="${PAD - Math.round(size * 0.04)}" y="${firstBaseline}" font-family="${type.display}" font-weight="800" font-size="${size}" fill="${text}">${esc(line1)}</text>
+  ${line2 ? `<text x="${PAD - Math.round(size * 0.04)}" y="${secondBaseline}" font-family="${type.display}" font-weight="800" font-size="${size}"${type.italicAccent ? ' font-style="italic"' : ''} fill="${accent}">${esc(line2)}</text>` : ''}
+  <rect x="${PAD}" y="${blockBottom + 18}" width="64" height="4" fill="${accent}"/>
+  ${ratingBlock}
+  <text x="${PAD}" y="574" font-family="DM Sans" font-weight="500" font-size="24" fill="${muted}">${esc(address)}</text>
 </svg>`;
 
   const base = hasHero
-    ? sharp(heroFile!).rotate().resize(1200, 630, { fit: 'cover', position: 'centre' }).modulate({ brightness: 0.9, saturation: 0.95 })
-    : sharp({ create: { width: 1200, height: 630, channels: 3, background: og.ground } });
+    ? sharp(heroFile!).rotate().resize(500, 630, { fit: 'cover', position: 'centre' }).modulate({ brightness: 0.96, saturation: 1.02 }).extend({ left: 700, background: ground })
+    : sharp({ create: { width: 1200, height: 630, channels: 3, background: ground } });
   // PNG in between: a created (photo-less) base has no input format for toBuffer() to fall back on.
   const composed = await base.composite([{ input: Buffer.from(svg) }]).png().toBuffer();
   // WhatsApp only shows preview images under ~300 KB.

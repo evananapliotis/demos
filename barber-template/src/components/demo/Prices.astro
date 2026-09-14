@@ -17,7 +17,7 @@ interface Props {
 }
 const { site, index, alt = false } = Astro.props;
 const prices = site.prices ?? [];
-const { copy, theme } = site;
+const { copy, layout } = site;
 const [lead, accent] = prices.length ? copy.pricesListTitle : copy.pricesAskTitle;
 ---
 
@@ -47,7 +47,7 @@ const [lead, accent] = prices.length ? copy.pricesListTitle : copy.pricesAskTitl
 
   <div class="mt-10" data-reveal>
     <h3 class="eyebrow mb-4">{copy.servicesHeading}</h3>
-    {theme.services === 'cards' ? (
+    {layout.services === 'cards' ? (
       <ul class="grid grid-cols-1 gap-3 sm:grid-cols-2" role="list">
         {SERVICES.map((s) => (
           <li>

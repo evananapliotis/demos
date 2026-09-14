@@ -1,9 +1,9 @@
 ---
 /**
  * A whole shop page from a DemoSite. The sections are the same components for
- * every shop; the theme (src/lib/theme.ts) decides their order, whether the
- * ticker and the section numerals render, and — through demo.css — everything
- * the page looks like.
+ * every shop; the layout (src/lib/theme.ts) decides their order and whether the
+ * ticker and the section numerals render, and the palette derived from the
+ * shop's own photo (src/lib/palette.ts) decides every colour.
  */
 import DemoBase from '../../layouts/DemoBase.astro';
 import type { DemoSite } from '../../lib/demo.ts';
@@ -28,17 +28,17 @@ const { site, footer = true } = Astro.props;
 const title = `${site.name} | ${site.kind}, ${site.roadName}, ${site.address.locality}`;
 
 // A shop with no photos has no gallery, so it never takes a numeral.
-const sections = site.theme.order.filter((id) => id !== 'gallery' || site.photos.length > 0);
+const sections = site.layout.order.filter((id) => id !== 'gallery' || site.photos.length > 0);
 // Numerals count the numbered sections in render order, so 01 is always first on the page.
 const numbered = sections.filter((id) => id !== 'reviews');
 const index = (id: string) =>
-  site.theme.numerals ? String(numbered.indexOf(id as (typeof numbered)[number]) + 1).padStart(2, '0') : undefined;
+  site.layout.numerals ? String(numbered.indexOf(id as (typeof numbered)[number]) + 1).padStart(2, '0') : undefined;
 ---
 
 <DemoBase site={site} title={title} description={site.description} preloadHero>
   <Hero site={site} />
   <TrustStrip site={site} />
-  {site.theme.ticker && <Ticker site={site} />}
+  {site.layout.ticker && <Ticker site={site} />}
   <main id="main">
     {sections.map((id, i) => (
       <>

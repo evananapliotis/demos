@@ -2,13 +2,16 @@
  * Styles for the /[slug] pages only: Tailwind 4 plus the self-hosted faces.
  * The main site keeps global.css.
  *
- * Five themes (src/lib/theme.ts) share this one stylesheet. Every colour, face
- * and corner is a custom property; a theme is one block of overrides on
- * `html[data-theme="…"]`, so component markup never names a colour and never
- * knows which theme it is in. The tokens below are the Midnight palette, which
- * is also what `data-theme="midnight"` inherits.
+ * Every page shares this one stylesheet. Five layouts (src/lib/theme.ts) set
+ * the faces and metrics through `html[data-layout="…"]`; the colours arrive
+ * per shop, derived from that shop's own photo (src/lib/palette.ts) and written
+ * onto <html> as custom properties. Component markup never names a colour and
+ * never knows which layout or palette it is in.
  *
- * Token meanings, so a light theme reads sensibly under dark-sounding names:
+ * The token values in @theme below are only a fallback for a page that somehow
+ * arrives without a palette; every real page overrides all of them inline.
+ *
+ * Token meanings, so a light palette reads sensibly under dark-sounding names:
  *   ink / ink-2 / ink-3   the page ground, a raised ground, a deeper one
  *   cream / cream-2       body type, quiet type
  *   amber / amber-2       the accent and its hover
@@ -46,7 +49,13 @@
   --breakpoint-xs: 24rem;
 }
 
-/* Shape, not colour: how the display face is set, and how sharp the corners are. */
+/*
+ * Layout blocks: faces, how the display type is set, and how sharp the corners
+ * are. Chosen from the slug. COLOUR IS NOT HERE — every ground, type colour and
+ * accent is derived from the shop's own photo and written onto <html> as custom
+ * properties by src/layouts/DemoBase.astro, so each of the 1107 pages carries
+ * its own palette while sharing this one stylesheet.
+ */
 :root {
   --display-transform: uppercase;
   --display-weight: 800;
@@ -55,27 +64,25 @@
   --display-variation: normal;
   /* Instrument Sans carries a width axis; the faces that do not ignore this. */
   --display-stretch: normal;
-  /* The accented tail of a heading. Ivory leans on an italic serif instead of a second colour. */
+  /* The accented tail of a heading. Colour on four layouts, an italic serif on the editorial one. */
   --accent-style: normal;
   --radius: 0.5rem;
   --radius-btn: 0.5rem;
-  /* The barber-pole motif: diagonal bars on the traditional themes, a plain accent bar on the rest. */
+  /* The barber-pole motif: diagonal bars on the traditional layouts, a plain accent bar on the rest. */
   --stripe: repeating-linear-gradient(-45deg, var(--color-amber) 0 14px, var(--color-ink) 14px 28px);
-  /* Weight of the scrim over a hero photo, and how much of the photo shows through. */
+  /* How much of a hero photo shows through the scrim. */
   --hero-photo-opacity: 0.45;
 }
 
-/* ---------- Ivory: off-white and warm grey, black type, editorial serif, wide margins ---------- */
-html[data-theme='ivory'] {
-  --color-ink: #f7f4ee;
-  --color-ink-2: #efeae0;
-  --color-ink-3: #e4ded1;
-  --color-cream: #14110c;
-  --color-cream-2: #6b6355;
-  --color-amber: #14110c;
-  --color-amber-2: #443d31;
-  --color-onaccent: #f7f4ee;
+/* ---------- Condensed: the original look, a narrow grotesk in caps ---------- */
+html[data-layout='condensed'] {
+  --font-display: 'Big Shoulders Display Variable', 'BSD Fallback', 'Arial Narrow', 'Impact', sans-serif;
+  --font-sans: 'DM Sans Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --font-label: 'DM Sans Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
+}
 
+/* ---------- Editorial: a display serif, wide margins, an italic accent ---------- */
+html[data-layout='editorial'] {
   --font-display: 'Instrument Serif', 'Times New Roman', Times, serif;
   --font-sans: 'Instrument Sans Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-label: 'Instrument Sans Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -91,17 +98,8 @@ html[data-theme='ivory'] {
   --hero-photo-opacity: 1;
 }
 
-/* ---------- Forest: deep green and bone, grotesk, terracotta accent ---------- */
-html[data-theme='forest'] {
-  --color-ink: #0d2a1f;
-  --color-ink-2: #123528;
-  --color-ink-3: #1a4433;
-  --color-cream: #f2f0e6;
-  --color-cream-2: #a7bcaf;
-  --color-amber: #e07a5f;
-  --color-amber-2: #ef8f74;
-  --color-onaccent: #0d2a1f;
-
+/* ---------- Grotesk: a heavy geometric sans, soft corners, pill buttons ---------- */
+html[data-layout='grotesk'] {
   --font-display: 'Plus Jakarta Sans Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-sans: 'DM Sans Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-label: 'DM Sans Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -116,17 +114,8 @@ html[data-theme='forest'] {
   --hero-photo-opacity: 1;
 }
 
-/* ---------- Tan: warm parchment and oxblood, the traditional shopfront ---------- */
-html[data-theme='tan'] {
-  --color-ink: #481c15;
-  --color-ink-2: #56231a;
-  --color-ink-3: #672c21;
-  --color-cream: #f8ead9;
-  --color-cream-2: #ccab92;
-  --color-amber: #d6884d;
-  --color-amber-2: #e8a066;
-  --color-onaccent: #2e1210;
-
+/* ---------- Slab: a heavy display serif in caps, the traditional shopfront ---------- */
+html[data-layout='slab'] {
   --font-display: 'Fraunces Variable', Georgia, 'Times New Roman', serif;
   --font-sans: 'Instrument Sans Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-label: 'Instrument Sans Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -141,17 +130,8 @@ html[data-theme='tan'] {
   --hero-photo-opacity: 1;
 }
 
-/* ---------- Steel: cool grey and white, one high-contrast blue ---------- */
-html[data-theme='steel'] {
-  --color-ink: #f4f6f8;
-  --color-ink-2: #e9edf2;
-  --color-ink-3: #dce3ea;
-  --color-cream: #10161d;
-  --color-cream-2: #5b6775;
-  --color-amber: #0a53e0;
-  --color-amber-2: #2e6ff0;
-  --color-onaccent: #ffffff;
-
+/* ---------- Technical: condensed caps with a mono label face ---------- */
+html[data-layout='technical'] {
   --font-display: 'Instrument Sans Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-sans: 'Plus Jakarta Sans Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-label: 'Geist Mono Variable', ui-monospace, 'SF Mono', Menlo, monospace;
@@ -539,6 +519,19 @@ html.js [data-reveal].is-in {
     color-mix(in srgb, var(--color-ink) 88%, transparent) 0%,
     color-mix(in srgb, var(--color-ink) 40%, transparent) 24%,
     color-mix(in srgb, var(--color-ink) 40%, transparent) 72%,
+    var(--color-ink) 100%
+  );
+}
+
+/* On a light ground the same scrim lightens the photo towards the plaque instead
+   of away from it, so the sign loses its edge. Hold the photo back harder and let
+   the plaque sit on top of it. */
+html[data-scheme='light'] .hero-scrim-plaque {
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--color-ink) 92%, transparent) 0%,
+    color-mix(in srgb, var(--color-ink) 58%, transparent) 24%,
+    color-mix(in srgb, var(--color-ink) 58%, transparent) 72%,
     var(--color-ink) 100%
   );
 }
