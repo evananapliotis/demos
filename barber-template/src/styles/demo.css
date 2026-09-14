@@ -118,14 +118,14 @@ html[data-theme='forest'] {
 
 /* ---------- Tan: warm parchment and oxblood, the traditional shopfront ---------- */
 html[data-theme='tan'] {
-  --color-ink: #42251a;
-  --color-ink-2: #4e2d20;
-  --color-ink-3: #5d3728;
-  --color-cream: #f7ead7;
-  --color-cream-2: #c9ab8c;
-  --color-amber: #d39b3e;
-  --color-amber-2: #e6ad4c;
-  --color-onaccent: #2c1710;
+  --color-ink: #481c15;
+  --color-ink-2: #56231a;
+  --color-ink-3: #672c21;
+  --color-cream: #f8ead9;
+  --color-cream-2: #ccab92;
+  --color-amber: #d6884d;
+  --color-amber-2: #e8a066;
+  --color-onaccent: #2e1210;
 
   --font-display: 'Fraunces Variable', Georgia, 'Times New Roman', serif;
   --font-sans: 'Instrument Sans Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;

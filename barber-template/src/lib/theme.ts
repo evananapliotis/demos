@@ -112,8 +112,8 @@ export const THEMES: readonly Theme[] = [
     numerals: true,
     display: { width: 0.7, maxVw: 16, maxRem: 8.5, budgetPx: 900 },
     scheme: 'dark',
-    themeColor: '#42251a',
-    og: { ground: '#42251a', text: '#f7ead7', muted: '#c9ab8c', accent: '#d39b3e', display: 'Big Shoulders Display', upper: true, width: 0.46 },
+    themeColor: '#481c15',
+    og: { ground: '#481c15', text: '#f8ead9', muted: '#ccab92', accent: '#d6884d', display: 'Big Shoulders Display', upper: true, width: 0.46 },
   },
   {
     id: 'steel',

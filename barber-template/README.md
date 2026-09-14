@@ -115,7 +115,7 @@ Those components are shared, but no two neighbouring shops should be handed the 
 | Midnight | near-black, gold | Big Shoulders Display / DM Sans | photo full-bleed behind the type | list |
 | Ivory | off-white and warm grey, black type, editorial | Instrument Serif / Instrument Sans | rule across the top, type left, a tall photo right | list |
 | Forest | deep green and bone, terracotta accent | Plus Jakarta Sans / DM Sans | type alone, a wide photo band under it | cards |
-| Tan | tobacco and brass, the traditional shopfront | Fraunces / Instrument Sans | a ruled sign over the photo | cards |
+| Tan | oxblood and copper, the traditional shopfront | Fraunces / Instrument Sans | a ruled sign over the photo | cards |
 | Steel | cool grey and white, one high-contrast blue | Instrument Sans (condensed) / Plus Jakarta Sans, Geist Mono labels | photo one half, type the other | cards |
 
 A theme also sets the section order, whether the ticker and the outsized section numerals render, the corner radius, and the palette of the share image. Midnight is the look the pages have always had, unchanged.
