@@ -257,12 +257,27 @@ html[data-layout='technical'] {
   background-image: var(--stripe);
 }
 
+/*
+ * The figures strip. It used to be a solid full-width field of the accent,
+ * which was fine for the gold-on-black it was designed for but cheap once the
+ * accent came from a photograph: measured across the 1107 listings, 89% of
+ * pages had a band leaping 55 deltaE or more off their own ground. It is now a
+ * wash of the accent over the page's ground, with the figures carrying the
+ * accent at full strength and a hairline above and below. The same treatment
+ * works at any chroma, so there are no per-shop conditionals.
+ */
+.trust-strip {
+  background: color-mix(in srgb, var(--color-amber) 10%, var(--color-ink));
+  border-top: 1px solid color-mix(in srgb, var(--color-amber) 45%, transparent);
+  border-bottom: 1px solid color-mix(in srgb, var(--color-amber) 45%, transparent);
+}
+
 /* One corner radius per theme, for photos, cards and panels. */
 @utility r-theme {
   border-radius: var(--radius);
 }
 
-/* Outlined display text (footer wordmark, ticker). */
+/* Outlined display text (the footer wordmark). */
 @utility text-outline {
   color: transparent;
   -webkit-text-stroke: 1.5px var(--color-cream);
@@ -316,18 +331,6 @@ html[data-layout='technical'] {
   pointer-events: none;
 }
 
-/* Ticker */
-@keyframes ticker {
-  from { transform: translate3d(0, 0, 0); }
-  to { transform: translate3d(-50%, 0, 0); }
-}
-.ticker { overflow: hidden; }
-.ticker-track {
-  display: flex;
-  width: max-content;
-  animation: ticker 46s linear infinite;
-}
-.ticker:hover .ticker-track { animation-play-state: paused; }
 
 /* Moving barber stripes (final CTA edge). Seamless 40px tile. */
 /* Painted once on a pseudo-element one tile wider than its box and moved with a transform, so the loop never repaints. */

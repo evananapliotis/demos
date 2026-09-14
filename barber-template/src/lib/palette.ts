@@ -170,17 +170,26 @@ export const GROUNDS: Record<GroundId, Ground> = {
     fallbackAccent: '#d6884d',
     onAccentCandidates: ['#2e1210', '#f8ead9'],
   },
+  /*
+   * Steel was a near-white (#f4f6f8) and sat 4.5 deltaE from Ivory: two of the
+   * five grounds were one ground to the eye, which is why shops on different
+   * palettes still read as twins. It is now a dark cool slate, 22 deltaE or
+   * more from every other ground. A mid-tone would have been more distinct
+   * still, but a mid ground leaves no lightness band where an accent clears
+   * 4.5:1 against both it and its raised tone — tested at #455160, every one of
+   * the 245 shops fell back. This ground keeps 240 of them.
+   */
   steel: {
     id: 'steel',
-    scheme: 'light',
+    scheme: 'dark',
     hue: 210,
-    ink: '#f4f6f8',
-    ink2: '#e9edf2',
-    ink3: '#dce3ea',
-    cream: '#10161d',
-    cream2: '#5b6775',
-    fallbackAccent: '#0a53e0',
-    onAccentCandidates: ['#ffffff', '#10161d'],
+    ink: '#2b3a4a',
+    ink2: '#344457',
+    ink3: '#3f5165',
+    cream: '#eef3f8',
+    cream2: '#a8bbcc',
+    fallbackAccent: '#8cbcec',
+    onAccentCandidates: ['#12202c', '#eef3f8'],
   },
 };
 

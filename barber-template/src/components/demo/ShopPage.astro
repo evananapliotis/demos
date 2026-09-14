@@ -2,8 +2,8 @@
 /**
  * A whole shop page from a DemoSite. The sections are the same components for
  * every shop; the layout (src/lib/theme.ts) decides their order and whether the
- * ticker and the section numerals render, and the palette derived from the
- * shop's own photo (src/lib/palette.ts) decides every colour.
+ * section numerals render, and the palette derived from the shop's own photo
+ * (src/lib/palette.ts) decides every colour.
  */
 import DemoBase from '../../layouts/DemoBase.astro';
 import type { DemoSite } from '../../lib/demo.ts';
@@ -16,7 +16,6 @@ import Hero from './Hero.astro';
 import Prices from './Prices.astro';
 import Reviews from './Reviews.astro';
 import StickyBar from './StickyBar.astro';
-import Ticker from './Ticker.astro';
 import TrustStrip from './TrustStrip.astro';
 
 interface Props {
@@ -38,7 +37,6 @@ const index = (id: string) =>
 <DemoBase site={site} title={title} description={site.description} preloadHero>
   <Hero site={site} />
   <TrustStrip site={site} />
-  {site.layout.ticker && <Ticker site={site} />}
   <main id="main">
     {sections.map((id, i) => (
       <>

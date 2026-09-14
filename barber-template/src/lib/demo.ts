@@ -84,13 +84,39 @@ const addressTokens = (s: string) =>
 export function stripBusinessName(street: string, name: string): string {
   const nameTokens = new Set(addressTokens(name));
   if (!nameTokens.size) return street;
+  // The same name is written both ways across the export — "Procutz" against
+  // "Pro-Cutz barbers" — so the words are also compared with their punctuation
+  // and spacing taken out. One squashed form has to START with the other and
+  // the leftover has to be nothing but trade words, which is what lets
+  // "procutzbarbers" match "procutz" while keeping "High St" away from a shop
+  // called "High Street Barbers": there the leftover is "reetbarbers", which is
+  // not a trade word.
+  const informative = (words: string[]) => words.filter((w) => !TRADE_WORDS.has(w));
+  const nameSquashed = addressTokens(name).join('');
+  const isOnlyTradeWords = (rest: string) => {
+    let left = rest;
+    const byLongest = [...TRADE_WORDS].sort((a, b) => b.length - a.length);
+    while (left) {
+      const hit = byLongest.find((w) => left.startsWith(w));
+      if (!hit) return false;
+      left = left.slice(hit.length);
+    }
+    return true;
+  };
+  const sameNameDifferentlyWritten = (segmentSquashed: string) => {
+    if (!segmentSquashed || !nameSquashed) return false;
+    if (segmentSquashed.startsWith(nameSquashed)) return isOnlyTradeWords(segmentSquashed.slice(nameSquashed.length));
+    if (nameSquashed.startsWith(segmentSquashed)) return isOnlyTradeWords(nameSquashed.slice(segmentSquashed.length));
+    return false;
+  };
   let segments = street.split(',').map((s) => s.trim()).filter(Boolean);
   while (segments.length > 1) {
     const [first, ...rest] = segments as [string, ...string[]];
     if (/\d/.test(first)) break;
     const words = addressTokens(first);
     if (!words.length) break;
-    if (!words.filter((w) => !TRADE_WORDS.has(w)).every((w) => nameTokens.has(w))) break;
+    const saysNothingNew = informative(words).every((w) => nameTokens.has(w));
+    if (!saysNothingNew && !sameNameDifferentlyWritten(words.join(''))) break;
     if (!rest.some((s) => /\d/.test(s))) break;
     segments = rest;
   }
@@ -223,14 +249,6 @@ export function derive(shop: Shop) {
     ].join(''),
   ];
 
-  const ticker = [
-    rating != null ? `${rating.toFixed(1)} on Google` : '',
-    `${nf.format(reviewCount)} reviews`,
-    ...features,
-    openDaysLabel,
-    `${expandRoad(street)}, ${shop.city}`,
-    `Call ${phone.display}`,
-  ].filter(Boolean);
 
   const trust: TrustCell[] = [
     ...(rating != null ? [{ big: rating.toFixed(1), small: 'Google rating', href: listingUrl, count: rating, decimals: 1 }] : []),
@@ -315,7 +333,6 @@ export function derive(shop: Shop) {
     features,
     amenities,
     about,
-    ticker,
     trust,
     scoreBars,
     photos,

@@ -49,8 +49,6 @@ export interface Layout {
   services: ServiceStyle;
   /** Render order. The section numerals follow it, so 01 is always the first numbered section. */
   order: SectionId[];
-  /** The scrolling strip of listing facts under the hero. */
-  ticker: boolean;
   /** The outsized numerals behind the section headings. */
   numerals: boolean;
   /**
@@ -77,7 +75,6 @@ export const LAYOUTS: readonly Layout[] = [
     hero: 'full-bleed',
     services: 'list',
     order: ['prices', 'gallery', 'reviews', 'about', 'find-us'],
-    ticker: true,
     numerals: true,
     display: { width: 0.44, maxVw: 26, maxRem: 12.5, budgetPx: 1100 },
     og: { display: 'Big Shoulders Display', upper: true, width: 0.46 },
@@ -87,7 +84,6 @@ export const LAYOUTS: readonly Layout[] = [
     hero: 'editorial',
     services: 'list',
     order: ['about', 'gallery', 'prices', 'reviews', 'find-us'],
-    ticker: false,
     numerals: false,
     display: { width: 0.44, maxVw: 22, maxRem: 10.5, budgetPx: 640 },
     og: { display: 'Instrument Serif', upper: false, width: 0.47, italicAccent: true },
@@ -97,7 +93,6 @@ export const LAYOUTS: readonly Layout[] = [
     hero: 'type-led',
     services: 'cards',
     order: ['prices', 'about', 'gallery', 'reviews', 'find-us'],
-    ticker: true,
     numerals: false,
     display: { width: 0.56, maxVw: 18, maxRem: 7.5, budgetPx: 1040 },
     og: { display: 'Instrument Sans', upper: false, width: 0.56 },
@@ -107,7 +102,6 @@ export const LAYOUTS: readonly Layout[] = [
     hero: 'plaque',
     services: 'cards',
     order: ['gallery', 'prices', 'reviews', 'about', 'find-us'],
-    ticker: true,
     numerals: true,
     display: { width: 0.7, maxVw: 16, maxRem: 8.5, budgetPx: 900 },
     og: { display: 'Big Shoulders Display', upper: true, width: 0.46 },
@@ -117,7 +111,6 @@ export const LAYOUTS: readonly Layout[] = [
     hero: 'split',
     services: 'cards',
     order: ['gallery', 'about', 'prices', 'reviews', 'find-us'],
-    ticker: true,
     numerals: true,
     display: { width: 0.53, maxVw: 18, maxRem: 8, budgetPx: 570 },
     og: { display: 'Instrument Sans', upper: true, width: 0.62 },
