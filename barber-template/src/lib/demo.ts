@@ -16,12 +16,40 @@ const ROADS: Record<string, string> = {
   Ter: 'Terrace', Gdns: 'Gardens', Pk: 'Park', Cl: 'Close', Ct: 'Court', Grn: 'Green', Hl: 'Hill', Mkt: 'Market', Pde: 'Parade',
   Bvd: 'Boulevard', Blvd: 'Boulevard', Hwy: 'Highway', Wy: 'Way',
 };
-/** "91 Balham High Rd" -> "91 Balham High Road". A trailing comma ("Globe Rd, Harpley Square") stays where it is. */
+/** A house number, so the road name proper can be found: "244", "23A", "13-14". */
+const HOUSE_NUMBER = /^\d+[a-z]?(?:-\d+[a-z]?)?$/i;
+/** A compass initial can sit between the number and the road name: "7C E St Mary's Gate". */
+const COMPASS = new Set(['N', 'S', 'E', 'W', 'NE', 'NW', 'SE', 'SW']);
+
+/**
+ * "91 Balham High Rd" -> "91 Balham High Road". A trailing comma ("Globe Rd,
+ * Harpley Square") stays where it is.
+ *
+ * "St" is the one abbreviation that is not always a road type: at the head of a
+ * road name it is Saint ("St Paul's Rd"), everywhere else it is Street ("High
+ * St", "St Nicholas St" — both at once). So each comma-separated part is
+ * scanned for where its road name actually begins, past any house number and
+ * compass initial, and an "St" in that one position is left alone.
+ */
 export const expandRoad = (street: string) =>
   street
-    .split(' ')
-    .map((w) => w.replace(/^([A-Za-z]+)([,.]?)$/, (_, word: string, tail: string) => `${ROADS[word] ?? word}${tail}`))
-    .join(' ');
+    .split(',')
+    .map((part) => {
+      const words = part.split(' ');
+      let head = 0;
+      while (head < words.length && (words[head] === '' || HOUSE_NUMBER.test(words[head]!) || COMPASS.has(words[head]!.replace(/[,.]$/, '')))) head++;
+      return words
+        .map((w, i) =>
+          w.replace(/^([A-Za-z]+)([,.]?)$/, (_, word: string, tail: string) => {
+            if (word === 'St' && i === head && i < words.length - 1) return `${word}${tail}`;
+            // The full stop is the abbreviation's own mark ("Watling St."), so it
+            // goes with the abbreviation rather than surviving the expansion.
+            return ROADS[word] ? ROADS[word]! : `${word}${tail}`;
+          }),
+        )
+        .join(' ');
+    })
+    .join(',');
 /** "91 Balham High Rd" -> "Balham High Road": the road without the building number. */
 export const roadName = (street: string) => expandRoad(street.replace(/^\d+[a-z]?(?:-\d+[a-z]?)?\s+/i, '').replace(/^(unit|shop|flat)\s+\S+,?\s+/i, ''));
 
