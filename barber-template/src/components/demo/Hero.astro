@@ -59,15 +59,18 @@ const soften = hero && hero.width < 1000 ? 'blur-[2px]' : '';
 {variant === 'editorial' && (
   <header id="top" class="relative bg-ink">
     <Nav site={site} />
-    <div class={`mx-auto grid w-full max-w-6xl gap-10 px-5 pb-14 pt-10 sm:px-8 md:gap-16 md:pb-28 md:pt-20 lg:px-12 ${hero ? 'md:grid-cols-[minmax(0,1fr)_minmax(0,0.78fr)]' : 'max-w-3xl'}`}>
-      <div class="self-center">
-        <span class="mb-6 block h-px w-full bg-cream/25" aria-hidden="true"></span>
+    <div class="mx-auto w-full max-w-6xl px-5 pt-6 sm:px-8 lg:px-12">
+      <span class="block h-1 w-full bg-cream" aria-hidden="true"></span>
+    </div>
+    <div class={`mx-auto grid w-full max-w-6xl gap-8 px-5 pb-14 pt-6 sm:px-8 md:gap-12 md:pb-24 md:pt-10 lg:px-12 ${hero ? 'md:grid-cols-[minmax(0,1fr)_minmax(0,0.58fr)]' : 'max-w-3xl'}`}>
+      <div>
         <p class="eyebrow rise">{eyebrow}</p>
-        <Name site={site} class="mt-5" />
-        <p class="rise mt-7 max-w-sm text-xl leading-snug text-cream-2" style="animation-delay:120ms">{site.tagline}</p>
-        <Rating site={site} class="mt-8" />
-        <Actions site={site} class="mt-8" />
-        <Meta site={site} class="mt-8" />
+        <Name site={site} class="mt-4" />
+        <span class="mt-7 block h-px w-full bg-cream/30" aria-hidden="true"></span>
+        <p class="rise mt-6 max-w-md text-2xl leading-tight text-cream" style="animation-delay:120ms">{site.tagline}</p>
+        <Rating site={site} class="mt-7" />
+        <Actions site={site} class="mt-7" />
+        <Meta site={site} class="mt-7" />
       </div>
       {hero && (
         <img
@@ -78,7 +81,7 @@ const soften = hero && hero.width < 1000 ? 'blur-[2px]' : '';
           loading="eager"
           fetchpriority="high"
           decoding="async"
-          class="aspect-[3/4] h-full w-full self-center object-cover"
+          class="aspect-[4/5] h-full w-full self-start object-cover md:mt-11"
         />
       )}
     </div>
@@ -132,12 +135,12 @@ const soften = hero && hero.width < 1000 ? 'blur-[2px]' : '';
     <Nav site={site} />
 
     <div class="relative flex flex-1 items-center justify-center px-4 py-10 sm:px-8">
-      <div class="w-full max-w-3xl border-2 border-cream/55 p-1.5 shadow-[0_24px_60px_color-mix(in_srgb,var(--color-cream)_22%,transparent)]">
-        <div class="border-2 border-cream/55 bg-ink px-5 py-9 text-center sm:px-10 sm:py-12">
+      <div class="w-full max-w-5xl border-[3px] border-amber/70 p-2 shadow-[0_28px_70px_rgb(0_0_0/0.45)]">
+        <div class="border border-amber/45 bg-ink/94 px-5 py-10 text-center sm:px-12 sm:py-14">
           <p class="eyebrow rise">{eyebrow}</p>
           <Name site={site} class="mt-4" />
-          <span class="mx-auto mt-6 block h-px w-24 bg-amber" aria-hidden="true"></span>
-          <p class="rise mx-auto mt-6 max-w-md text-lg leading-snug text-cream/90" style="animation-delay:120ms">{site.tagline}</p>
+          <span class="mx-auto mt-7 block h-0.5 w-28 bg-amber" aria-hidden="true"></span>
+          <p class="rise mx-auto mt-6 max-w-lg text-lg leading-snug text-cream/90" style="animation-delay:120ms">{site.tagline}</p>
           <Rating site={site} class="mt-6" />
           <Actions site={site} center class="mt-7" />
           <Meta site={site} center class="mt-7" />
@@ -150,7 +153,7 @@ const soften = hero && hero.width < 1000 ? 'blur-[2px]' : '';
 {variant === 'split' && (
   <header id="top" class="relative bg-ink">
     <Nav site={site} />
-    <div class={`grid items-stretch ${hero ? 'md:grid-cols-2' : ''}`}>
+    <div class={`grid items-stretch ${hero ? 'md:grid-cols-[1.06fr_1fr]' : ''}`}>
       <div class="flex flex-col justify-center px-5 pb-12 pt-10 sm:px-8 md:py-20 lg:pl-12 lg:pr-10">
         <p class="eyebrow rise">{eyebrow}</p>
         <Name site={site} class="mt-4" />
@@ -160,7 +163,7 @@ const soften = hero && hero.width < 1000 ? 'blur-[2px]' : '';
         <Meta site={site} class="mt-7" />
       </div>
       {hero && (
-      <div class="relative order-first min-h-[42vh] overflow-hidden bg-ink-2 md:order-last md:min-h-[34rem]">
+      <div class="relative order-first min-h-[42vh] overflow-hidden bg-ink-2 md:order-last md:min-h-[40rem]">
           <img
             src={hero.path}
             alt={hero.alt}

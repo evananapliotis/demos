@@ -22,7 +22,7 @@
 @import 'tailwindcss';
 @import '@fontsource-variable/big-shoulders-display';
 @import '@fontsource-variable/dm-sans';
-@import '@fontsource-variable/instrument-sans/wght.css';
+@import '@fontsource-variable/instrument-sans/standard.css';
 @import '@fontsource/instrument-serif/400.css';
 @import '@fontsource-variable/plus-jakarta-sans/wght.css';
 @import '@fontsource-variable/fraunces/opsz.css';
@@ -53,6 +53,8 @@
   --display-tracking: 0.005em;
   --display-leading: 0.9;
   --display-variation: normal;
+  /* Instrument Sans carries a width axis; the faces that do not ignore this. */
+  --display-stretch: normal;
   /* The accented tail of a heading. Ivory leans on an italic serif instead of a second colour. */
   --accent-style: normal;
   --radius: 0.5rem;
@@ -66,12 +68,12 @@
 /* ---------- Ivory: off-white and warm grey, black type, editorial serif, wide margins ---------- */
 html[data-theme='ivory'] {
   --color-ink: #f7f4ee;
-  --color-ink-2: #efebe1;
-  --color-ink-3: #e5e0d4;
-  --color-cream: #17140f;
-  --color-cream-2: #6c6558;
-  --color-amber: #17140f;
-  --color-amber-2: #46402f;
+  --color-ink-2: #efeae0;
+  --color-ink-3: #e4ded1;
+  --color-cream: #14110c;
+  --color-cream-2: #6b6355;
+  --color-amber: #14110c;
+  --color-amber-2: #443d31;
   --color-onaccent: #f7f4ee;
 
   --font-display: 'Instrument Serif', 'Times New Roman', Times, serif;
@@ -80,8 +82,8 @@ html[data-theme='ivory'] {
 
   --display-transform: none;
   --display-weight: 400;
-  --display-tracking: -0.02em;
-  --display-leading: 0.94;
+  --display-tracking: -0.035em;
+  --display-leading: 0.86;
   --accent-style: italic;
   --radius: 0;
   --radius-btn: 0;
@@ -116,14 +118,14 @@ html[data-theme='forest'] {
 
 /* ---------- Tan: warm parchment and oxblood, the traditional shopfront ---------- */
 html[data-theme='tan'] {
-  --color-ink: #ead9bf;
-  --color-ink-2: #e1cdad;
-  --color-ink-3: #d6bd97;
-  --color-cream: #33231a;
-  --color-cream-2: #6d5540;
-  --color-amber: #8c2f21;
-  --color-amber-2: #a93c2b;
-  --color-onaccent: #f6ece0;
+  --color-ink: #42251a;
+  --color-ink-2: #4e2d20;
+  --color-ink-3: #5d3728;
+  --color-cream: #f7ead7;
+  --color-cream-2: #c9ab8c;
+  --color-amber: #d39b3e;
+  --color-amber-2: #e6ad4c;
+  --color-onaccent: #2c1710;
 
   --font-display: 'Fraunces Variable', Georgia, 'Times New Roman', serif;
   --font-sans: 'Instrument Sans Variable', system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -131,8 +133,8 @@ html[data-theme='tan'] {
 
   --display-transform: uppercase;
   --display-weight: 900;
-  --display-tracking: 0;
-  --display-leading: 0.92;
+  --display-tracking: -0.012em;
+  --display-leading: 0.84;
   --display-variation: 'opsz' 144;
   --radius: 0.125rem;
   --radius-btn: 0.125rem;
@@ -156,8 +158,10 @@ html[data-theme='steel'] {
 
   --display-transform: uppercase;
   --display-weight: 700;
-  --display-tracking: -0.02em;
-  --display-leading: 0.92;
+  --display-tracking: -0.015em;
+  --display-leading: 0.86;
+  /* Condensed, so the name still sets large in half a page. */
+  --display-stretch: 82%;
   --radius: 0.25rem;
   --radius-btn: 0.25rem;
   --stripe: linear-gradient(var(--color-amber), var(--color-amber));
@@ -196,6 +200,7 @@ html[data-theme='steel'] {
   h1, h2, h3, .display {
     font-family: var(--font-display);
     font-weight: var(--display-weight);
+    font-stretch: var(--display-stretch);
     font-variation-settings: var(--display-variation);
     text-transform: var(--display-transform);
     letter-spacing: var(--display-tracking);

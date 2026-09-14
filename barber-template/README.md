@@ -113,12 +113,14 @@ Those components are shared, but no two neighbouring shops should be handed the 
 | Theme | Look | Display / text | Hero | Services |
 | --- | --- | --- | --- | --- |
 | Midnight | near-black, gold | Big Shoulders Display / DM Sans | photo full-bleed behind the type | list |
-| Ivory | off-white and warm grey, black type, wide margins | Instrument Serif / Instrument Sans | type left, a tall photo right | list |
+| Ivory | off-white and warm grey, black type, editorial | Instrument Serif / Instrument Sans | rule across the top, type left, a tall photo right | list |
 | Forest | deep green and bone, terracotta accent | Plus Jakarta Sans / DM Sans | type alone, a wide photo band under it | cards |
-| Tan | warm parchment and oxblood, the traditional shopfront | Fraunces / Instrument Sans | a ruled plaque over the photo | cards |
-| Steel | cool grey and white, one high-contrast blue | Instrument Sans / Plus Jakarta Sans, Geist Mono labels | photo one half, type the other | cards |
+| Tan | tobacco and brass, the traditional shopfront | Fraunces / Instrument Sans | a ruled sign over the photo | cards |
+| Steel | cool grey and white, one high-contrast blue | Instrument Sans (condensed) / Plus Jakarta Sans, Geist Mono labels | photo one half, type the other | cards |
 
 A theme also sets the section order, whether the ticker and the outsized section numerals render, the corner radius, and the palette of the share image. Midnight is the look the pages have always had, unchanged.
+
+The shop's name is the first and the largest thing on every page. A theme that gives the name half the page (Steel's split, Ivory's column) would otherwise let a full-width section heading out-shout it, so section headings are not sized independently: `derive()` sizes the name against the theme's face and the width its hero gives it, then sizes every section heading — and the closing call to action — off that, as `--section-title`. Across all 1107 listings the largest a heading ever gets is 85% of its page's name.
 
 The palettes and the faces are custom properties on `html[data-theme="…"]` in `src/styles/demo.css`, under one set of token names (`ink`/`ink-2`/`ink-3` for grounds, `cream`/`cream-2` for type, `amber`/`amber-2` for the accent, `onaccent` for type on an accent ground, `line` for hairlines). No component names a colour, and a light theme reads sensibly under the dark-sounding names. The seven faces are all self-hosted from `@fontsource`; every page declares them and downloads only the two or three its own theme sets, so a theme costs no extra request.
 

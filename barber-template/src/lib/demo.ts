@@ -193,7 +193,15 @@ export function derive(shop: Shop) {
    * the rem cap is sized for the column the theme's hero actually gives it.
    */
   const em = theme.display.width * longest;
-  const h1Size = `clamp(2rem, ${Math.min(theme.display.maxVw, 88 / em).toFixed(1)}vw, ${Math.min(theme.display.maxRem, theme.display.budgetPx / em / 16).toFixed(2)}rem)`;
+  const h1Rem = Math.min(theme.display.maxRem, theme.display.budgetPx / em / 16);
+  const h1Size = `clamp(2rem, ${Math.min(theme.display.maxVw, 88 / em).toFixed(1)}vw, ${h1Rem.toFixed(2)}rem)`;
+  /**
+   * Every section heading is sized off the shop's name, so the name is the
+   * first and largest thing on the page whatever the theme, and whatever the
+   * name's length: a split hero gives it half the width, and a heading that
+   * runs the full width would otherwise out-shout it.
+   */
+  const sectionTitleSize = `clamp(1.75rem, 8.5vw, ${Math.min(6, Math.max(2.2, h1Rem * 0.7), h1Rem * 0.85).toFixed(2)}rem)`;
 
   return {
     slug: shop.slug,
@@ -206,6 +214,7 @@ export function derive(shop: Shop) {
     name,
     nameLines: lines,
     h1Size,
+    sectionTitleSize,
     kind,
     tagline,
     description,
