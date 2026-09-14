@@ -5,7 +5,7 @@
  */
 import '../styles/demo.css';
 import displayWoff2 from '@fontsource-variable/big-shoulders-display/files/big-shoulders-display-latin-wght-normal.woff2?url';
-import { CLIENT_SLUG } from '../config/build.ts';
+import { IS_CLIENT_SITE } from '../config/build.ts';
 import { jsonLd, type DemoSite } from '../lib/demo.ts';
 
 interface Props {
@@ -18,7 +18,7 @@ interface Props {
 const { site, title, description, preloadHero = false } = Astro.props;
 const pageUrl = new URL(Astro.url.pathname, Astro.site).href.replace(/\/$/, '');
 /** Rendered by src/pages/[slug]/og.jpg.ts; the booking page shares the shop page's. A single-client build has no slug path, so its one image is /og.jpg. */
-const ogImage = new URL(CLIENT_SLUG ? '/og.jpg' : `/${site.slug}/og.jpg`, Astro.site).href;
+const ogImage = new URL(IS_CLIENT_SITE ? '/og.jpg' : `/${site.slug}/og.jpg`, Astro.site).href;
 const ld = jsonLd(site, pageUrl, ogImage);
 const ratingAlt = site.google.rating != null ? `Rated ${site.google.rating.toFixed(1)} from ${site.google.reviewsText}.` : `${site.google.reviewsText}.`;
 ---
@@ -34,7 +34,7 @@ const ratingAlt = site.google.rating != null ? `Rated ${site.google.rating.toFix
     <meta name="theme-color" content="#0e0c0a" />
     <meta name="color-scheme" content="dark" />
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
-    <meta name="robots" content="noindex,nofollow" />
+    {!IS_CLIENT_SITE && <meta name="robots" content="noindex,nofollow" />}
     <link rel="preload" as="font" type="font/woff2" href={displayWoff2} crossorigin />
     {preloadHero && site.hero && <link rel="preload" as="image" href={site.hero.path} fetchpriority="high" />}
 

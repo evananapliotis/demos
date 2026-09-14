@@ -30,5 +30,13 @@ export const CLIENT_SLUG: string | null = env('CLIENT_SLUG');
  */
 export const BOOKING_ENABLED: boolean = !/^(false|0|no|off)$/i.test(env('BOOKING_ENABLED') ?? '');
 
+/**
+ * Whether this build is a client's own site rather than the demo site. Its
+ * pages are the shop's real website on the shop's own domain, so they are
+ * indexable and carry no demo notice; the photo credits under the gallery
+ * stay either way, as they credit the people who took the photos.
+ */
+export const IS_CLIENT_SITE: boolean = CLIENT_SLUG !== null;
+
 /** The live domain. Canonical links, OG tags and the sitemap are built on it. */
 export const SITE_URL: string = env('SITE_URL') ?? 'https://mybarbersite.co.uk';

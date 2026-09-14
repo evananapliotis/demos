@@ -1,9 +1,12 @@
 ---
+import { IS_CLIENT_SITE } from '../../config/build.ts';
 import type { DemoSite } from '../../lib/demo.ts';
 import Icons from './Icons.astro';
 interface Props { site: DemoSite }
 const { site } = Astro.props;
 const year = new Date().getFullYear();
+/** With no demo notice above it, the copyright line sits where that notice did. */
+const copyrightGap = IS_CLIENT_SITE ? 'mt-8' : 'mt-2';
 /** The outlined wordmark shrinks with the name so it stays on one line. */
 const wordmark = `clamp(2rem, ${Math.min(10.6, 96 / (0.42 * Math.max(site.name.length, 1))).toFixed(1)}vw, 9.5rem)`;
 const links = [
@@ -31,6 +34,6 @@ const links = [
       </ul>
     </nav>
   </div>
-  <p class="mx-auto mt-8 max-w-5xl text-xs text-cream-2">Demo site for {site.name}, built from the shop’s public Google listing. Not the shop’s official website. Photos and reviews belong to their authors.</p>
-  <p class="mx-auto mt-2 max-w-5xl text-xs text-cream-2">© {year} {site.name}, {site.fullAddress}.</p>
+  {!IS_CLIENT_SITE && <p class="mx-auto mt-8 max-w-5xl text-xs text-cream-2">Demo site for {site.name}, built from the shop’s public Google listing. Not the shop’s official website. Photos and reviews belong to their authors.</p>}
+  <p class={`mx-auto ${copyrightGap} max-w-5xl text-xs text-cream-2`}>© {year} {site.name}, {site.fullAddress}.</p>
 </footer>
