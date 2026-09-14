@@ -94,7 +94,7 @@ The site is served at https://mybarbersite.co.uk. `/` is the MyBarberSite front 
 
 ### Front page, `/`
 
-`src/pages/index.astro` is the offer to UK barbershop owners, composed from `src/components/home/*` on `src/layouts/HomeBase.astro` (indexable, with `/og.jpg` from `src/pages/og.jpg.ts` as its link preview). Every line of copy, the phone number, the WhatsApp links and the figures of the offer live in `src/lib/home.ts`; nothing on the page states a number that is not in `OFFER` there.
+`src/components/home/MarketingFrontPage.astro` is the offer to UK barbershop owners, composed from `src/components/home/*` on `src/layouts/HomeBase.astro`. `src/pages/index.astro` renders it, or the client's own shop page on a single-client build (below) (indexable, with `/og.jpg` from `src/pages/og.jpg.ts` as its link preview). Every line of copy, the phone number, the WhatsApp links and the figures of the offer live in `src/lib/home.ts`; nothing on the page states a number that is not in `OFFER` there.
 
 The front page has its own identity, deliberately unlike the shop pages: warm paper with a fine grain, Instrument Serif at one weight for every headline (the accent word italic, in copper), Instrument Sans for text, Geist Mono for the small labels, hairlines instead of boxes, navy buttons and bands, one copper accent. It lives in `src/styles/home.css` (tokens under `@theme`: `paper`, `surface`, `navy`, `rule`, `copper`; utilities `cta`, `label`, `plate`, `object`, `clipping`). Anything that shows the product is wrapped in `.object`, which keeps the showcase's type and colours inside a rounded, shadowed frame while the page around it stays square-cornered and ruled. The three faces are self-hosted from `@fontsource` (latin subsets, with metric-matched local fallbacks so the swap does not move a line) and, as TTFs in `src/og/fonts`, drawn into the share image.
 
@@ -111,6 +111,28 @@ Its mockups show a made-up shop, Marlow & Finch (`src/lib/showcase.ts`), in a de
 Listings are validated by `src/lib/shops.ts` at build time (`about` and `reviews_per_score` are optional: without them the wheelchair chip and the star bar are left out); everything a page shows is derived in `src/lib/demo.ts`; the components live in `src/components/demo/`. Nothing on a page is specific to one shop.
 
 Photos for these pages come from Google Places. `npm run photos` (needs `GOOGLE_PLACES_KEY` in `.env`, see `.env.example`) finds each listing on Places API (New) by name within 500m of its coordinates and saves up to eight photos to `public/photos/<slug>-<n>.jpg`, each resized to at most 1400px and encoded as JPEG at quality 80, writing their paths into the entry as `photos` and author attributions to `src/data/photo-credits.json`. Existing files are kept (a shop with fewer than eight is topped up); `-- --force` re-downloads, `-- --slug a,b` limits the run. The pages serve these files as they are, so a build never resizes them; only their dimensions are read.
+
+## Single-client builds
+
+The same source builds either the whole demo site or one shop's own site. Three environment variables, read once in `src/config/build.ts` and used by `astro.config.mjs` and the pages:
+
+| Variable | Unset | Set |
+| --- | --- | --- |
+| `CLIENT_SLUG` | a page per listing, `/` is the MyBarberSite offer | only that listing gets a page, and `/` is its shop page |
+| `BOOKING_ENABLED` | `/<slug>/book` and every Book button | `false` builds no booking page and no link, button or stylesheet for one |
+| `SITE_URL` | `https://mybarbersite.co.uk` | the domain canonical links, OG tags and the sitemap are built on |
+
+```sh
+CLIENT_SLUG=ca1-barber-shop BOOKING_ENABLED=false SITE_URL=https://ca1barbershop.co.uk npm run build
+```
+
+With none of them set the build is what it has always been, byte for byte.
+
+A slug that is not in `src/data/barbers.json` fails the build naming it, rather than deploying an empty site. Only an explicit off value (`false`, `0`, `no`, `off`) turns booking off, so a typo cannot quietly drop the booking page.
+
+A component that is imported and never rendered still has its stylesheet inlined into the page and its script bundled, so the two pages a flag swaps are chosen in `astro.config.mjs` and reach the page as `virtual:front-page` and `virtual:booking-page` (`src/virtual.d.ts` types them, `src/components/Nothing.astro` stands in for a page a flag turns off). The booking-page rules in `src/styles/demo.css` are fenced with `booking-only` markers and cut out the same way, so a build without booking has no trace of it in its HTML.
+
+`public/` is copied whole, so a single-client build still carries every listing's photos. Prune `public/photos/` to the client's own files before deploying.
 
 ## Deploy
 
@@ -135,6 +157,7 @@ Node version comes from `.node-version`. Asset paths are root-absolute (`/img/..
 image-picks.json          slot -> Pexels photo id, hand-edited, committed
 public/img/               graded outputs, committed
 public/_headers           Cloudflare cache and security headers
+src/config/build.ts       CLIENT_SLUG, BOOKING_ENABLED, SITE_URL, read once
 src/config/site.ts        client-editable content
 src/config/site.schema.ts strict schema, no defaults
 src/config/images.ts      slot manifest

@@ -1,4 +1,5 @@
 ---
+import { BOOKING_ENABLED } from '../config/build.ts';
 import { site } from '../config/site.ts';
 import Pic from './Pic.astro';
 const { services, ui } = site;
@@ -25,9 +26,11 @@ const gbp = new Intl.NumberFormat(site.seo.locale.replace('_', '-'), { style: 'c
                 {s.durationMinutes} {ui.minutes}
               </p>
               <p>{s.description}</p>
-              <a class="service__link" href={`/book?service=${s.id}`}>
-                {ui.bookThis} <span aria-hidden="true">&rarr;</span>
-              </a>
+              {BOOKING_ENABLED && (
+                <a class="service__link" href={`/book?service=${s.id}`}>
+                  {ui.bookThis} <span aria-hidden="true">&rarr;</span>
+                </a>
+              )}
             </div>
           </li>
         ))

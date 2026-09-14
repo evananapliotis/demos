@@ -1,5 +1,6 @@
 ---
 /* The showcase shop's first screen, condensed for the before/after panel. */
+import { BOOKING_ENABLED } from '../../config/build.ts';
 import { SHOP } from '../../lib/showcase.ts';
 import Icons from '../demo/Icons.astro';
 import Rating from './Rating.astro';
@@ -9,7 +10,7 @@ const [first, second] = SHOP.nameLines;
 <div class="flex flex-1 flex-col p-4">
   <div class="flex items-center justify-between gap-3">
     <span class="sc-tag">{SHOP.kind} · {SHOP.town}</span>
-    <span class="sc-pill sc-pill-moss min-h-9 px-3.5 text-sm">Book</span>
+    {BOOKING_ENABLED && <span class="sc-pill sc-pill-moss min-h-9 px-3.5 text-sm">Book</span>}
   </div>
   <p class="sc-display mt-4 text-[2.6rem]">{first} <span class="text-moss">{second}</span></p>
   <div class="relative mt-4 aspect-[16/10] overflow-hidden rounded-[1.25rem] bg-sand">
@@ -21,7 +22,7 @@ const [first, second] = SHOP.nameLines;
     <span class="sc-pill sc-pill-line min-h-11 text-sm"><Icons name="phone" size={16} /> Call</span>
     <span class="sc-pill sc-pill-line min-h-11 text-sm"><Icons name="pin" size={16} /> Directions</span>
   </div>
-  <span class="sc-pill sc-pill-moss mt-2 min-h-11 text-sm"><Icons name="calendar" size={16} /> Book online</span>
+  {BOOKING_ENABLED && <span class="sc-pill sc-pill-moss mt-2 min-h-11 text-sm"><Icons name="calendar" size={16} /> Book online</span>}
   <div class="mt-auto grid grid-cols-3 gap-2 pt-4">
     {[0, 1, 2].map((i) => <div class="aspect-square overflow-hidden rounded-xl bg-sand"><Photo index={i} class="h-full w-full object-cover" /></div>)}
   </div>

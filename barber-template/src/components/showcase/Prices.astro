@@ -1,10 +1,13 @@
 ---
 /* The price list, on a sand card. */
+import { BOOKING_ENABLED } from '../../config/build.ts';
 import { SHOP } from '../../lib/showcase.ts';
+/** Nothing to book online without a booking page, so the line sends people to the phone. */
+const line = BOOKING_ENABLED ? 'Walk in, or book a time online.' : 'Walk in, or call ahead.';
 ---
 <section class="px-5 py-8">
   <h3 class="sc-display text-[2.25rem] font-medium">Prices</h3>
-  <p class="mt-1 text-sm text-cocoa-2">Walk in, or book a time online.</p>
+  <p class="mt-1 text-sm text-cocoa-2">{line}</p>
   <ul class="sc-card mt-5 divide-y divide-hairline px-5" role="list">
     {SHOP.prices.map((p) => (
       <li class="flex items-center justify-between gap-4 py-3.5">

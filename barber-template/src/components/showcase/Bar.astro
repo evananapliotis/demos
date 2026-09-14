@@ -1,9 +1,11 @@
 ---
-/* The shop page's bar at the bottom of the phone: Book, Call, Map. */
+/* The shop page's bar at the bottom of the phone: Book, Call, Map. Without booking in the build, Call takes the wide pill. */
+import { BOOKING_ENABLED } from '../../config/build.ts';
 import Icons from '../demo/Icons.astro';
+const callClass = BOOKING_ENABLED ? 'sc-pill sc-pill-sand w-12 px-0' : 'sc-pill sc-pill-moss flex-1';
 ---
 <div class="sc flex items-center gap-2 border-t border-hairline bg-linen/95 px-4 pb-5 pt-2.5">
-  <span class="sc-pill sc-pill-moss flex-1"><Icons name="calendar" size={18} /> Book online</span>
-  <span class="sc-pill sc-pill-sand w-12 px-0" aria-label="Call"><Icons name="phone" size={18} /></span>
+  {BOOKING_ENABLED && <span class="sc-pill sc-pill-moss flex-1"><Icons name="calendar" size={18} /> Book online</span>}
+  <span class={callClass} aria-label="Call"><Icons name="phone" size={18} /></span>
   <span class="sc-pill sc-pill-sand w-12 px-0" aria-label="Map"><Icons name="pin" size={18} /></span>
 </div>

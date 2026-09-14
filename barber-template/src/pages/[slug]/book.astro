@@ -1,13 +1,18 @@
 ---
 /**
  * /<slug>/book: the booking page for a listing. The page itself is
- * src/components/demo/BookingPage.astro.
+ * src/components/demo/BookingPage.astro. BOOKING_ENABLED=false builds no
+ * booking page at all: the route returns no paths, and astro.config.mjs
+ * points virtual:booking-page at src/components/Nothing.astro so the booking
+ * page's markup, styles and script stay out of the build too.
  */
-import BookingPage from '../../components/demo/BookingPage.astro';
+import BookingPage from 'virtual:booking-page';
+import { BOOKING_ENABLED } from '../../config/build.ts';
 import { derive } from '../../lib/demo.ts';
 import { shops, type Shop } from '../../lib/shops.ts';
 
 export function getStaticPaths() {
+  if (!BOOKING_ENABLED) return [];
   return shops.map((shop) => ({ params: { slug: shop.slug }, props: { shop } }));
 }
 

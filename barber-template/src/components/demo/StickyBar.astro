@@ -2,7 +2,9 @@
 import type { DemoSite } from '../../lib/demo.ts';
 import Icons from './Icons.astro';
 interface Props { site: DemoSite; book?: boolean }
-const { site, book = true } = Astro.props;
+const { site, book: wantBook = true } = Astro.props;
+/** With no booking page in the build there is nothing to point at, whatever the page asked for. */
+const book = wantBook && site.bookHref != null;
 ---
 <div
   class="fixed inset-x-0 bottom-0 z-50 border-t border-line bg-ink/92 pb-[max(0.625rem,env(safe-area-inset-bottom))] pt-2.5 backdrop-blur"

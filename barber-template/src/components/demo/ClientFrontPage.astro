@@ -1,0 +1,13 @@
+---
+/**
+ * The front page of a CLIENT_SLUG build: the client's own shop page, at the
+ * root of their domain. /<slug> still builds the same page at its own path.
+ */
+import ShopPage from './ShopPage.astro';
+import { derive } from '../../lib/demo.ts';
+import { clientShop } from '../../lib/shops.ts';
+
+if (!clientShop) throw new Error('ClientFrontPage.astro is only built when CLIENT_SLUG is set');
+---
+
+<ShopPage site={derive(clientShop)} />

@@ -476,6 +476,7 @@ html.lb-open { overflow: hidden; }
   }
 }
 
+/* booking-only:start (astro.config.mjs cuts to booking-only:end when BOOKING_ENABLED=false) */
 /* ---------- Booking page: form controls, day and time chips, running summary, confirmation tick ---------- */
 /* Browsers give a fieldset a minimum width of its content; the scrolling day row inside one must not widen the page. */
 fieldset { min-inline-size: 0; }
@@ -582,3 +583,4 @@ fieldset { min-inline-size: 0; }
 @media (prefers-reduced-motion: reduce) {
   .tick-ring, .tick-mark { animation: none; stroke-dashoffset: 0; }
 }
+/* booking-only:end */

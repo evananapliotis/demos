@@ -21,7 +21,7 @@ const prices = site.prices ?? [];
       ))}
     </ul>
     <div class="mt-8 grid grid-cols-1 gap-3 sm:flex sm:flex-wrap" data-reveal>
-      <a href={site.bookHref} class="btn btn-amber"><Icons name="calendar" size={19} /> Book online</a>
+      {site.bookHref && <a href={site.bookHref} class="btn btn-amber"><Icons name="calendar" size={19} /> Book online</a>}
       <a href={site.telHref} class="btn btn-outline"><Icons name="phone" size={19} /> Call {site.phone.display}</a>
     </div>
   </Section>

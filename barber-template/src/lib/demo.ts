@@ -2,6 +2,7 @@
  * Everything a /[slug] page shows, derived from one listing. Nothing here
  * adds facts: it formats what the listing has and leaves out what it lacks.
  */
+import { BOOKING_ENABLED } from '../config/build.ts';
 import { DAYS, type Day } from '../config/site.schema.ts';
 import { creditFor, photoFor, type PhotoAuthor } from './photos.ts';
 import { hoursList, kindOf, phoneDisplay, reviewsPerScore, telHref, toSchedule, trueAttributes, type Shop } from './shops.ts';
@@ -189,9 +190,10 @@ export function derive(shop: Shop) {
 
   return {
     slug: shop.slug,
-    /** This shop's page and its booking page. */
+    /** This shop's page. */
     home: `/${shop.slug}`,
-    bookHref: `/${shop.slug}/book`,
+    /** This shop's booking page, or null when BOOKING_ENABLED=false leaves booking out of the build. */
+    bookHref: BOOKING_ENABLED ? `/${shop.slug}/book` : null,
     name,
     nameLines: lines,
     h1Size,

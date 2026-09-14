@@ -1,4 +1,5 @@
 ---
+import { BOOKING_ENABLED } from '../config/build.ts';
 import { site } from '../config/site.ts';
 import Pic from './Pic.astro';
 const { contact } = site;
@@ -37,7 +38,7 @@ const { contact } = site;
           </ul>
         )
       }
-      <a class="btn contact__cta" href="/book">{contact.ctaLabel}</a>
+      {BOOKING_ENABLED && <a class="btn contact__cta" href="/book">{contact.ctaLabel}</a>}
     </div>
   </div>
 </section>

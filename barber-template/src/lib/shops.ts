@@ -10,6 +10,7 @@
  * them. The helpers below turn the export's hours strings into a week table.
  */
 import { z } from 'zod';
+import { CLIENT_SLUG } from '../config/build.ts';
 import { DAYS, type Day } from '../config/site.schema.ts';
 import raw from '../data/barbers.json';
 
@@ -79,8 +80,26 @@ function parseShops(input: unknown): Shop[] {
   return result.data;
 }
 
-/** Every listing, in file order. One page each. */
-export const shops: Shop[] = parseShops(raw);
+/** Every listing in src/data/barbers.json, in file order. */
+const allShops: Shop[] = parseShops(raw);
+
+/**
+ * The listings that get a page. CLIENT_SLUG narrows the build to one shop for
+ * a single-client deploy; unset, every listing gets a page as before. A slug
+ * that is not in the export fails the build rather than shipping an empty site.
+ */
+function selectShops(every: Shop[]): Shop[] {
+  if (!CLIENT_SLUG) return every;
+  const shop = every.find((s) => s.slug === CLIENT_SLUG);
+  if (!shop) throw new Error(`CLIENT_SLUG="${CLIENT_SLUG}" is not a slug in src/data/barbers.json`);
+  return [shop];
+}
+
+/** Every listing this build has a page for. One page each. */
+export const shops: Shop[] = selectShops(allShops);
+
+/** The single listing a CLIENT_SLUG build is for, or null on a full build. */
+export const clientShop: Shop | null = CLIENT_SLUG ? shops[0]! : null;
 
 /* ---------- opening hours ---------- */
 

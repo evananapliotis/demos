@@ -1,0 +1,40 @@
+---
+/**
+ * The front page of mybarbersite.co.uk: the offer to UK barbershop owners,
+ * with the shop pages' own components inside its mockups. Reached through
+ * src/pages/index.astro, which picks this or the client's own shop page.
+ */
+import HomeBase from '../../layouts/HomeBase.astro';
+import Hero from './Hero.astro';
+import ProofStrip from './ProofStrip.astro';
+import BeforeAfter from './BeforeAfter.astro';
+import WhatYouGet from './WhatYouGet.astro';
+import BookingDemo from './BookingDemo.astro';
+import HowItWorks from './HowItWorks.astro';
+import Pricing from './Pricing.astro';
+import Faq from './Faq.astro';
+import AboutMe from './AboutMe.astro';
+import Cta from './Cta.astro';
+import Footer from './Footer.astro';
+import StickyBar from './StickyBar.astro';
+
+const title = 'MyBarberSite | Your shop online. £500 one-off, no monthly fee.';
+const description = 'A page for your barbershop with your photos, your Google rating, opening hours with open now, tap to call and directions. Online booking for £400 more. Built before you pay, live in 48 hours. £500 one-off, no monthly fee.';
+---
+
+<HomeBase title={title} description={description}>
+  <Hero />
+  <main id="main">
+    <ProofStrip />
+    <BeforeAfter />
+    <WhatYouGet />
+    <BookingDemo />
+    <HowItWorks />
+    <Pricing />
+    <Faq />
+    <AboutMe />
+    <Cta />
+  </main>
+  <Footer />
+  <StickyBar />
+</HomeBase>
