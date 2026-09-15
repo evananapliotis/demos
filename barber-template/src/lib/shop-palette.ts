@@ -11,6 +11,7 @@
  * without re-running the extractor renders a correct page rather than failing.
  */
 import raw from '../data/palettes.json';
+import { overrideFor, OVERRIDES, type PaletteOverride } from '../data/overrides.ts';
 import { buildPalette, contrastAudit, GROUNDS, type GroundId } from './palette.ts';
 
 interface Entry {
@@ -71,8 +72,10 @@ const NEUTRAL: ShopPalette = resolve('midnight', {
 function resolve(
   groundId: GroundId,
   rest: Pick<ShopPalette, 'accent' | 'accentHover' | 'onAccent' | 'minContrast' | 'accentFallback' | 'groundFromPhoto' | 'groundReason' | 'photo'>,
+  /** A hand-written ground, in place of the curated one this id names. */
+  custom?: Pick<PaletteOverride, 'scheme' | 'ink' | 'ink2' | 'ink3' | 'cream' | 'cream2'>,
 ): ShopPalette {
-  const g = GROUNDS[groundId];
+  const g = custom ? { id: groundId, ...custom } : GROUNDS[groundId];
   const cssVars = [
     `--color-ink:${g.ink}`,
     `--color-ink-2:${g.ink2}`,
@@ -86,8 +89,32 @@ function resolve(
   return { ground: groundId, scheme: g.scheme, ink: g.ink, ink2: g.ink2, ink3: g.ink3, cream: g.cream, cream2: g.cream2, cssVars, ...rest };
 }
 
+/** The lowest of the eight ratios the stylesheet actually puts together. */
+function lowestContrast(p: PaletteOverride): number {
+  return Math.min(...contrastAudit({ ground: 'midnight', scheme: p.scheme, ink: p.ink, ink2: p.ink2, ink3: p.ink3, cream: p.cream, cream2: p.cream2, accent: p.accent, accentHover: p.accentHover, onAccent: p.onAccent }).map((a) => a.ratio));
+}
+
 /** This shop's palette. Pure function of committed data. */
 export function paletteFor(slug: string): ShopPalette {
+  // A hand-written palette wins over the one derived from the photo, and is
+  // measured the same way rather than trusted.
+  const own = overrideFor(slug).palette;
+  if (own) {
+    return resolve(
+      'midnight',
+      {
+        accent: own.accent,
+        accentHover: own.accentHover,
+        onAccent: own.onAccent,
+        minContrast: lowestContrast(own),
+        accentFallback: false,
+        groundFromPhoto: false,
+        groundReason: own.reason,
+        photo: { hue: null, saturation: 0, lightness: 0, accentHue: null },
+      },
+      own,
+    );
+  }
   const e = file.shops[slug];
   if (!e) return NEUTRAL;
   const ground = (GROUNDS[e.ground as GroundId] ? e.ground : 'midnight') as GroundId;
@@ -113,7 +140,16 @@ export const flaggedSlugs: string[] = file.flagged ?? [];
  */
 export function auditPalettes(): { slug: string; pair: string; ratio: number; needs: number }[] {
   const bad: { slug: string; pair: string; ratio: number; needs: number }[] = [];
+  // Hand-written palettes are gated exactly like extracted ones.
+  for (const [slug, o] of Object.entries(OVERRIDES)) {
+    if (!o.palette) continue;
+    const p = o.palette;
+    for (const a of contrastAudit({ ground: 'midnight', scheme: p.scheme, ink: p.ink, ink2: p.ink2, ink3: p.ink3, cream: p.cream, cream2: p.cream2, accent: p.accent, accentHover: p.accentHover, onAccent: p.onAccent })) {
+      if (a.ratio < a.needs) bad.push({ slug, pair: a.pair, ratio: a.ratio, needs: a.needs });
+    }
+  }
   for (const [slug, e] of Object.entries(file.shops)) {
+    if (OVERRIDES[slug]?.palette) continue; // superseded above
     const g = GROUNDS[(GROUNDS[e.ground as GroundId] ? e.ground : 'midnight') as GroundId];
     for (const a of contrastAudit({
       ground: g.id,

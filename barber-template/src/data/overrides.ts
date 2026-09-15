@@ -20,7 +20,31 @@ export type PriceRow = { name: string; price: string; minutes?: number };
 /** One bookable service. `price` shows on the booking page's service chips when the shop has given one. */
 export type ServiceRow = { id: string; name: string; minutes: number; price?: string };
 
+/**
+ * A palette written by hand rather than read off a photograph. Every value is
+ * still run through the same WCAG audit as a derived one, so a hand-picked
+ * palette cannot ship below AA either.
+ */
+export interface PaletteOverride {
+  scheme: 'dark' | 'light';
+  /** Ground, raised ground, and the hairline/border ground. */
+  ink: string;
+  ink2: string;
+  ink3: string;
+  /** Body type and quiet type. */
+  cream: string;
+  cream2: string;
+  accent: string;
+  accentHover: string;
+  /** Type sitting on the accent. */
+  onAccent: string;
+  /** Why these colours, for anyone auditing the page. */
+  reason: string;
+}
+
 export interface ShopOverride {
+  /** Colours chosen by hand, in place of the ones derived from the shop's photo. */
+  palette?: PaletteOverride;
   /** Day label ("Monday" … "Sunday") to one or more ranges: ["9am-12:30pm", "2:30pm-7pm"]. */
   hours?: Record<string, string[]>;
   /** The shop's own price list, replacing "prices on request". */
@@ -96,6 +120,26 @@ export const OVERRIDES: Record<string, ShopOverride> = {
       'Senior and junior stylists work every day, so there is a price for whoever you sit with, with rates for pensioners and for boys ten and under. Walk in if the door is open, or pick a time below.',
     ],
     socials: { instagram: 'patelandco', facebook: 'PatelandCo' },
+    /*
+     * Monochrome, taken from his own logo rather than from a photograph: the
+     * card is a black ground with white script and a grey subtitle, so the page
+     * is built the same way. The one accent is a warm bone — enough to mark a
+     * price, a rating or a link as different from body type, not enough to
+     * compete with the black. Every pair clears AA by a wide margin; the
+     * tightest is quiet type on the raised ground at 7.68:1.
+     */
+    palette: {
+      scheme: 'dark',
+      ink: '#0a0a0a',
+      ink2: '#151515',
+      ink3: '#202020',
+      cream: '#f4f4f4',
+      cream2: '#a8a8a8',
+      accent: '#cbb994',
+      accentHover: '#ded0b3',
+      onAccent: '#0a0a0a',
+      reason: "monochrome, taken from the shop's own black-and-white wordmark",
+    },
     logoPhoto: '/photos/patel-and-co-2.jpg',
     usePhotos: false,
   },
