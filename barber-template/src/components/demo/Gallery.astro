@@ -11,6 +11,14 @@ interface Props {
 }
 const { site, index, alt = false } = Astro.props;
 const photos = site.photos;
+/**
+ * A mosaic rather than a uniform grid, for a shop with enough photographs to
+ * fill one. The phone keeps the swipe track either way; from md the tiles take
+ * mixed sizes, with each shop's landscape frames given the wide slots so nothing
+ * is cropped harder than it has to be.
+ */
+const mosaic = site.galleryMosaic;
+const landscape = (p: (typeof photos)[number]) => p.width > p.height;
 const [lead, accent] = site.copy.galleryTitle;
 // The lightbox shows the same files; they are already at most 1400px.
 const slides = photos.map((p) => ({
@@ -24,9 +32,11 @@ const slides = photos.map((p) => ({
 {
   photos.length > 0 && (
     <Section id="gallery" index={index} eyebrow={site.copy.galleryEyebrow} title={lead} accent={accent} class={alt ? 'bg-ink-2' : ''}>
-      <ul class="gallery-track" role="list" aria-label={site.photosFromOwner ? `Photos from ${site.name}` : "Photos from the shop's Google listing"}>
+      <ul class={mosaic ? 'gallery-track gallery-mosaic' : 'gallery-track'} role="list" aria-label={site.photosFromOwner ? `Photos from ${site.name}` : "Photos from the shop's Google listing"}>
         {photos.map((p, i) => (
-          <li class="overflow-hidden rounded-[var(--radius)] bg-ink-3">
+          <li class={mosaic
+            ? ['overflow-hidden rounded-[var(--radius)] bg-ink-3', landscape(p) ? 'is-wide' : ''].filter(Boolean).join(' ')
+            : 'overflow-hidden rounded-[var(--radius)] bg-ink-3'}>
             <button type="button" class="gallery-open group block w-full cursor-zoom-in" data-index={i} aria-label={`Open photo ${i + 1} of ${photos.length} full size`}>
               <img
                 src={p.path}

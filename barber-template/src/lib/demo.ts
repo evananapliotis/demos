@@ -352,6 +352,22 @@ export function derive(shop: Shop) {
     layout,
     /** The hero treatment rendered, which is the layout's unless this shop overrides it. */
     heroVariant,
+    /**
+     * Custom properties for the hero band, where this shop's hero needs colours
+     * of its own. Written onto <header>, so only the first screen changes.
+     */
+    heroVars: own.heroPalette
+      ? [
+          `--color-ink:${own.heroPalette.ink}`, `--color-ink-2:${own.heroPalette.ink2}`, `--color-ink-3:${own.heroPalette.ink3}`,
+          `--color-cream:${own.heroPalette.cream}`, `--color-cream-2:${own.heroPalette.cream2}`,
+          `--color-amber:${own.heroPalette.accent}`, `--color-amber-2:${own.heroPalette.accentHover}`,
+          `--color-onaccent:${own.heroPalette.onAccent}`, '--hero-photo-opacity:0.62',
+        ].join(';')
+      : null,
+    /** The reviews section is given the room its numbers deserve. */
+    featureReviews: own.featureReviews === true,
+    /** The gallery lays out at mixed sizes rather than a uniform grid. */
+    galleryMosaic: own.galleryMosaic === true,
     palette,
     copy: copyFor(shop.slug),
     /** This shop's page and its booking page. */

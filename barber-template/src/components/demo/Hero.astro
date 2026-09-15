@@ -22,7 +22,7 @@ const soften = hero && hero.width < 1000 ? 'blur-[2px]' : '';
 ---
 
 {variant === 'full-bleed' && hero && (
-  <header id="top" class="relative isolate flex min-h-[100svh] flex-col overflow-hidden bg-ink">
+  <header id="top" class="relative isolate flex min-h-[100svh] flex-col overflow-hidden bg-ink" style={site.heroVars ?? undefined}>
     {hero && (
       <img
         src={hero.path}

@@ -12,11 +12,23 @@ interface Props {
 const { site, alt = false } = Astro.props;
 const nf = new Intl.NumberFormat('en-GB');
 const { rating, reviewCount } = site.google;
+/**
+ * Where the rating and the review count are the strongest things a shop can
+ * prove, they get the room: the count set at display scale rather than heading
+ * scale, and the link to the live reviews as a full-width action. Nothing is
+ * added — the same two numbers and the same honest lede, larger.
+ */
+const feature = site.featureReviews;
 ---
-<section id="reviews" class={`scroll-mt-14 border-y border-line px-5 py-16 sm:px-8 md:py-24 lg:px-12 ${alt ? 'bg-ink-2' : 'bg-ink'}`} aria-labelledby="reviews-title">
+<section id="reviews" class={`scroll-mt-14 border-y border-line px-5 ${feature ? 'py-20' : 'py-16'} sm:px-8 ${feature ? 'md:py-32' : 'md:py-24'} lg:px-12 ${alt ? 'bg-ink-2' : 'bg-ink'}`} aria-labelledby="reviews-title">
   <div class="mx-auto max-w-5xl" data-reveal>
     <p class="eyebrow flex items-center gap-3 before:block before:h-[2px] before:w-6 before:bg-amber">{site.copy.reviewsEyebrow}</p>
-    <div class="mt-6 grid items-end gap-6 md:grid-cols-[auto_1fr] md:gap-14">
+    {feature && (
+      <p class="display mt-8 leading-[0.78] text-amber" style="font-size:clamp(5.5rem,22vw,13rem)">
+        <span class="tabular-nums" data-count={reviewCount}>{nf.format(reviewCount)}</span>
+      </p>
+    )}
+    <div class={feature ? 'mt-4 grid items-end gap-6 md:grid-cols-[auto_1fr] md:gap-14' : 'mt-6 grid items-end gap-6 md:grid-cols-[auto_1fr] md:gap-14'}>
       <div class="flex items-end gap-4">
         <p class="display text-[clamp(4rem,14vw,7.5rem)] leading-[0.8] text-cream">{rating != null ? rating.toFixed(1) : '–'}</p>
         <div class="pb-2">
@@ -26,7 +38,9 @@ const { rating, reviewCount } = site.google;
       </div>
       <div class="md:pb-4">
         <h2 id="reviews-title" class="text-[length:var(--section-title)] text-cream">
-          <span class="tabular-nums" data-count={reviewCount}>{nf.format(reviewCount)}</span> {reviewCount === 1 ? 'review' : 'reviews'}.<br /><span class="accent">{site.copy.reviewsAccent}</span>
+          {feature
+            ? <>Google {reviewCount === 1 ? 'review' : 'reviews'}.<br /><span class="accent">{site.copy.reviewsAccent}</span></>
+            : <><span class="tabular-nums" data-count={reviewCount}>{nf.format(reviewCount)}</span> {reviewCount === 1 ? 'review' : 'reviews'}.<br /><span class="accent">{site.copy.reviewsAccent}</span></>}
         </h2>
         <p class="mt-4 max-w-md text-cream-2">{site.copy.reviewsLede}</p>
         {
@@ -42,7 +56,7 @@ const { rating, reviewCount } = site.google;
             </ul>
           )
         }
-        <a href={site.reviewsUrl} target="_blank" rel="noopener" class="btn btn-amber mt-6"><GoogleG size={18} /> Open the Google reviews <Icons name="external" size={16} /></a>
+        <a href={site.reviewsUrl} target="_blank" rel="noopener" class={feature ? 'btn btn-amber mt-6 w-full text-lg sm:w-auto sm:px-8 sm:py-5' : 'btn btn-amber mt-6'}><GoogleG size={18} /> Open the Google reviews <Icons name="external" size={16} /></a>
       </div>
     </div>
   </div>

@@ -67,6 +67,28 @@ export interface ShopOverride {
   roadName?: string;
   /** Colours chosen by hand, in place of the ones derived from the shop's photo. */
   palette?: PaletteOverride;
+  /**
+   * Colours for the hero band only, leaving the rest of the page alone.
+   *
+   * A light-ground page cannot carry a photograph behind dark type: measured on
+   * duhok-barber, the picture has to be washed to 15% opacity before the small
+   * type clears AA, by which point it is not a photograph any more. A dark band
+   * takes the same picture at 62% with every element clear. Every colour in the
+   * hero is expressed through custom properties, so redefining them on <header>
+   * darkens the scrim and lightens the type together.
+   */
+  heroPalette?: PaletteOverride;
+  /**
+   * Give the reviews section the room its numbers deserve. For a shop whose
+   * rating and review count are the strongest things it can prove, the default
+   * block undersells them.
+   */
+  featureReviews?: boolean;
+  /**
+   * Lay the gallery out at mixed sizes rather than as a uniform grid. Worth it
+   * where a shop has enough photographs to fill one.
+   */
+  galleryMosaic?: boolean;
   /** Day label ("Monday" … "Sunday") to one or more ranges: ["9am-12:30pm", "2:30pm-7pm"]. */
   hours?: Record<string, string[]>;
   /** The shop's own price list, replacing "prices on request". */
@@ -224,6 +246,41 @@ export const OVERRIDES: Record<string, ShopOverride> = {
    */
   'duhok-barber': {
     roadName: 'Buxton Road',
+    /*
+     * The wide interior shot. Chosen over the shopfront, which is the striking
+     * one but carries the shop's name in neon and would fight the page's own
+     * name set over it.
+     */
+    heroPhoto: '/photos/duhok-barber-1.jpg',
+    /*
+     * The hero band only. Measured: on the ivory ground the photograph must be
+     * washed to 15% before the eyebrow and the navigation clear AA; on this one
+     * it sits at 62% and all 24 text elements over it clear AA. The palette's
+     * own eight pairs clear too, the lowest at 9.93:1.
+     */
+    heroPalette: {
+      scheme: 'dark',
+      ink: '#14110c',
+      ink2: '#1e1a13',
+      ink3: '#2a251b',
+      cream: '#f7f4ee',
+      cream2: '#cfc9bb',
+      accent: '#e0c25c',
+      accentHover: '#ecd68c',
+      onAccent: '#14110c',
+      reason: 'hero band only: a dark ground is the only one that lets the photograph stay a photograph',
+    },
+    featureReviews: true,
+    galleryMosaic: true,
+    /*
+     * One paragraph, and only what the listing carries: the trade, the road, the
+     * town, the review count and the rating. The absence of opening hours is
+     * stated once, in Find us, where the hours would be — it used to be said
+     * here as well.
+     */
+    story: [
+      'Duhok barber is a barber shop on Buxton Road in Stockport. 136 people have reviewed it on Google and the rating stands at 4.9 out of 5.',
+    ],
   },
 
   /** Hitchin. Booking stays on here; nothing else about the page is overridden. */
