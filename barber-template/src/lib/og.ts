@@ -56,13 +56,16 @@ export async function renderOg(site: DemoSite): Promise<Buffer> {
   const longest = Math.max(line1.length, line2.length, 1);
   // Each face sets at its own width, so the name is measured against the face
   // it is actually drawn in and then held inside the column.
-  const cap = hasHero ? (line2 ? 108 : 132) : line2 ? 150 : 180;
+  // Without a photograph the name has the whole 1200 to itself and is the only
+  // picture the card has, so it is allowed to run far larger, and the band it
+  // sits in opens up to take it.
+  const cap = hasHero ? (line2 ? 108 : 132) : line2 ? 185 : 240;
   const size = Math.max(40, Math.min(cap, Math.floor(column / (type.width * longest))));
   const leading = Math.round(size * 0.9);
 
   // The type block is centred in the space between the eyebrow and the rating.
-  const blockTop = 168;
-  const blockBottom = 452;
+  const blockTop = hasHero ? 168 : 150;
+  const blockBottom = hasHero ? 452 : 460;
   const blockHeight = line2 ? leading + size * 0.74 : size * 0.74;
   const firstBaseline = Math.round(blockTop + (blockBottom - blockTop - blockHeight) / 2 + size * 0.74);
   const secondBaseline = firstBaseline + leading;

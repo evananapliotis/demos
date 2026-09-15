@@ -9,7 +9,8 @@ const em = site.layout.display.width * Math.max(site.name.length, 1);
 const wordmark = `clamp(2rem, ${Math.min(10.6, 92 / em).toFixed(1)}vw, ${Math.min(9.5, 1040 / em / 16).toFixed(2)}rem)`;
 const links = [
   { href: '#prices', label: 'Prices' },
-  ...(site.photos.length ? [{ href: '#gallery', label: 'The work' }] : []),
+  // Offered only when the page actually renders a gallery, so the anchor always lands somewhere.
+  ...(site.showGallery ? [{ href: '#gallery', label: 'The work' }] : []),
   { href: '#reviews', label: 'Reviews' },
   { href: '#find-us', label: 'Find us' },
   { href: site.bookHref, label: 'Book' },

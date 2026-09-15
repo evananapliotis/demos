@@ -21,7 +21,7 @@ const eyebrow = `${site.kind} · ${site.address.locality}`;
 const soften = hero && hero.width < 1000 ? 'blur-[2px]' : '';
 ---
 
-{variant === 'full-bleed' && (
+{variant === 'full-bleed' && hero && (
   <header id="top" class="relative isolate flex min-h-[100svh] flex-col overflow-hidden bg-ink">
     {hero && (
       <img
@@ -53,6 +53,43 @@ const soften = hero && hero.width < 1000 ? 'blur-[2px]' : '';
     <a href="#prices" class="absolute bottom-6 left-1/2 hidden -translate-x-1/2 flex-col items-center gap-2 text-[0.7rem] font-bold uppercase tracking-[0.2em] text-cream-2 hover:text-amber md:flex" aria-label="Scroll to the next section">
       Scroll <span class="block h-10 w-px overflow-hidden bg-cream/20"><span class="scroll-line block h-full w-full bg-amber"></span></span>
     </a>
+  </header>
+)}
+
+{/*
+  The same hero with no photograph to stand behind it.
+
+  A full-bleed hero is built around an image, so simply leaving the image out
+  gives a screen of empty ground with the type parked at the bottom — a page
+  that looks like its picture failed to load. This is the deliberate version:
+  the composition is ruled rather than floating, the eyebrow and the rating take
+  the top rule between them so the first screen starts with something in it, the
+  name is the picture, and the tagline and the actions close it underneath. The
+  height follows the content instead of reaching for a screen it cannot fill.
+*/}
+{variant === 'full-bleed' && !hero && (
+  <header id="top" class="relative isolate overflow-hidden bg-ink">
+    <div class="hero-scrim-none absolute inset-0 -z-10" aria-hidden="true"></div>
+
+    <Nav site={site} />
+
+    <div class="mx-auto w-full max-w-6xl px-5 pb-12 pt-5 sm:px-8 md:pb-16 lg:px-12">
+      <span class="block h-px w-full bg-cream/25" aria-hidden="true"></span>
+      <div class="flex flex-wrap items-center justify-between gap-x-8 gap-y-3 py-4">
+        <p class="eyebrow rise">{eyebrow}</p>
+        <Rating site={site} />
+      </div>
+      <span class="block h-px w-full bg-cream/25" aria-hidden="true"></span>
+
+      <Name site={site} class="mt-6 md:mt-8" />
+
+      <span class="mt-6 block h-1 w-full bg-amber md:mt-8" aria-hidden="true"></span>
+      <div class="mt-6 grid gap-6 md:grid-cols-[minmax(0,1fr)_auto] md:items-end">
+        <p class="rise max-w-lg text-xl leading-tight text-cream md:text-2xl" style="animation-delay:120ms">{site.tagline}</p>
+        <Meta site={site} class="md:text-right" />
+      </div>
+      <Actions site={site} class="mt-6" />
+    </div>
   </header>
 )}
 

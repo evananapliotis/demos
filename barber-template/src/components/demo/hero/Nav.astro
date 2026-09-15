@@ -10,7 +10,8 @@ interface Props {
 const { site, class: cls = '' } = Astro.props;
 const nav = [
   { href: '#prices', label: 'Prices' },
-  ...(site.photos.length ? [{ href: '#gallery', label: 'The work' }] : []),
+  // Offered only when the page actually renders a gallery, so the anchor always lands somewhere.
+  ...(site.showGallery ? [{ href: '#gallery', label: 'The work' }] : []),
   { href: '#reviews', label: 'Reviews' },
   { href: '#find-us', label: 'Find us' },
   { href: site.bookHref, label: 'Book' },

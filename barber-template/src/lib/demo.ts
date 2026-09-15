@@ -279,23 +279,29 @@ export function derive(shop: Shop) {
     own.logoPhoto && photoFor(own.logoPhoto)
       ? { path: own.logoPhoto, ...photoFor(own.logoPhoto)!, alt: `${name} logo`, authors: creditFor(own.logoPhoto)?.authors ?? [] }
       : null;
-  const found = shop.photos.filter((p) => photoFor(p) && p !== logo?.path);
+  const found = own.usePhotos === false ? [] : shop.photos.filter((p) => photoFor(p) && p !== logo?.path);
   const photos: Photo[] = found.map((path, i) => ({
     path,
     ...photoFor(path)!,
     alt: `${name}, ${shop.city}: photo ${i + 1} of ${found.length} from the Google listing`,
     authors: creditFor(path)?.authors ?? [],
   }));
+  // Only the images the page actually shows are credited, so nobody is thanked for a picture that is not there.
   const authors: PhotoAuthor[] = [];
   for (const p of [...photos, ...(logo ? [logo] : [])]) for (const a of p.authors) if (a.name && !authors.some((x) => x.name === a.name && x.uri === a.uri)) authors.push(a);
-  const hero = photos[0] ?? logo ?? null;
   /**
-   * Whether the page runs a gallery section at all. A shop with one real
-   * photograph has nothing to fill a grid with, and a gallery whose first tile
-   * repeats the hero makes a page look emptier than leaving it out does; the
-   * room goes to that shop's prices, hours and story instead.
+   * The photograph behind the first screen. Null when the listing has none, or
+   * when its owner would rather the page did not lean on the one it has: the
+   * hero then carries the name, the rating and the actions on their own.
    */
-  const showGallery = own.gallery !== false && photos.length > 0;
+  const hero = photos[0] ?? null;
+  /**
+   * Whether the page runs a gallery section at all, and so whether the
+   * navigation and the footer offer a link to one. A shop with one photograph
+   * has nothing to fill a grid with, and a gallery whose only tile repeats the
+   * hero makes a page look emptier than leaving it out does.
+   */
+  const showGallery = photos.length > 0;
 
   const layout = layoutFor(shop.slug);
   const palette = paletteFor(shop.slug);
@@ -307,8 +313,16 @@ export function derive(shop: Shop) {
    * the rem cap is sized for the column the theme's hero actually gives it.
    */
   const em = layout.display.width * longest;
-  const h1Rem = Math.min(layout.display.maxRem, layout.display.budgetPx / em / 16);
-  const h1Size = `clamp(2rem, ${Math.min(layout.display.maxVw, 88 / em).toFixed(1)}vw, ${h1Rem.toFixed(2)}rem)`;
+  /**
+   * A full-bleed hero with no photograph gives the name the whole first screen
+   * to itself, and the name is then doing the picture's job, so its cap is
+   * lifted. Section headings are unaffected: theirs is already at its own 6rem
+   * ceiling well below either figure.
+   */
+  const typeOnlyHero = layout.hero === 'full-bleed' && hero === null;
+  const maxRem = typeOnlyHero ? layout.display.maxRem * 1.15 : layout.display.maxRem;
+  const h1Rem = Math.min(maxRem, layout.display.budgetPx / em / 16);
+  const h1Size = `clamp(2rem, ${Math.min(typeOnlyHero ? layout.display.maxVw * 1.3 : layout.display.maxVw, 88 / em).toFixed(1)}vw, ${h1Rem.toFixed(2)}rem)`;
   /**
    * Every section heading is sized off the shop's name, so the name is the
    * first and largest thing on the page whatever the theme, and whatever the

@@ -37,11 +37,15 @@ export interface ShopOverride {
    */
   logoPhoto?: string;
   /**
-   * Leave the gallery section out. For a listing with one real photograph,
-   * a two-tile gallery repeating the hero reads as a page with nothing in it;
-   * the space goes to the shop's own prices, hours and story instead.
+   * Do not use this listing's photographs anywhere — no hero, no gallery, no
+   * credit for a picture nobody can see. For a listing whose only photograph is
+   * weak, a hero built on it and a one-tile gallery both read as a page
+   * apologising for its picture; the hero carries the name, the rating and the
+   * actions instead, and the room goes to the shop's prices, hours and story.
+   * The wordmark above is unaffected: it is the shop's own mark, not a photo of
+   * the shop.
    */
-  gallery?: false;
+  usePhotos?: false;
 }
 
 export const OVERRIDES: Record<string, ShopOverride> = {
@@ -50,9 +54,10 @@ export const OVERRIDES: Record<string, ShopOverride> = {
    * given over the phone. Friday is a genuine split day — he shuts at half
    * twelve and opens again at half two.
    *
-   * The Google listing carries two images: one photograph of the shopfront and
-   * one black wordmark card. That is not enough for a gallery, so the gallery
-   * is off, the photograph is the hero and the wordmark is shown as a mark.
+   * The Google listing carries two images: one black wordmark card and one
+   * photograph of the shopfront that is not good enough to build a page on. So
+   * the photograph is not used: the hero is type only, there is no gallery, and
+   * the wordmark is shown as the mark it is.
    *
    * Service durations are the one thing here he did not give: they are ordinary
    * barbershop lengths, set so the booking calendar has slot lengths to work
@@ -92,7 +97,7 @@ export const OVERRIDES: Record<string, ShopOverride> = {
     ],
     socials: { instagram: 'patelandco', facebook: 'PatelandCo' },
     logoPhoto: '/photos/patel-and-co-2.jpg',
-    gallery: false,
+    usePhotos: false,
   },
 };
 
