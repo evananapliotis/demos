@@ -14,7 +14,8 @@ const nav = [
   ...(site.showGallery ? [{ href: '#gallery', label: 'The work' }] : []),
   { href: '#reviews', label: 'Reviews' },
   { href: '#find-us', label: 'Find us' },
-  { href: site.bookHref, label: 'Book' },
+  // Offered only where the shop has agreed to online booking.
+  ...(site.showBooking ? [{ href: site.bookHref, label: 'Book' }] : []),
 ];
 ---
 

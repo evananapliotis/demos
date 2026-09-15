@@ -43,6 +43,16 @@ export interface PaletteOverride {
 }
 
 export interface ShopOverride {
+  /**
+   * Whether the page offers online booking. Off for every shop unless it is
+   * turned on here, one slug at a time.
+   *
+   * The booking page is generated either way, so switching this to true restores
+   * every Book link with no other change. Off, the page still says everything it
+   * knows — the number, the address, the hours, the rating — it just stops
+   * offering a booking system to a shop that has not agreed to one.
+   */
+  showBooking?: boolean;
   /** Colours chosen by hand, in place of the ones derived from the shop's photo. */
   palette?: PaletteOverride;
   /** Day label ("Monday" … "Sunday") to one or more ranges: ["9am-12:30pm", "2:30pm-7pm"]. */
@@ -102,6 +112,7 @@ export const OVERRIDES: Record<string, ShopOverride> = {
    * with. Everything else on the page is his.
    */
   'patel-and-co': {
+    showBooking: true,
     hours: {
       Monday: ['9am-5pm'],
       Tuesday: ['9am-5pm'],
@@ -191,6 +202,11 @@ export const OVERRIDES: Record<string, ShopOverride> = {
      * the same mark at 1400px instead of 474, so it stays sharp on the plate.
      */
     logoPhoto: '/photos/patel-and-co-2.jpg',
+  },
+
+  /** Hitchin. Booking stays on here; nothing else about the page is overridden. */
+  'studio-22-hitchin': {
+    showBooking: true,
   },
 };
 

@@ -1,5 +1,9 @@
 ---
-/** Book, Call and Directions, the hero's three actions. */
+/**
+ * The hero's actions. Book, Call and Directions where the shop has agreed to
+ * online booking; where it has not, the number takes the accent fill and leads,
+ * because calling is then the thing the page is actually asking for.
+ */
 import type { DemoSite } from '../../../lib/demo.ts';
 import Icons from '../Icons.astro';
 
@@ -13,7 +17,7 @@ const { site, center = false, class: cls = '' } = Astro.props;
 ---
 
 <div class={`grid grid-cols-1 gap-3 sm:flex sm:flex-wrap ${center ? 'sm:justify-center' : ''} ${cls}`}>
-  <a href={site.bookHref} class="btn btn-amber"><Icons name="calendar" size={19} /> Book online</a>
-  <a href={site.telHref} class="btn btn-outline"><Icons name="phone" size={19} /> Call {site.phone.display}</a>
+  {site.showBooking && <a href={site.bookHref} class="btn btn-amber"><Icons name="calendar" size={19} /> Book online</a>}
+  <a href={site.telHref} class={`btn ${site.showBooking ? 'btn-outline' : 'btn-amber'}`}><Icons name="phone" size={19} /> Call {site.phone.display}</a>
   <a href={site.directionsUrl} target="_blank" rel="noopener" class="btn btn-outline hidden sm:inline-flex"><Icons name="pin" size={19} /> Directions</a>
 </div>

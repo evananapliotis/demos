@@ -356,6 +356,12 @@ export function derive(shop: Shop) {
     /** This shop's page and its booking page. */
     home: `/${shop.slug}`,
     bookHref: `/${shop.slug}/book`,
+    /**
+     * Whether the page offers booking at all. Off unless this shop's owner has
+     * agreed to it (src/data/overrides.ts). The booking page is still generated
+     * for every shop, so turning it on needs no other change.
+     */
+    showBooking: own.showBooking === true,
     name,
     nameLines: lines,
     h1Size,

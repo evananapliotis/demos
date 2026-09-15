@@ -1,9 +1,18 @@
 ---
 /**
  * Prices: the shop's own list when it has published one, otherwise the number
- * to call, put up big. The services that can be booked follow it — as rows or
- * as cards, whichever the theme sets — unless the shop's price list already is
+ * to call, put up big.
+ *
+ * Where the shop offers booking, the services that can be booked follow — as
+ * rows or as cards, whichever the theme sets — unless its price list already is
  * its menu, in which case those rows book directly and nothing is listed twice.
+ *
+ * Where it does not, that block is left out entirely rather than reprinted
+ * without its links. The six services are the booking system's own list, not
+ * anything the shop told us; as links they read as what the system offers, but
+ * as plain text they would read as a claim about what this shop does, which we
+ * cannot evidence. So a shop with no price list and no booking shows the
+ * heading, one honest line and its number — and nothing else.
  */
 import type { DemoSite } from '../../lib/demo.ts';
 import Icons from './Icons.astro';
@@ -24,7 +33,9 @@ const services = site.services;
  * are the same things — every row would say the same name twice. In that case
  * the price list itself does the booking, each row a link.
  */
-const sameList = prices.length > 0 && prices.length === services.length && prices.every((p, i) => p.name === services[i]!.name);
+const sameList = site.showBooking && prices.length > 0 && prices.length === services.length && prices.every((p, i) => p.name === services[i]!.name);
+/** The bookable list only exists where there is somewhere to book. */
+const showServices = site.showBooking && !sameList;
 const [lead, accent] = prices.length ? copy.pricesListTitle : copy.pricesAskTitle;
 ---
 
@@ -64,7 +75,7 @@ const [lead, accent] = prices.length ? copy.pricesListTitle : copy.pricesAskTitl
     </div>
   )}
 
-  {!sameList && (
+  {showServices && (
   <div class="mt-10" data-reveal>
     <h3 class="eyebrow mb-4">{copy.servicesHeading}</h3>
     {layout.services === 'cards' ? (
@@ -96,8 +107,11 @@ const [lead, accent] = prices.length ? copy.pricesListTitle : copy.pricesAskTitl
   </div>
   )}
 
-  <div class="mt-8 grid grid-cols-1 gap-3 sm:flex sm:flex-wrap" data-reveal>
-    <a href={site.bookHref} class="btn btn-amber"><Icons name="calendar" size={19} /> Book online</a>
-    <a href={site.telHref} class="btn btn-outline"><Icons name="phone" size={19} /> Call {site.phone.display}</a>
-  </div>
+  {/* With no booking and no price list the number is already the whole section, set large above; a second Call button under it would only say it twice. */}
+  {(site.showBooking || prices.length > 0) && (
+    <div class="mt-8 grid grid-cols-1 gap-3 sm:flex sm:flex-wrap" data-reveal>
+      {site.showBooking && <a href={site.bookHref} class="btn btn-amber"><Icons name="calendar" size={19} /> Book online</a>}
+      <a href={site.telHref} class={`btn ${site.showBooking ? 'btn-outline' : 'btn-amber'}`}><Icons name="phone" size={19} /> Call {site.phone.display}</a>
+    </div>
+  )}
 </Section>
