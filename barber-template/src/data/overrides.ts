@@ -53,6 +53,18 @@ export interface ShopOverride {
    * offering a booking system to a shop that has not agreed to one.
    */
   showBooking?: boolean;
+  /**
+   * The road the shop is on, where the listing's street line does not reduce to
+   * one. The derivation strips a leading house number, which handles almost
+   * every listing, but not a street written as a building first — "Cameo House,
+   * 323 Buxton Rd" reduces to itself, and a strapline then reads "barbering on
+   * Cameo House, 323 Buxton Road".
+   *
+   * This is the road only, for the places that want to name a road: the
+   * strapline, the About heading and the page title. The postal address is
+   * untouched and keeps the building name, because that is where the post goes.
+   */
+  roadName?: string;
   /** Colours chosen by hand, in place of the ones derived from the shop's photo. */
   palette?: PaletteOverride;
   /** Day label ("Monday" … "Sunday") to one or more ranges: ["9am-12:30pm", "2:30pm-7pm"]. */
@@ -202,6 +214,16 @@ export const OVERRIDES: Record<string, ShopOverride> = {
      * the same mark at 1400px instead of 474, so it stays sharp on the plate.
      */
     logoPhoto: '/photos/patel-and-co-2.jpg',
+  },
+
+  /**
+   * Stockport. The listing's street is "Cameo House, 323 Buxton Rd", which is a
+   * building and a house number; neither belongs in a strapline. Hand-set to the
+   * road so the strapline, the About heading and the title all name it. Fixed
+   * for this shop only — the corpus has not been audited for the same shape yet.
+   */
+  'duhok-barber': {
+    roadName: 'Buxton Road',
   },
 
   /** Hitchin. Booking stays on here; nothing else about the page is overridden. */

@@ -203,7 +203,8 @@ export function derive(shop: Shop) {
   const street = stripBusinessName(shop.street ?? shop.address.split(',')[0]!.trim(), name);
   const address = { street, locality: shop.city, postcode: shop.postcode };
   const fullAddress = `${street}, ${shop.city} ${shop.postcode}`;
-  const road = roadName(street);
+  /** The road, for the strapline, the About heading and the title. Hand-set where the listing's street line will not reduce to one. */
+  const road = own.roadName ?? roadName(street);
   const phone = { display: phoneDisplay(shop.phone), tel: shop.phone.replace(/[^\d+]/g, '') };
 
   // Links to the Google listing. The place id comes from the reviews link or the photo credits when either has it.
