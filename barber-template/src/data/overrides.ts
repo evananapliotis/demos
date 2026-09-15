@@ -142,7 +142,12 @@ export const OVERRIDES: Record<string, ShopOverride> = {
       'Patel & Co is a barber shop on Rugby Road in Hinckley. Seventy people have reviewed it on Google and the rating stands at 4.9 out of 5.',
       'There are senior and junior stylist rates, and set prices for pensioners and for boys ten and under — the full list is above. Open six days a week, with Friday running in two halves either side of a midday close.',
     ],
-    socials: { instagram: 'patelandco', facebook: 'PatelandCo' },
+    /*
+     * No socials. The handles we had came to us in the same unsourced note as
+     * the founding year and the brothers, and neither was confirmed with the
+     * shop. A link that goes to the wrong account is worse than no link, so
+     * they stay out until someone checks them.
+     */
     /*
      * Monochrome, taken from his own logo rather than from a photograph: the
      * card is a black ground with white script and a grey subtitle, so the page
