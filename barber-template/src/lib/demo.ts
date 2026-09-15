@@ -8,6 +8,8 @@ import { creditFor, photoFor, type PhotoAuthor } from './photos.ts';
 import { paletteFor } from './shop-palette.ts';
 import { layoutFor } from './theme.ts';
 import { hoursList, kindOf, phoneDisplay, reviewsPerScore, telHref, toSchedule, trueAttributes, type Shop } from './shops.ts';
+import { SERVICES } from './demo-booking.ts';
+import { overrideFor, type PriceRow, type ServiceRow } from '../data/overrides.ts';
 
 export const dayLabel = (d: Day) => d.charAt(0).toUpperCase() + d.slice(1);
 
@@ -193,6 +195,8 @@ export interface TrustCell {
 }
 
 export function derive(shop: Shop) {
+  /** Anything this shop's owner has confirmed directly. Empty for all but a handful. */
+  const own = overrideFor(shop.slug);
   const nf = new Intl.NumberFormat('en-GB');
   const name = displayName(shop.name);
   const kind = kindOf(shop);
@@ -231,7 +235,7 @@ export function derive(shop: Shop) {
   const facts = [openDaysLabel, wheelchair ? 'wheelchair accessible' : ''].filter(Boolean).join(', ');
   const description = `${name}, ${fullAddress}. ${kind} ${rating != null ? `rated ${rating.toFixed(1)} from ${reviewsText}` : `with ${reviewsText}`}.${facts ? ` ${facts}.` : ''} Call ${phone.display}.`;
 
-  const about = [
+  const listingAbout = [
     `${name} is a ${kind.toLowerCase()} at ${expandRoad(street)}, ${shop.city} ${shop.postcode}.` +
       (rating != null
         ? ` On Google, ${nf.format(reviewCount)} ${reviewCount === 1 ? 'person has' : 'people have'} reviewed the shop and the rating stands at ${rating.toFixed(1)} out of 5.`
@@ -248,6 +252,8 @@ export function derive(shop: Shop) {
       ` Call ${phone.display} if you want to check before you set off.`,
     ].join(''),
   ];
+  /** The owner's own words where we have them, the listing's facts where we do not. */
+  const about = own.story ?? listingAbout;
 
 
   const trust: TrustCell[] = [
@@ -264,7 +270,16 @@ export function derive(shop: Shop) {
       ? ([5, 4, 3, 2, 1] as const).map((score) => ({ score, count: perScore[String(score) as keyof typeof perScore], share: perScore[String(score) as keyof typeof perScore] / scoreTotal }))
       : null;
 
-  const found = shop.photos.filter((p) => photoFor(p));
+  /**
+   * A listing image the owner has told us is a logo or wordmark rather than a
+   * photograph. It leaves the gallery — a 4:5 tile crops the middle out of a
+   * wordmark — and is shown whole, at its own aspect ratio, instead.
+   */
+  const logo: Photo | null =
+    own.logoPhoto && photoFor(own.logoPhoto)
+      ? { path: own.logoPhoto, ...photoFor(own.logoPhoto)!, alt: `${name} logo`, authors: creditFor(own.logoPhoto)?.authors ?? [] }
+      : null;
+  const found = shop.photos.filter((p) => photoFor(p) && p !== logo?.path);
   const photos: Photo[] = found.map((path, i) => ({
     path,
     ...photoFor(path)!,
@@ -272,8 +287,15 @@ export function derive(shop: Shop) {
     authors: creditFor(path)?.authors ?? [],
   }));
   const authors: PhotoAuthor[] = [];
-  for (const p of photos) for (const a of p.authors) if (a.name && !authors.some((x) => x.name === a.name && x.uri === a.uri)) authors.push(a);
-  const hero = photos[0] ?? null;
+  for (const p of [...photos, ...(logo ? [logo] : [])]) for (const a of p.authors) if (a.name && !authors.some((x) => x.name === a.name && x.uri === a.uri)) authors.push(a);
+  const hero = photos[0] ?? logo ?? null;
+  /**
+   * Whether the page runs a gallery section at all. A shop with one real
+   * photograph has nothing to fill a grid with, and a gallery whose first tile
+   * repeats the hero makes a page look emptier than leaving it out does; the
+   * room goes to that shop's prices, hours and story instead.
+   */
+  const showGallery = own.gallery !== false && photos.length > 0;
 
   const layout = layoutFor(shop.slug);
   const palette = paletteFor(shop.slug);
@@ -337,25 +359,36 @@ export function derive(shop: Shop) {
     scoreBars,
     photos,
     hero,
+    /** A wordmark among the listing images, kept out of the gallery and shown whole. */
+    logo,
+    showGallery,
     authors,
-    /** A price list, when the shop has given one. */
-    prices: null as PriceRow[] | null,
+    /** The shop's own price list, when its owner has given one. */
+    prices: (own.prices ?? null) as PriceRow[] | null,
+    /** The bookable menu: the shop's own where it has one, the six standard services otherwise. */
+    services: (own.services ?? SERVICES) as ServiceRow[],
+    /** Where the shop posts its work. */
+    socials: own.socials ?? null,
   };
 }
 
-/** One line of a price list. Listings carry none; the front page's example shop gives one. */
-export type PriceRow = { name: string; price: string; minutes?: number };
+/** A price list line and a bookable service: both are things an owner tells us, so they are defined with the rest. */
+export type { PriceRow, ServiceRow } from '../data/overrides.ts';
 
 export type DemoSite = ReturnType<typeof derive>;
 
 export function jsonLd(site: DemoSite, pageUrl: string, imageUrl: string) {
+  // One specification per opening span, so a split day is published as the two
+  // periods it really is rather than as one block over the lunch close.
   const hours = site.week
-    ? DAYS.filter((d) => site.week![d]).map((d) => ({
-        '@type': 'OpeningHoursSpecification',
-        dayOfWeek: `https://schema.org/${dayLabel(d)}`,
-        opens: site.week![d]!.open,
-        closes: site.week![d]!.close,
-      }))
+    ? DAYS.flatMap((d) =>
+        (site.week![d] ?? []).map((span) => ({
+          '@type': 'OpeningHoursSpecification',
+          dayOfWeek: `https://schema.org/${dayLabel(d)}`,
+          opens: span.open,
+          closes: span.close,
+        })),
+      )
     : [];
   return {
     '@context': 'https://schema.org',

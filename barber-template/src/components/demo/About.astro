@@ -1,5 +1,11 @@
 ---
-/* 03. Two paragraphs written from the listing's facts, and the facts as cards. */
+/* 03. The shop's story — the owner's own words where we have them, the listing's
+   facts where we do not — with the facts as cards, the shop's wordmark when its
+   listing carries one, and wherever it posts its work.
+
+   The socials row and the wordmark plate only exist for a shop whose owner has
+   given us them (src/data/overrides.ts). Every other shop renders the markup it
+   always did: the call button on its own, the facts list on its own. */
 import type { DemoSite } from '../../lib/demo.ts';
 import Section from './Section.astro';
 import Icons from './Icons.astro';
@@ -10,27 +16,63 @@ interface Props {
   alt?: boolean;
 }
 const { site, index, alt = false } = Astro.props;
+const socials = site.socials;
+const hasSocials = Boolean(socials?.instagram || socials?.facebook);
 ---
 <Section id="about" index={index} eyebrow={site.copy.aboutEyebrow} title={`${site.roadName},`} accent={`${site.address.locality}.`} class={alt ? 'bg-ink-2' : ''}>
   <div class="grid gap-8 md:grid-cols-[minmax(0,3fr)_minmax(0,2fr)]">
     <div class="space-y-5 text-lg leading-relaxed text-cream/90 md:text-xl" data-reveal>
       {site.about.map((p) => <p>{p}</p>)}
-      <a href={site.telHref} class="btn btn-amber"><Icons name="phone" size={19} /> Call the shop</a>
-    </div>
-    <ul class={`grid grid-cols-1 gap-3 self-start sm:grid-cols-2 md:grid-cols-1 ${alt ? "[&>li]:bg-ink" : "[&>li]:bg-ink-2"}`} role="list" data-reveal>
-      {site.features.map((f) => (
-        <li class="flex items-center gap-3 rounded-[var(--radius)] border border-line px-4 py-4 text-cream">
-          <Icons name="wheelchair" size={22} class="shrink-0 text-amber" /> {f}
-        </li>
-      ))}
-      {site.openDaysLabel && (
-        <li class="flex items-center gap-3 rounded-[var(--radius)] border border-line px-4 py-4 text-cream">
-          <Icons name="clock" size={22} class="shrink-0 text-amber" /> {site.openDaysLabel}
-        </li>
+      {hasSocials ? (
+        <div class="grid grid-cols-1 gap-3 sm:flex sm:flex-wrap">
+          <a href={site.telHref} class="btn btn-amber"><Icons name="phone" size={19} /> Call the shop</a>
+          {socials?.instagram && (
+            <a href={`https://www.instagram.com/${socials.instagram}/`} target="_blank" rel="noopener" class="btn btn-outline">
+              <Icons name="instagram" size={19} /> @{socials.instagram}
+            </a>
+          )}
+          {socials?.facebook && (
+            <a href={`https://www.facebook.com/${socials.facebook}/`} target="_blank" rel="noopener" class="btn btn-outline">
+              <Icons name="facebook" size={19} /> Facebook
+            </a>
+          )}
+        </div>
+      ) : (
+        <a href={site.telHref} class="btn btn-amber"><Icons name="phone" size={19} /> Call the shop</a>
       )}
-      <li class="flex items-center gap-3 rounded-[var(--radius)] border border-line px-4 py-4 text-cream">
-        <Icons name="pin" size={22} class="shrink-0 text-amber" /> {site.address.street}, {site.address.postcode}
-      </li>
-    </ul>
+    </div>
+    <Fragment>
+      {site.logo && (
+        /* The wordmark sits on its own black plate: the file's ground is black, so
+           any other card colour would show as a black rectangle inside it. Not
+           lazy — it is the only other image on a page with one photograph, it
+           weighs 30KB, and a viewport that jumps past it leaves a lazy one
+           unfetched and the plate blank. */
+        <img
+          src={site.logo.path}
+          alt={site.logo.alt}
+          width={site.logo.width}
+          height={site.logo.height}
+          decoding="async"
+          class="mb-3 w-full self-start rounded-[var(--radius)] border border-line bg-black object-contain"
+          data-reveal
+        />
+      )}
+      <ul class={`grid grid-cols-1 gap-3 self-start sm:grid-cols-2 md:grid-cols-1 ${alt ? "[&>li]:bg-ink" : "[&>li]:bg-ink-2"}`} role="list" data-reveal>
+        {site.features.map((f) => (
+          <li class="flex items-center gap-3 rounded-[var(--radius)] border border-line px-4 py-4 text-cream">
+            <Icons name="wheelchair" size={22} class="shrink-0 text-amber" /> {f}
+          </li>
+        ))}
+        {site.openDaysLabel && (
+          <li class="flex items-center gap-3 rounded-[var(--radius)] border border-line px-4 py-4 text-cream">
+            <Icons name="clock" size={22} class="shrink-0 text-amber" /> {site.openDaysLabel}
+          </li>
+        )}
+        <li class="flex items-center gap-3 rounded-[var(--radius)] border border-line px-4 py-4 text-cream">
+          <Icons name="pin" size={22} class="shrink-0 text-amber" /> {site.address.street}, {site.address.postcode}
+        </li>
+      </ul>
+    </Fragment>
   </div>
 </Section>

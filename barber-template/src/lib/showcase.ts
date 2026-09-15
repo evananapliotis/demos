@@ -5,7 +5,8 @@
  * real: the name, street, phone number (an Ofcom drama range), rating, review
  * count and prices are all invented.
  */
-export type Range = { open: string; close: string } | null;
+/** A day's opening spans, null on a closed day — the shape src/lib/open-status.ts and src/lib/demo-booking.ts read. */
+export type Range = { open: string; close: string }[] | null;
 
 export const SHOP = {
   name: 'Marlow & Finch',
@@ -20,12 +21,12 @@ export const SHOP = {
   reviews: 186,
   /** Opening hours on the shop's clock, in the shape src/lib/open-status.ts and src/lib/demo-booking.ts read. */
   week: {
-    monday: { open: '10:00', close: '18:00' },
-    tuesday: { open: '09:00', close: '19:00' },
-    wednesday: { open: '09:00', close: '19:00' },
-    thursday: { open: '09:00', close: '19:00' },
-    friday: { open: '09:00', close: '19:00' },
-    saturday: { open: '08:00', close: '17:00' },
+    monday: [{ open: '10:00', close: '18:00' }],
+    tuesday: [{ open: '09:00', close: '19:00' }],
+    wednesday: [{ open: '09:00', close: '19:00' }],
+    thursday: [{ open: '09:00', close: '19:00' }],
+    friday: [{ open: '09:00', close: '19:00' }],
+    saturday: [{ open: '08:00', close: '17:00' }],
     sunday: null,
   } as Record<string, Range>,
   hours: [

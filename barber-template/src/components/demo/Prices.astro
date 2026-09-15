@@ -1,11 +1,11 @@
 ---
 /**
  * Prices: the shop's own list when it has published one, otherwise the number
- * to call, put up big. Either way the services that can be booked are shown
- * below it — as rows or as cards, whichever the theme sets.
+ * to call, put up big. The services that can be booked follow it — as rows or
+ * as cards, whichever the theme sets — unless the shop's price list already is
+ * its menu, in which case those rows book directly and nothing is listed twice.
  */
 import type { DemoSite } from '../../lib/demo.ts';
-import { SERVICES } from '../../lib/demo-booking.ts';
 import Icons from './Icons.astro';
 import Section from './Section.astro';
 
@@ -18,21 +18,40 @@ interface Props {
 const { site, index, alt = false } = Astro.props;
 const prices = site.prices ?? [];
 const { copy, layout } = site;
+const services = site.services;
+/**
+ * The bookable list repeats the price list when the shop's menu and its prices
+ * are the same things — every row would say the same name twice. In that case
+ * the price list itself does the booking, each row a link.
+ */
+const sameList = prices.length > 0 && prices.length === services.length && prices.every((p, i) => p.name === services[i]!.name);
 const [lead, accent] = prices.length ? copy.pricesListTitle : copy.pricesAskTitle;
 ---
 
 <Section id="prices" index={index} eyebrow={copy.pricesEyebrow} title={lead} accent={accent} class={alt ? 'bg-ink-2' : ''}>
   {prices.length ? (
     <ul class="divide-y divide-line border-y border-line" role="list" data-reveal>
-      {prices.map((p) => (
-        <li class="flex items-center justify-between gap-4 py-4">
-          <span class="min-w-0">
-            <span class="block text-lg font-bold text-cream">{p.name}</span>
-            {p.minutes != null && <span class="text-xs font-bold uppercase tracking-[0.12em] text-cream-2">{p.minutes} min</span>}
-          </span>
-          <span class="display shrink-0 text-[2.2rem] leading-none text-amber">{p.price}</span>
-        </li>
-      ))}
+      {prices.map((p, i) => {
+        const service = sameList ? services[i] : null;
+        const row = (
+          <>
+            <span class="min-w-0">
+              <span class="block text-lg font-bold text-cream">{p.name}</span>
+              {p.minutes != null && <span class="text-xs font-bold uppercase tracking-[0.12em] text-cream-2">{p.minutes} min{service && <span class="ml-3 text-amber">Book</span>}</span>}
+            </span>
+            <span class="display shrink-0 text-[2.2rem] leading-none text-amber">{p.price}</span>
+          </>
+        );
+        return (
+          <li>
+            {service ? (
+              <a href={`${site.bookHref}?service=${service.id}`} class="flex items-center justify-between gap-4 py-4 transition-colors hover:text-amber">{row}</a>
+            ) : (
+              <span class="flex items-center justify-between gap-4 py-4">{row}</span>
+            )}
+          </li>
+        );
+      })}
     </ul>
   ) : (
     <div data-reveal>
@@ -45,35 +64,37 @@ const [lead, accent] = prices.length ? copy.pricesListTitle : copy.pricesAskTitl
     </div>
   )}
 
+  {!sameList && (
   <div class="mt-10" data-reveal>
     <h3 class="eyebrow mb-4">{copy.servicesHeading}</h3>
     {layout.services === 'cards' ? (
       <ul class="grid grid-cols-1 gap-3 sm:grid-cols-2" role="list">
-        {SERVICES.map((s) => (
+        {services.map((s) => (
           <li>
             <a
               href={`${site.bookHref}?service=${s.id}`}
               class={`flex min-h-[4.5rem] items-center justify-between gap-4 rounded-[var(--radius)] border border-line px-5 py-4 transition-colors hover:border-amber ${alt ? 'bg-ink' : 'bg-ink-2'}`}
             >
               <span class="text-lg font-bold text-cream">{s.name}</span>
-              <span class="shrink-0 text-xs font-bold uppercase tracking-[0.12em] text-cream-2">{s.minutes} min</span>
+              <span class={['shrink-0 text-xs font-bold uppercase tracking-[0.12em] text-cream-2', s.price && 'text-right'].filter(Boolean).join(' ')}>{s.minutes} min{s.price && <span class="block text-amber">{s.price}</span>}</span>
             </a>
           </li>
         ))}
       </ul>
     ) : (
       <ul class="divide-y divide-line border-y border-line" role="list">
-        {SERVICES.map((s) => (
+        {services.map((s) => (
           <li>
             <a href={`${site.bookHref}?service=${s.id}`} class="flex min-h-14 items-center justify-between gap-4 py-4 hover:text-amber">
               <span class="text-lg font-bold text-cream">{s.name}</span>
-              <span class="shrink-0 text-xs font-bold uppercase tracking-[0.12em] text-cream-2">{s.minutes} min</span>
+              <span class="shrink-0 text-xs font-bold uppercase tracking-[0.12em] text-cream-2">{s.minutes} min{s.price && <span class="ml-3 text-amber">{s.price}</span>}</span>
             </a>
           </li>
         ))}
       </ul>
     )}
   </div>
+  )}
 
   <div class="mt-8 grid grid-cols-1 gap-3 sm:flex sm:flex-wrap" data-reveal>
     <a href={site.bookHref} class="btn btn-amber"><Icons name="calendar" size={19} /> Book online</a>

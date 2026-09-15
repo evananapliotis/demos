@@ -1,22 +1,24 @@
 ---
 /**
  * The HAWAR BARBER booking page for a DemoSite, front-end only. Service, day,
- * time, then name and phone, confirmed on screen. The days and times come
- * from the listing's opening hours and the six standard services; nothing
- * is sent anywhere, and the confirmation says so. Used by /[slug]/book and
- * by /example/book.
+ * time, then name and phone, confirmed on screen. The days and times come from
+ * the shop's opening hours and its menu — the six standard services unless its
+ * owner has given us a real one; nothing is sent anywhere, and the confirmation
+ * says so. Used by /[slug]/book and /example/book.
  */
 import DemoBase from '../../layouts/DemoBase.astro';
 import PageHeader from './PageHeader.astro';
 import StickyBar from './StickyBar.astro';
 import Icons from './Icons.astro';
 import type { DemoSite } from '../../lib/demo.ts';
-import { DEMO_WEEK, EXAMPLE_PHONE, RULES, SERVICES } from '../../lib/demo-booking.ts';
+import { DEMO_WEEK, EXAMPLE_PHONE, RULES } from '../../lib/demo-booking.ts';
 
 interface Props {
   site: DemoSite;
 }
 const { site } = Astro.props;
+/** The shop's own menu where its owner has given one, the six standard services otherwise. */
+const services = site.services;
 const [bookLead, bookAccent] = site.copy.bookTitle;
 const title = `Book a time | ${site.name}, ${site.address.locality}`;
 const description = `Book a haircut, fade, beard trim or shave at ${site.name}, ${site.address.street}, ${site.address.locality}. Pick a service, a day and a time.`;
@@ -24,7 +26,7 @@ const disclaimer = `This is a demo booking page for ${site.name}. Nothing was se
 /** Most listings publish no hours; the booking page stands a standard week in so it still works. */
 const assumedHours = !site.week;
 const config = {
-  services: SERVICES,
+  services,
   phone: site.phone.display,
   tel: site.phone.tel,
   name: site.name,
@@ -53,12 +55,12 @@ const config = {
         <fieldset data-step="service">
           <legend class="eyebrow mb-3">1 · What are you in for?</legend>
           <div class="grid gap-2">
-            {SERVICES.map((s) => (
+            {services.map((s) => (
               <label class="choice">
                 <input type="radio" name="service" value={s.id} />
                 <span class="choice-body">
                   <span class="text-lg font-bold text-cream">{s.name}</span>
-                  <span class="shrink-0 text-sm font-bold uppercase tracking-[0.12em] text-amber">{s.minutes} min</span>
+                  <span class={['shrink-0 text-sm font-bold uppercase tracking-[0.12em] text-amber', s.price && 'text-right'].filter(Boolean).join(' ')}>{s.minutes} min{s.price && <span class="block text-cream-2">{s.price}</span>}</span>
                 </span>
               </label>
             ))}
@@ -130,7 +132,7 @@ const config = {
   import { addDays, fmtDayLong, fmtTime, toMin, zonedToUtc } from '../../lib/time.ts';
   import { availability, validateDetails, type BookingRules, type Day, type Service, type Week } from '../../lib/demo-booking.ts';
 
-  type Cfg = { services: Service[]; phone: string; tel: string; name: string; address: string; week: Week | null; rules: BookingRules; seed: string; home: string };
+  type Cfg = { services: (Service & { price?: string })[]; phone: string; tel: string; name: string; address: string; week: Week | null; rules: BookingRules; seed: string; home: string };
 
   const form = document.querySelector<HTMLFormElement>('[data-book]');
   if (form) {
@@ -191,7 +193,11 @@ const config = {
         .filter(([, s]) => s.length)
         .map(([name, s]) => `<div><p class="slot-group-name">${name}</p><div class="grid grid-cols-3 gap-2 min-[400px]:grid-cols-4">${s.map((t) => chip('time', t, fmtTime(t), '', false, t === time)).join('')}</div></div>`)
         .join('');
-      slotHint.textContent = d.hours ? `${fmtDayLong(d.date)}: open ${fmtTime(d.hours.open)} to ${fmtTime(d.hours.close)}.` : '';
+      // A split day is stated as the two openings it is, so nobody hunts for a
+      // half-one appointment on a Friday the shop shuts at half twelve.
+      const spans = (d.hours ?? []).map((h) => `${fmtTime(h.open)} to ${fmtTime(h.close)}`);
+      const open = spans.length > 1 ? `${spans.slice(0, -1).join(', ')} and again ${spans[spans.length - 1]}` : spans[0];
+      slotHint.textContent = open ? `${fmtDayLong(d.date)}: open ${open}.` : '';
       if (!d.slots.length) slotHint.textContent = 'That day has filled up. Pick another.';
     };
 

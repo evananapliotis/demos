@@ -12,6 +12,7 @@
 import { z } from 'zod';
 import { DAYS, type Day } from '../config/site.schema.ts';
 import raw from '../data/barbers.json';
+import { overrideFor } from '../data/overrides.ts';
 
 /** Day labels as the export spells them, Monday first. Index-aligned with DAYS. */
 export const DAY_LABELS = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'] as const;
@@ -79,8 +80,18 @@ function parseShops(input: unknown): Shop[] {
   return result.data;
 }
 
-/** Every listing, in file order. One page each. */
-export const shops: Shop[] = parseShops(raw);
+/**
+ * Every listing, in file order. One page each.
+ *
+ * src/data/barbers.json is the machine export and is never edited; where an
+ * owner has confirmed something directly (src/data/overrides.ts) it is laid
+ * over the export here, so the rest of the codebase sees one shop object and
+ * needs no idea where each field came from.
+ */
+export const shops: Shop[] = parseShops(raw).map((shop) => {
+  const o = overrideFor(shop.slug);
+  return o.hours ? { ...shop, hours: o.hours } : shop;
+});
 
 /* ---------- opening hours ---------- */
 
@@ -160,15 +171,22 @@ export interface HoursRange {
   open: string;
   close: string;
 }
-/** One span per day in HH:MM, null on a closed day. */
-export type Week = Record<Day, HoursRange | null>;
+/**
+ * A day's opening spans in HH:MM, null on a closed day. A list rather than one
+ * span because a day can be split: a shop that shuts from 12:30 to 2:30 is open
+ * twice that day, and collapsing that to 9:00-19:00 would offer times the door
+ * is locked.
+ */
+export type Week = Record<Day, HoursRange[] | null>;
 
 const hhmm = (minutes: number) => `${String(Math.floor(minutes / 60)).padStart(2, '0')}:${String(minutes % 60).padStart(2, '0')}`;
 
 /**
- * The listing's hours as a week table (HH:MM, one span per day). A split day
- * ("9am-1pm", "2-6pm") becomes its outer span; a close past midnight stops at
- * 23:59. Null when no day parses as open.
+ * The listing's hours as a week table (HH:MM). Every span a day publishes is
+ * kept, in order, so a split day ("9am-12:30pm", "2:30pm-7pm") stays two spans
+ * with the lunch close between them. Spans that touch or overlap are merged, and
+ * a close at or before its open (a close past midnight) stops at 23:59. Null
+ * when no day parses as open.
  */
 export function toSchedule(hours: Shop['hours']): Week | null {
   if (!hours) return null;
@@ -177,15 +195,20 @@ export function toSchedule(hours: Shop['hours']): Week | null {
   DAYS.forEach((day, i) => {
     const spans = (hours[DAY_LABELS[i]!] ?? [])
       .map(parseRange)
-      .filter((r): r is Exclude<ParsedRange, 'closed'> => r !== null && r !== 'closed');
+      .filter((r): r is Exclude<ParsedRange, 'closed'> => r !== null && r !== 'closed')
+      .map((s) => ({ open: s.open, close: s.close <= s.open ? 24 * 60 - 1 : s.close }))
+      .sort((a, b) => a.open - b.open);
     if (spans.length === 0) {
       week[day] = null;
       return;
     }
-    const open = Math.min(...spans.map((s) => s.open));
-    let close = Math.max(...spans.map((s) => s.close));
-    if (close <= open) close = 24 * 60 - 1;
-    week[day] = { open: hhmm(open), close: hhmm(close) };
+    const merged: { open: number; close: number }[] = [];
+    for (const s of spans) {
+      const last = merged[merged.length - 1];
+      if (last && s.open <= last.close) last.close = Math.max(last.close, s.close);
+      else merged.push({ ...s });
+    }
+    week[day] = merged.map((s) => ({ open: hhmm(s.open), close: hhmm(s.close) }));
     openDays++;
   });
   return openDays ? week : null;

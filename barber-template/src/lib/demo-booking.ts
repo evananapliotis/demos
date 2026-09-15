@@ -15,7 +15,12 @@ export interface Range {
   open: string;
   close: string;
 }
-export type Week = Record<string, Range | null>;
+/**
+ * A day's opening spans, null on a closed day. A list because a day can be
+ * split: Patel & Co shut from 12:30 to 2:30 on a Friday, and one outer span
+ * would offer start times while the door is locked.
+ */
+export type Week = Record<string, Range[] | null>;
 export interface BookingRules {
   /** Start times are offered every this many minutes. */
   slotMinutes: number;
@@ -53,28 +58,39 @@ export const RULES: BookingRules = { slotMinutes: 15, minNoticeMinutes: 60, hori
  * times follow a standard week. A constant, so the page stays deterministic.
  */
 export const DEMO_WEEK: Week = {
-  monday: { open: '09:00', close: '18:00' },
-  tuesday: { open: '09:00', close: '18:00' },
-  wednesday: { open: '09:00', close: '18:00' },
-  thursday: { open: '09:00', close: '18:00' },
-  friday: { open: '09:00', close: '18:00' },
-  saturday: { open: '09:00', close: '18:00' },
+  monday: [{ open: '09:00', close: '18:00' }],
+  tuesday: [{ open: '09:00', close: '18:00' }],
+  wednesday: [{ open: '09:00', close: '18:00' }],
+  thursday: [{ open: '09:00', close: '18:00' }],
+  friday: [{ open: '09:00', close: '18:00' }],
+  saturday: [{ open: '09:00', close: '18:00' }],
   sunday: null,
 };
 export const EXAMPLE_PHONE = '07700 900123'; // Ofcom drama range: never a real subscriber
 
-/** Opening hours on a date, or null when the shop is closed that day. */
-export function hoursFor(week: Week | null, date: string): Range | null {
-  return week ? (week[dayName(date)] ?? null) : null;
+/** Opening spans on a date, or null when the shop is closed that day. */
+export function hoursFor(week: Week | null, date: string): Range[] | null {
+  const spans = week ? (week[dayName(date)] ?? null) : null;
+  return spans && spans.length ? spans : null;
 }
 
-/** Start times a service could begin at on a date: every slot step from opening, while it still ends by closing. */
+/**
+ * Start times a service could begin at on a date: every slot step from each
+ * opening, while the appointment still ends by that span's closing.
+ *
+ * Per span, not across the day: a cut booked at 12:15 on a split Friday would
+ * run past the half-twelve close and into the two hours the shop is shut, so
+ * the last Friday morning start is the one that finishes by 12:30 and the
+ * afternoon starts again at 2:30.
+ */
 export function candidateStarts(week: Week | null, date: string, minutes: number, rules: BookingRules = RULES): string[] {
-  const h = hoursFor(week, date);
-  if (!h) return [];
+  const spans = hoursFor(week, date);
+  if (!spans) return [];
   const out: string[] = [];
-  const close = toMin(h.close);
-  for (let m = toMin(h.open); m + minutes <= close; m += rules.slotMinutes) out.push(fromMin(m));
+  for (const span of spans) {
+    const close = toMin(span.close);
+    for (let m = toMin(span.open); m + minutes <= close; m += rules.slotMinutes) out.push(fromMin(m));
+  }
   return out;
 }
 
@@ -124,7 +140,8 @@ export interface Day {
   date: string;
   label: string;
   closed: boolean;
-  hours: Range | null;
+  /** Every span the shop is open that day; two on a split day. */
+  hours: Range[] | null;
   slots: string[];
 }
 

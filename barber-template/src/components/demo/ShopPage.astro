@@ -26,8 +26,8 @@ interface Props {
 const { site, footer = true } = Astro.props;
 const title = `${site.name} | ${site.kind}, ${site.roadName}, ${site.address.locality}`;
 
-// A shop with no photos has no gallery, so it never takes a numeral.
-const sections = site.layout.order.filter((id) => id !== 'gallery' || site.photos.length > 0);
+// A shop with no gallery never takes a numeral for one.
+const sections = site.layout.order.filter((id) => id !== 'gallery' || site.showGallery);
 // Numerals count the numbered sections in render order, so 01 is always first on the page.
 const numbered = sections.filter((id) => id !== 'reviews');
 const index = (id: string) =>
