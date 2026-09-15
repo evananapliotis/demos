@@ -61,13 +61,26 @@ export interface ShopOverride {
    */
   logoPhoto?: string;
   /**
+   * The shop's own photographs, in gallery order, replacing whatever the Google
+   * listing carried. Root-absolute paths under /shops/<slug>/, prepared by
+   * scripts/shop-photos.mjs. Credited to the shop, not to a Google reviewer.
+   */
+  photos?: string[];
+  /**
+   * Use the ruled hero rather than the one this shop's layout would pick: type
+   * ruled across the full width with the photograph held down behind it.
+   */
+  heroVariant?: 'ruled';
+  /**
+   * Which of them stands behind the first screen. Any of the set; it is shown
+   * heavily darkened, so it is chosen for its tone rather than its detail.
+   */
+  heroPhoto?: string;
+  /**
    * Do not use this listing's photographs anywhere — no hero, no gallery, no
    * credit for a picture nobody can see. For a listing whose only photograph is
    * weak, a hero built on it and a one-tile gallery both read as a page
-   * apologising for its picture; the hero carries the name, the rating and the
-   * actions instead, and the room goes to the shop's prices, hours and story.
-   * The wordmark above is unaffected: it is the shop's own mark, not a photo of
-   * the shop.
+   * apologising for its picture. Ignored when `photos` above supplies a set.
    */
   usePhotos?: false;
 }
@@ -78,10 +91,11 @@ export const OVERRIDES: Record<string, ShopOverride> = {
    * given over the phone. Friday is a genuine split day — he shuts at half
    * twelve and opens again at half two.
    *
-   * The Google listing carries two images: one black wordmark card and one
-   * photograph of the shopfront that is not good enough to build a page on. So
-   * the photograph is not used: the hero is type only, there is no gallery, and
-   * the wordmark is shown as the mark it is.
+   * The Google listing's own photograph was not good enough to build a page on;
+   * the shop has since sent ten files of its own. Nine are photographs of the
+   * work and make the gallery, desaturated so they read as one set; the tenth
+   * is the wordmark again, which is shown as the mark it is rather than as a
+   * tile in the gallery.
    *
    * Service durations are the one thing here he did not give: they are ordinary
    * barbershop lengths, set so the booking calendar has slot lengths to work
@@ -140,8 +154,29 @@ export const OVERRIDES: Record<string, ShopOverride> = {
       onAccent: '#0a0a0a',
       reason: "monochrome, taken from the shop's own black-and-white wordmark",
     },
+    /*
+     * patel-1 is the wordmark and so is not in this list. The order is the order
+     * the files arrived in; the gallery follows it.
+     */
+    photos: [
+      '/shops/patel-and-co/patel-2.webp',
+      '/shops/patel-and-co/patel-3.webp',
+      '/shops/patel-and-co/patel-4.webp',
+      '/shops/patel-and-co/patel-5.webp',
+      '/shops/patel-and-co/patel-6.webp',
+      '/shops/patel-and-co/patel-7.webp',
+      '/shops/patel-and-co/patel-8.webp',
+      '/shops/patel-and-co/patel-9.webp',
+      '/shops/patel-and-co/patel-10.webp',
+    ],
+    /* The cut-throat razor at the jaw: the most black in the set, and it holds the name. */
+    heroVariant: 'ruled',
+    heroPhoto: '/shops/patel-and-co/patel-4.webp',
+    /*
+     * The wordmark, from the Google listing rather than from patel-1.webp: it is
+     * the same mark at 1400px instead of 474, so it stays sharp on the plate.
+     */
     logoPhoto: '/photos/patel-and-co-2.jpg',
-    usePhotos: false,
   },
 };
 

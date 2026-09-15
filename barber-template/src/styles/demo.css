@@ -509,6 +509,23 @@ html.js [data-reveal].is-in {
     ),
     radial-gradient(90% 60% at 100% 0%, color-mix(in srgb, var(--color-amber) 12%, transparent), transparent 60%);
 }
+/*
+ * The photograph beside the ruled name. It is shown whole rather than cropped
+ * to a letterbox, and veiled just enough to sit at the same weight as the black
+ * around it — the name stays the brightest thing on the screen.
+ */
+/* On a phone the photograph is a band under the name; from md it is a column beside it. */
+.hero-photo-panel { min-height: 0; }
+@media (min-width: 768px) { .hero-photo-panel { min-height: 20rem; } }
+.hero-photo-veil {
+  background: linear-gradient(
+    to bottom,
+    color-mix(in srgb, var(--color-ink) 34%, transparent),
+    color-mix(in srgb, var(--color-ink) 12%, transparent) 45%,
+    color-mix(in srgb, var(--color-ink) 48%, transparent)
+  );
+}
+
 .hero-scrim-none {
   background:
     radial-gradient(90% 60% at 100% 0%, color-mix(in srgb, var(--color-amber) 16%, transparent), transparent 60%),

@@ -36,7 +36,14 @@ export type HeroVariant =
   /** Photo behind a centred, ruled plaque. */
   | 'plaque'
   /** Type one half, photo the other, edge to edge. */
-  | 'split';
+  | 'split'
+  /**
+   * Type ruled across the full width, with the photograph — if there is one —
+   * held right down behind it. Not assigned by the slug: a layout falls back to
+   * it when a full-bleed hero has no photograph, and a shop can be pinned to it
+   * deliberately (src/data/overrides.ts).
+   */
+  | 'ruled';
 
 export type ServiceStyle = 'list' | 'cards';
 

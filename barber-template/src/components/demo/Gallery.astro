@@ -24,7 +24,7 @@ const slides = photos.map((p) => ({
 {
   photos.length > 0 && (
     <Section id="gallery" index={index} eyebrow={site.copy.galleryEyebrow} title={lead} accent={accent} class={alt ? 'bg-ink-2' : ''}>
-      <ul class="gallery-track" role="list" aria-label="Photos from the shop's Google listing">
+      <ul class="gallery-track" role="list" aria-label={site.photosFromOwner ? `Photos from ${site.name}` : "Photos from the shop's Google listing"}>
         {photos.map((p, i) => (
           <li class="overflow-hidden rounded-[var(--radius)] bg-ink-3">
             <button type="button" class="gallery-open group block w-full cursor-zoom-in" data-index={i} aria-label={`Open photo ${i + 1} of ${photos.length} full size`}>
@@ -43,7 +43,11 @@ const slides = photos.map((p) => ({
       </ul>
       <p class="mt-4 flex items-center justify-between gap-4 text-sm text-cream-2"><span>Tap a photo to see it full size.<span class="md:hidden"> Swipe for more.</span></span><span class="tabular-nums font-bold text-cream md:hidden" data-gallery-pos aria-live="polite">1 / {photos.length}</span></p>
       <p class="mt-2 text-xs text-cream-2" data-photo-credits>
-        Photos from the shop’s Google listing{site.authors.length > 0 && <>, by {site.authors.map((a, i) => <>{i > 0 && ', '}{a.uri ? <a href={a.uri} target="_blank" rel="noopener" class="underline underline-offset-2 hover:text-amber">{a.name}</a> : a.name}</>)}</>}.
+        {site.photosFromOwner ? (
+          <>Photos by {site.name}.</>
+        ) : (
+          <>Photos from the shop’s Google listing{site.authors.length > 0 && <>, by {site.authors.map((a, i) => <>{i > 0 && ', '}{a.uri ? <a href={a.uri} target="_blank" rel="noopener" class="underline underline-offset-2 hover:text-amber">{a.name}</a> : a.name}</>)}</>}.</>
+        )}
       </p>
 
       <dialog class="lightbox" data-lightbox data-photos={JSON.stringify(slides)} aria-label="Photo viewer">

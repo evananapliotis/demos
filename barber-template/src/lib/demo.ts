@@ -6,7 +6,7 @@ import { DAYS, type Day } from '../config/site.schema.ts';
 import { copyFor } from './copy.ts';
 import { creditFor, photoFor, type PhotoAuthor } from './photos.ts';
 import { paletteFor } from './shop-palette.ts';
-import { layoutFor } from './theme.ts';
+import { layoutFor, type HeroVariant } from './theme.ts';
 import { hoursList, kindOf, phoneDisplay, reviewsPerScore, telHref, toSchedule, trueAttributes, type Shop } from './shops.ts';
 import { SERVICES } from './demo-booking.ts';
 import { overrideFor, type PriceRow, type ServiceRow } from '../data/overrides.ts';
@@ -279,11 +279,15 @@ export function derive(shop: Shop) {
     own.logoPhoto && photoFor(own.logoPhoto)
       ? { path: own.logoPhoto, ...photoFor(own.logoPhoto)!, alt: `${name} logo`, authors: creditFor(own.logoPhoto)?.authors ?? [] }
       : null;
-  const found = own.usePhotos === false ? [] : shop.photos.filter((p) => photoFor(p) && p !== logo?.path);
+  /** The shop's own photographs where it has sent us a set, the listing's otherwise. */
+  const ownPhotos = (own.photos ?? []).filter((p) => photoFor(p));
+  const fromOwner = ownPhotos.length > 0;
+  const found = fromOwner ? ownPhotos : own.usePhotos === false ? [] : shop.photos.filter((p) => photoFor(p) && p !== logo?.path);
+  const source = fromOwner ? 'the shop' : 'the Google listing';
   const photos: Photo[] = found.map((path, i) => ({
     path,
     ...photoFor(path)!,
-    alt: `${name}, ${shop.city}: photo ${i + 1} of ${found.length} from the Google listing`,
+    alt: `${name}, ${shop.city}: photo ${i + 1} of ${found.length} from ${source}`,
     authors: creditFor(path)?.authors ?? [],
   }));
   // Only the images the page actually shows are credited, so nobody is thanked for a picture that is not there.
@@ -294,7 +298,7 @@ export function derive(shop: Shop) {
    * when its owner would rather the page did not lean on the one it has: the
    * hero then carries the name, the rating and the actions on their own.
    */
-  const hero = photos[0] ?? null;
+  const hero = (own.heroPhoto ? photos.find((p) => p.path === own.heroPhoto) : null) ?? photos[0] ?? null;
   /**
    * Whether the page runs a gallery section at all, and so whether the
    * navigation and the footer offer a link to one. A shop with one photograph
@@ -314,12 +318,18 @@ export function derive(shop: Shop) {
    */
   const em = layout.display.width * longest;
   /**
-   * A full-bleed hero with no photograph gives the name the whole first screen
-   * to itself, and the name is then doing the picture's job, so its cap is
-   * lifted. Section headings are unaffected: theirs is already at its own 6rem
-   * ceiling well below either figure.
+   * The hero treatment this page actually renders: its layout's, unless the shop
+   * is pinned to the ruled one, or a full-bleed hero has no photograph to be
+   * built around.
    */
-  const typeOnlyHero = layout.hero === 'full-bleed' && hero === null;
+  const heroVariant: HeroVariant = own.heroVariant ?? (layout.hero === 'full-bleed' && hero === null ? 'ruled' : layout.hero);
+  /**
+   * The ruled hero gives the name the whole width of the first screen, and the
+   * name is then doing the picture's job, so its cap is lifted. Section headings
+   * are unaffected: theirs is already at its own 6rem ceiling well below either
+   * figure.
+   */
+  const typeOnlyHero = heroVariant === 'ruled';
   const maxRem = typeOnlyHero ? layout.display.maxRem * 1.15 : layout.display.maxRem;
   const h1Rem = Math.min(maxRem, layout.display.budgetPx / em / 16);
   const h1Size = `clamp(2rem, ${Math.min(typeOnlyHero ? layout.display.maxVw * 1.3 : layout.display.maxVw, 88 / em).toFixed(1)}vw, ${h1Rem.toFixed(2)}rem)`;
@@ -339,6 +349,8 @@ export function derive(shop: Shop) {
      * committed data, so a live link never changes appearance.
      */
     layout,
+    /** The hero treatment rendered, which is the layout's unless this shop overrides it. */
+    heroVariant,
     palette,
     copy: copyFor(shop.slug),
     /** This shop's page and its booking page. */
@@ -376,6 +388,8 @@ export function derive(shop: Shop) {
     /** A wordmark among the listing images, kept out of the gallery and shown whole. */
     logo,
     showGallery,
+    /** The photographs are the shop's own, not a Google reviewer's, so they are credited to the shop. */
+    photosFromOwner: fromOwner,
     authors,
     /** The shop's own price list, when its owner has given one. */
     prices: (own.prices ?? null) as PriceRow[] | null,
