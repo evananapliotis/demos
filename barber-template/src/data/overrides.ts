@@ -129,9 +129,18 @@ export const OVERRIDES: Record<string, ShopOverride> = {
       { id: 'boys-cut', name: 'Boys 10 and under', minutes: 20, price: '£17' },
       { id: 'beard-trim', name: 'Senior Beard Trim', minutes: 15, price: '£14' },
     ],
+    /*
+     * Every clause here is traceable: the trade, the road and the town come from
+     * the listing; the rating and the review count come from the listing; the
+     * stylist tiers, the concession rates and the opening pattern come from the
+     * price list and hours the shop confirmed. Nothing about when the shop
+     * opened, how many people work in it, how long they have been doing it, or
+     * how they are related — none of that was ever sourced, so none of it is
+     * here. Two short paragraphs is the honest length.
+     */
     story: [
-      'Two brothers opened Patel & Co on Rugby Road in 2018, and they have been behind the chairs ever since. Thirteen years of barbering between them: skin fades, scissor work, beard shape-ups and the kind of cut that still sits right a month later.',
-      'Senior and junior stylists work every day, so there is a price for whoever you sit with, with rates for pensioners and for boys ten and under. Walk in if the door is open, or pick a time below.',
+      'Patel & Co is a barber shop on Rugby Road in Hinckley. Seventy people have reviewed it on Google and the rating stands at 4.9 out of 5.',
+      'There are senior and junior stylist rates, and set prices for pensioners and for boys ten and under — the full list is above. Open six days a week, with Friday running in two halves either side of a midday close.',
     ],
     socials: { instagram: 'patelandco', facebook: 'PatelandCo' },
     /*
