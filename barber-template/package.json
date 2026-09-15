@@ -5,7 +5,7 @@
   "type": "module",
   "scripts": {
     "dev": "astro dev",
-    "prebuild": "tsx scripts/check-assets.ts",
+    "prebuild": "tsx scripts/booking-manifest.ts && tsx scripts/check-assets.ts",
     "build": "astro check && astro build",
     "preview": "astro preview",
     "deploy": "npm run build && wrangler deploy",
@@ -15,7 +15,8 @@
     "brand": "node scripts/brand.mjs",
     "images:placeholders": "tsx scripts/placeholder-images.ts",
     "photos": "node scripts/fetch-photos.mjs",
-    "palettes": "tsx scripts/extract-palettes.ts"
+    "palettes": "tsx scripts/extract-palettes.ts",
+    "booking-manifest": "tsx scripts/booking-manifest.ts"
   },
   "dependencies": {
     "@fontsource-variable/fraunces": "^5.3.0",

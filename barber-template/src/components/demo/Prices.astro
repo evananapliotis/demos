@@ -36,6 +36,12 @@ const services = site.services;
 const sameList = site.showBooking && prices.length > 0 && prices.length === services.length && prices.every((p, i) => p.name === services[i]!.name);
 /** The bookable list only exists where there is somewhere to book. */
 const showServices = site.showBooking && !sameList;
+/**
+ * The row of buttons under the section. With no booking and no price list the
+ * number is already the whole section, set large above, so a Call button three
+ * inches below it would only say the same thing twice.
+ */
+const showButtons = site.showBooking || prices.length > 0;
 const [lead, accent] = prices.length ? copy.pricesListTitle : copy.pricesAskTitle;
 ---
 
@@ -107,11 +113,10 @@ const [lead, accent] = prices.length ? copy.pricesListTitle : copy.pricesAskTitl
   </div>
   )}
 
-  {/* With no booking and no price list the number is already the whole section, set large above; a second Call button under it would only say it twice. */}
-  {(site.showBooking || prices.length > 0) && (
-    <div class="mt-8 grid grid-cols-1 gap-3 sm:flex sm:flex-wrap" data-reveal>
-      {site.showBooking && <a href={site.bookHref} class="btn btn-amber"><Icons name="calendar" size={19} /> Book online</a>}
-      <a href={site.telHref} class={`btn ${site.showBooking ? 'btn-outline' : 'btn-amber'}`}><Icons name="phone" size={19} /> Call {site.phone.display}</a>
-    </div>
+  {showButtons && (
+  <div class="mt-8 grid grid-cols-1 gap-3 sm:flex sm:flex-wrap" data-reveal>
+    {site.showBooking && <a href={site.bookHref} class="btn btn-amber"><Icons name="calendar" size={19} /> Book online</a>}
+    <a href={site.telHref} class={`btn ${site.showBooking ? 'btn-outline' : 'btn-amber'}`}><Icons name="phone" size={19} /> Call {site.phone.display}</a>
+  </div>
   )}
 </Section>
